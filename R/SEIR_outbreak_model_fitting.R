@@ -1,10 +1,9 @@
-#' Class definition for outbreak facility model
-#' based on SEIR_incidence_model written in STAN
-#' @author Mike Irvine
 
 
-
-#' SEIR model fitting method to a single outbreak model
+#' SEIR model fitting method to a multiple outbreak model
+#' @description
+#' Create an instance of the hierarchical SEIR stan model incorporating
+#' various data elements and sample model.
 #' @param tmax - total number of time-points in observation
 #' @param n_outbreaks - total number of outbreaks
 #' @param outbreak_cases - Numnber of daily reported cases by outbreak
@@ -17,6 +16,8 @@
 #' tmax <- 30
 #' example_incidence <- c(1,1,2,3,2)
 #' seir_model_fit(tmax,c(1),example_incidence,c(100))
+#' @author Mike Irvine
+#' @return An object of class `stanfit` returned by `rstan::sampling`
 #' @export
 seir_model_fit <- function(tmax,
                            n_outbreaks,
