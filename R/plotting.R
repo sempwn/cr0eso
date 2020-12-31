@@ -66,7 +66,7 @@ hom_extract_posterior_draws <- function(posts){
 #' @return list containing:
 #'  * plot - ggplot object
 #'  * table - tibble object of results
-#' @example
+#' @examples
 #'  mod # RSTAN fit object
 #'  posts <- extract(mod) # extract posterior from model object
 #'  extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and r0
@@ -142,7 +142,7 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 #' @return list containing:
 #'  * plot - ggplot object
 #'  * table - tibble object of results
-#' @example
+#' @examples
 #'  mod # RSTAN fit object
 #'  posts <- extract(mod) # extract posterior from model object
 #'  extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
@@ -219,7 +219,7 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 #' @return list containing:
 #'  * plot - ggplot object
 #'  * table - tibble object of results
-#' @example
+#' @examples
 #'  mod # RSTAN fit object
 #'  outbreak_cases # data of outbreaks in matrix form
 #'  posts <- extract(mod) # extract posterior from model object

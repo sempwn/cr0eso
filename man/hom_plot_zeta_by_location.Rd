@@ -23,3 +23,11 @@ Plot zeta by location as extracted from hierarchical outbreak model.
 If extracted_posts is NULL then posts object is used to first extract the zeta
 and incidence draws from posterior (note this will take longer)
 }
+\examples{
+ mod # RSTAN fit object
+ posts <- extract(mod) # extract posterior from model object
+ extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
+ result <- hom_plot_zeta_by_location(extracted_posts=extracted_posts)
+ # plot results
+ show(result$plot)
+}
