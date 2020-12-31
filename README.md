@@ -23,5 +23,19 @@ Then, install the covidseir package with:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("sempwn/covid-outbreak-r0-estimation")
+remotes::install_github("sempwn/cr0eso")
+```
+
+See the examples in `?fit_seir` and `?project_seir`.
+
+To install the package with the vignette:
+
+```r
+remotes::install_github("sempwn/cr0eso", build_vignettes = TRUE)
+```
+
+and run:
+
+```r
+browseVignettes("cr0eso")
 ```
