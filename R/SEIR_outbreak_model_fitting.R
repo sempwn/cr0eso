@@ -14,8 +14,10 @@
 #'
 #' @examples
 #' tmax <- 30
-#' example_incidence <- c(1,1,2,3,2)
-#' seir_model_fit(tmax,c(1),example_incidence,c(100))
+#' pop_size <- 100
+#' dim(pop_size) <- c(1)
+#' example_incidence <- matrix(c(1,1,2,3,2),ncol=1)
+#' fit <- seir_model_fit(5,1,example_incidence,pop_size)
 #' @author Mike Irvine
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #' @export
