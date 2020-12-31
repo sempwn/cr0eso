@@ -1,0 +1,63 @@
+---
+title: "Introduction to fitting multiple outbreak model"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Put the title of your vignette here}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+```
+
+## Introduction
+
+Load library,
+
+```{r}
+library("cr0eso")
+```
+
+## Create simulated data
+
+The package will expect the data in a certain format, such as the following,
+
+```{r}
+# maximum time
+tmax <- 5
+n_outbreaks <- 2
+outbreak_cases <- matrix(c(0,0,1,2,3,0,0,2,4,5),ncol=2)
+outbreak_sizes <- c(100,100)
+```
+
+## Fit model
+
+```{r}
+fit <- cr0eso::seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
+                       intervention_switch = FALSE)
+```
+
+## Plot model output
+
+```{r}
+# Extract the posterior samples to a structured list:
+posts <- rstan::extract(fit$model)
+
+extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
+result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
+
+# plot results
+show(result$plot)
+```
+
+## Plot model fit to incidence
+
+```{r}
+extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and r0
+result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
+                                         outbreak_cases = outbreak_cases)
+# plot results
+show(result$plot)
+```

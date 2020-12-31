@@ -80,10 +80,12 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
     extracted_posts <- hom_extract_posterior_draws(posts)
   }
 
+
   r0s <- extracted_posts$r0
   params <- extracted_posts$params
 
   nlocs <- length(unique(r0s$location))
+  ob_codes <- 1:nlocs
 
   # order locations by mean r0 (used to relevel location factor)
   loc_ordering <- r0s %>%
@@ -158,6 +160,7 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
   params <- extracted_posts$params
 
   nlocs <- length(unique(zetas$location))
+  ob_codes <- 1:nlocs
 
   # order locations by mean zeta (used to relevel location factor)
   loc_ordering <- zetas %>%
