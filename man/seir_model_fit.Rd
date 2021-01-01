@@ -37,11 +37,11 @@ Create an instance of the hierarchical SEIR stan model incorporating
 various data elements and sample model.
 }
 \examples{
-tmax <- 30
+tmax <- 5
 pop_size <- 100
 dim(pop_size) <- c(1)
 example_incidence <- matrix(c(1,1,2,3,2),ncol=1)
-fit <- seir_model_fit(5,1,example_incidence,pop_size)
+fit <- seir_model_fit(tmax,1,example_incidence,pop_size)
 }
 \author{
 Mike Irvine
