@@ -26,7 +26,7 @@ Then, install the **cr0eso** package with:
 remotes::install_github("sempwn/cr0eso")
 ```
 
-See the examples in `?seir_model_fit`.
+See the example in `?seir_model_fit` and the [vignette](https://sempwn.github.io/cr0eso/articles/introduction_to_fitting.html).
 
 To install the package with the vignette:
 
