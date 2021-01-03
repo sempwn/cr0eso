@@ -1,2 +1,5 @@
 ^cr0eso\.Rproj$
 ^\.Rproj\.user$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

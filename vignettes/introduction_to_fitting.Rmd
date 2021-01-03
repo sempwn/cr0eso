@@ -2,14 +2,16 @@
 title: "Introduction to fitting multiple outbreak model"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Put the title of your vignette here}
+  %\VignetteIndexEntry{Introduction to fitting multiple outbreak model}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(collapse = T, comment = "#>")
+library(tidyverse)
+knitr::opts_chunk$set(dev="png", collapse = T, comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L)
+
 ```
 
 ## Introduction
@@ -49,7 +51,7 @@ extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence 
 result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
 
 # plot results
-show(result$plot)
+result$plot
 ```
 
 ## Plot model fit to incidence
@@ -59,5 +61,5 @@ extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence 
 result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
                                          outbreak_cases = outbreak_cases)
 # plot results
-show(result$plot)
+result$plot
 ```
