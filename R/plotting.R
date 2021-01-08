@@ -6,6 +6,9 @@
 #' @author Mike Irvine
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param posts Object after calling extract of stan model object of hierarchical model
+#' @importFrom tibble tibble as_tibble rowid_to_column
+#' @importFrom tidyr pivot_longer
+#' @importFrom dplyr mutate group_by arrange ungroup summarise
 #' @export
 hom_extract_posterior_draws <- function(posts){
 
