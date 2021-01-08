@@ -70,12 +70,14 @@ hom_extract_posterior_draws <- function(posts){
 #'  * plot - ggplot object
 #'  * table - tibble object of results
 #' @examples
+#' \dontrun{
 #'  mod # RSTAN fit object
-#'  posts <- extract(mod) # extract posterior from model object
+#'  posts <- rstan::extract(mod) # extract posterior from model object
 #'  extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and r0
 #'  result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
 #'  # plot results
 #'  show(result$plot)
+#'  }
 #' @export
 hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 
@@ -150,12 +152,14 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 #'  * plot - ggplot object
 #'  * table - tibble object of results
 #' @examples
+#' \dontrun{
 #'  mod # RSTAN fit object
-#'  posts <- extract(mod) # extract posterior from model object
+#'  posts <- rstan::extract(mod) # extract posterior from model object
 #'  extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
 #'  result <- hom_plot_zeta_by_location(extracted_posts=extracted_posts)
 #'  # plot results
 #'  show(result$plot)
+#'  }
 #' @export
 hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 
@@ -229,14 +233,16 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 #'  * plot - ggplot object
 #'  * table - tibble object of results
 #' @examples
+#' \dontrun{
 #'  mod # RSTAN fit object
-#'  outbreak_cases # data of outbreaks in matrix form
-#'  posts <- extract(mod) # extract posterior from model object
+#'  outbreak_cases <- matrix(c(0,0,1,2,3,0,0,2,4,5),ncol=2) # data of outbreaks in matrix form
+#'  posts <- rstan::extract(mod) # extract posterior from model object
 #'  extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and r0
 #'  result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
 #'                                           outbreak_cases=outbreak_cases)
 #'  # plot results
 #'  show(result$plot)
+#'  }
 #' @export
 hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
                                     outbreak_cases=NULL, end_time=60){

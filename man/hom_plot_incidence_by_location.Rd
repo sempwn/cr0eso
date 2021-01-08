@@ -36,6 +36,7 @@ incidence draws from posterior (note this will take longer)
 Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 }
 \examples{
+\dontrun{
  mod # RSTAN fit object
  outbreak_cases <- matrix(c(0,0,1,2,3,0,0,2,4,5),ncol=2) # data of outbreaks in matrix form
  posts <- rstan::extract(mod) # extract posterior from model object
@@ -44,4 +45,5 @@ Naming convention throughout is snake case with prefix "hom_" to denote Hierarci
                                           outbreak_cases=outbreak_cases)
  # plot results
  show(result$plot)
+ }
 }

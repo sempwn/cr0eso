@@ -27,10 +27,12 @@ and incidence draws from posterior (note this will take longer)
 Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 }
 \examples{
+\dontrun{
  mod # RSTAN fit object
  posts <- rstan::extract(mod) # extract posterior from model object
  extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
  result <- hom_plot_zeta_by_location(extracted_posts=extracted_posts)
  # plot results
  show(result$plot)
+ }
 }
