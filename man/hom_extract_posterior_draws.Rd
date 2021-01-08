@@ -15,6 +15,3 @@ Extract model incidence and R0s from posterior
 \note{
 Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 }
-\author{
-Mike Irvine
-}

@@ -32,6 +32,9 @@ Plot incidence by location as extracted from hierarchical outbreak model.
 If extracted_posts is NULL then posts object is used to first extract the
 incidence draws from posterior (note this will take longer)
 }
+\note{
+Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
+}
 \examples{
  mod # RSTAN fit object
  outbreak_cases # data of outbreaks in matrix form

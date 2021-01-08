@@ -6,6 +6,7 @@
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param posts Object after calling extract of stan model object of hierarchical model
 #' @importFrom stats quantile rpois
+#' @importFrom magrittr %>%
 #' @export
 hom_extract_posterior_draws <- function(posts){
 
@@ -19,7 +20,7 @@ hom_extract_posterior_draws <- function(posts){
 
   # extract R0
   r0s <- tibble::as_tibble(posts$r0k) %>%
-    tidyr::pivot_longer(everything(),names_to="location",values_to="r0") %>%
+    tidyr::pivot_longer(dplyr::everything(),names_to="location",values_to="r0") %>%
     dplyr::mutate(location = str_remove_all(location,"V"))
 
   # extract zeta (only applicable where zeta is multilevel)
@@ -27,8 +28,8 @@ hom_extract_posterior_draws <- function(posts){
 
   if("zetak" %in% names(posts)){
     zetas <- tibble::as_tibble(posts$zetak) %>%
-      tidyr::pivot_longer(everything(),names_to="location",values_to="zeta") %>%
-      dplyr::mutate(location = str_remove_all(location,"V"))
+      tidyr::pivot_longer(dplyr::everything(),names_to="location",values_to="zeta") %>%
+      dplyr::mutate(location = stringr::str_remove_all(location,"V"))
   }
 
 
@@ -41,7 +42,7 @@ hom_extract_posterior_draws <- function(posts){
     dplyr::mutate(time = as.double(time)) %>%
     dplyr::arrange(location,run,time) %>%
     dplyr::group_by(location,run) %>%
-    dplyr::mutate(incidence = cincidence - lag(cincidence)) %>%
+    dplyr::mutate(incidence = cincidence - dplyr::lag(cincidence)) %>%
     dplyr::ungroup()
 
   # simulate Poisson random variate and get credible intervals
@@ -102,7 +103,7 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
                 dplyr::select(r0) %>%
                 dplyr::mutate(type="group") %>%
                 dplyr::mutate(location="Total")) %>%
-    dplyr::mutate(location = fct_rev(fct_relevel(location,
+    dplyr::mutate(location = forcats::fct_rev(forcats::fct_relevel(location,
                                           c(loc_ordering,"Total")
     )))
 
@@ -144,6 +145,7 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 #' @param extracted_posts object returned by hom_extract_posterior_draws
 #' @param posts Object after calling extract of stan model object of hierarchical model
 #' @importFrom stats quantile
+#' @importFrom magrittr %>%
 #' @return list containing:
 #'  * plot - ggplot object
 #'  * table - tibble object of results
@@ -222,6 +224,7 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 #' @param posts Object after calling extract of stan model object of hierarchical model
 #' @param outbreak_cases matrix of outbreak case data
 #' @param end_time time in days to plot up until
+#' @importFrom magrittr %>%
 #' @return list containing:
 #'  * plot - ggplot object
 #'  * table - tibble object of results
@@ -260,7 +263,7 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
     dplyr::pull(location)
 
   # transform outbreak case data for plotting
-  cases_data <- as_tibble(outbreak_cases)
+  cases_data <- tibble::as_tibble(outbreak_cases)
   names(cases_data) <- as.character(1:nlocs)
   cases_data <- cases_data %>%
     tibble::rowid_to_column("time") %>%
@@ -275,21 +278,21 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
       location = forcats::fct_relabel(location,
                              function(x){
                                loc_labels %>%
-                                 filter(location==x) %>%
-                                 pull(label)
+                                 dplyr::filter(location==x) %>%
+                                 dplyr::pull(label)
                              })
     ) %>%
     dplyr::filter(time < end_time)
 
   p <- plot_data %>%
-    ggplot2::ggplot(aes(x=time,group=location)) +
+    ggplot2::ggplot(ggplot2::aes(x=time, group=location)) +
     ggplot2::geom_ribbon(aes(ymin=lc,ymax=uc),fill="steelblue",alpha=0.3) +
     ggplot2::geom_ribbon(aes(ymin=liqr,ymax=uiqr),fill="steelblue",alpha=0.3) +
     ggplot2::geom_line(aes(y=m)) +
     ggplot2::geom_point(aes(y=data_incidence),fill="white",size=1.5) +
-    ggplot2::facet_wrap(vars(location),ncol=3,scales="free_y") +
+    ggplot2::facet_wrap(ggplot2::vars(location),ncol=3,scales="free_y") +
     ggplot2::theme_classic() +
-    ggplot2::theme(strip.text = element_text(size=11)) +
+    ggplot2::theme(strip.text = ggplot2::element_text(size=11)) +
     ggplot2::labs(y="Cases",x="Time since initial case (days)")
 
   list(plot=p,data=plot_data)
