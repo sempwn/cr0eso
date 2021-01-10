@@ -37,7 +37,7 @@ seir_model_fit <- function(tmax,
                            outbreak_sizes,
                            intervention_switch = TRUE,
                            multilevel_intervention = FALSE,
-                           prior_list = prior_list,
+                           priors = prior_list,
                            iter=600
                            ){
 
@@ -52,22 +52,22 @@ seir_model_fit <- function(tmax,
                    independent_r0 = FALSE,
                    independent_zeta = FALSE,
                    n_prior_mean = outbreak_sizes,
-                   tau_prior_mean = prior_list$tau_mean,
+                   tau_prior_mean = priors$tau_mean,
                    t0 = 0,
                    tn = tmax,
                    ts = c(1:tmax),
                    fake_ts = c(1:tmax),
                    # define priors
-                   gamma_mean = prior_list$gamma_mean,
-                   gamma_sd = prior_list$gamma_sd,
-                   sigma_mean = prior_list$sigma_mean,
-                   sigma_sd = prior_list$sigma_sd,
-                   S0_mean = prior_list$S0_mean,
-                   S0_sd = prior_list$S0_sd,
-                   r0_mean = prior_list$r0_mean,
-                   r0_sd = prior_list$r0_sd,
-                   zeta_mean = prior_list$zeta_mean,
-                   zeta_sd = prior_list$zeta_sd
+                   gamma_mean = priors$gamma_mean,
+                   gamma_sd = priors$gamma_sd,
+                   sigma_mean = priors$sigma_mean,
+                   sigma_sd = priors$sigma_sd,
+                   S0_mean = priors$S0_mean,
+                   S0_sd = priors$S0_sd,
+                   r0_mean = priors$r0_mean,
+                   r0_sd = priors$r0_sd,
+                   zeta_mean = priors$zeta_mean,
+                   zeta_sd = priors$zeta_sd
   )
 
   # Which parameters to monitor in the model:

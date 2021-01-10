@@ -34,11 +34,29 @@ outbreak_cases <- matrix(c(0,0,1,2,3,0,0,2,4,5),ncol=2)
 outbreak_sizes <- c(100,100)
 ```
 
-## Fit model
+
+## Constructing priors
+
+Parameterisation of the priors are kept in the list `prior_list` and can be updated shown below,
 
 ```{r}
+# define list of priors
+new_prior_list <- prior_list
+
+# update mean of r0 prior to be 2
+new_prior_list$r0_mean <- 2
+```
+
+
+## Fit model
+
+Fit model with no intervention and updated priors,
+
+```{r}
+
 fit <- cr0eso::seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
-                       intervention_switch = FALSE)
+                       intervention_switch = FALSE,
+                       priors = new_prior_list)
 ```
 
 ## Plot model output
