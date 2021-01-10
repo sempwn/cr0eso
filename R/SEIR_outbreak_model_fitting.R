@@ -19,7 +19,7 @@ prior_list <- list(gamma_mean = 0.125,gamma_sd = 0.0125,
 #' @param outbreak_sizes  The total size of each facility (initial number of suscepitble and exposed)
 #' @param intervention_switch Describes whether interventions occur in data (default TRUE)
 #' @param multilevel_intervention Describes whether intervention occurs
-#' @param prior_list List of priors. See `prior_list`
+#' @param prior_list List of priors. See [prior_list]
 #' @param iter number of iterations of MCMC
 #'
 #' @examples

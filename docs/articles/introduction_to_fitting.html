@@ -103,12 +103,26 @@
 <span class="va">outbreak_cases</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>,ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
 <span class="va">outbreak_sizes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span></code></pre></div>
 </div>
+<div id="constructing-priors" class="section level2">
+<h2 class="hasAnchor">
+<a href="#constructing-priors" class="anchor"></a>Constructing priors</h2>
+<p>Parameterisation of the priors are kept in the list <code>prior_list</code> and can be updated shown below,</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># define list of priors</span>
+<span class="va">new_prior_list</span> <span class="op">&lt;-</span> <span class="fu">cr0eso</span><span class="fu">::</span><span class="va"><a href="../reference/prior_list.html">prior_list</a></span>
+
+<span class="co"># update mean of r0 prior to be 2</span>
+<span class="va">new_prior_list</span><span class="op">$</span><span class="va">r0_mean</span> <span class="op">&lt;-</span> <span class="fl">2</span></code></pre></div>
+</div>
 <div id="fit-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fit-model" class="anchor"></a>Fit model</h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">cr0eso</span><span class="fu">::</span><span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
-                       intervention_switch <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<p>Fit model with no intervention and updated priors,</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">cr0eso</span><span class="fu">::</span><span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
+                       intervention_switch <span class="op">=</span> <span class="cn">FALSE</span>,
+                       priors <span class="op">=</span> <span class="va">new_prior_list</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 1).</span>
 <span class="co">#&gt; Chain 1: </span>
@@ -130,9 +144,9 @@
 <span class="co">#&gt; Chain 1: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: Iteration: 600 / 600 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 34.934 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                2.282 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                37.216 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 19.611 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                2.441 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                22.052 seconds (Total)</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 2).</span>
@@ -155,15 +169,15 @@
 <span class="co">#&gt; Chain 2: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: Iteration: 600 / 600 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2:  Elapsed Time: 7.541 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 2:                3.705 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 2:                11.246 seconds (Total)</span>
+<span class="co">#&gt; Chain 2:  Elapsed Time: 6.156 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 2:                2.371 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 2:                8.527 seconds (Total)</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 3).</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3: Gradient evaluation took 0 seconds</span>
-<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.</span>
+<span class="co">#&gt; Chain 3: Gradient evaluation took 0.001 seconds</span>
+<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.</span>
 <span class="co">#&gt; Chain 3: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; Chain 3: </span>
@@ -180,9 +194,9 @@
 <span class="co">#&gt; Chain 3: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: Iteration: 600 / 600 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3:  Elapsed Time: 17.784 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 3:                2.627 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 3:                20.411 seconds (Total)</span>
+<span class="co">#&gt; Chain 3:  Elapsed Time: 4.534 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 3:                2.309 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 3:                6.843 seconds (Total)</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 4).</span>
@@ -205,18 +219,15 @@
 <span class="co">#&gt; Chain 4: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: Iteration: 600 / 600 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4:  Elapsed Time: 18.383 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 4:                2.539 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 4:                20.922 seconds (Total)</span>
-<span class="co">#&gt; Chain 4:</span>
-<span class="co">#&gt; Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="co">#&gt; Running the chains for more iterations may help. See</span>
-<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#tail-ess</span></code></pre></div>
+<span class="co">#&gt; Chain 4:  Elapsed Time: 20.691 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 4:                3.093 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 4:                23.784 seconds (Total)</span>
+<span class="co">#&gt; Chain 4:</span></code></pre></div>
 </div>
 <div id="plot-model-output" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-model-output" class="anchor"></a>Plot model output</h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Extract the posterior samples to a structured list:</span>
 <span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
 
@@ -235,12 +246,12 @@
 <span class="co"># plot results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">plot</span>
 <span class="co">#&gt; No summary function supplied, defaulting to `mean_se()`</span></code></pre></div>
-<p><img src="introduction_to_fitting_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="introduction_to_fitting_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div id="plot-model-fit-to-incidence" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-model-fit-to-incidence" class="anchor"></a>Plot model fit to incidence</h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and r0</span>
 <span class="co">#&gt; Warning: Problem with `mutate()` input `rincidence`.</span>
 <span class="co">#&gt; i NAs produced</span>
@@ -251,7 +262,7 @@
 <span class="co"># plot results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">plot</span>
 <span class="co">#&gt; Warning: Removed 2 row(s) containing missing values (geom_path).</span></code></pre></div>
-<p><img src="introduction_to_fitting_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p><img src="introduction_to_fitting_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
   </div>
 

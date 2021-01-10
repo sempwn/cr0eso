@@ -41,7 +41,7 @@ Parameterisation of the priors are kept in the list `prior_list` and can be upda
 
 ```{r}
 # define list of priors
-new_prior_list <- prior_list
+new_prior_list <- cr0eso::prior_list
 
 # update mean of r0 prior to be 2
 new_prior_list$r0_mean <- 2
