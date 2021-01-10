@@ -1,15 +1,25 @@
 
+#' list of parameterisations for priors
+#' @export
+prior_list <- list(gamma_mean = 0.125,gamma_sd = 0.0125,
+                   sigma_mean = 0.2,sigma_sd = 0.025,
+                   S0_mean = 0.9, S0_sd = 0.01,
+                   r0_mean=3.0,r0_sd=1.0,
+                   zeta_mean=0.1,zeta_sd=0.1,
+                   tau_mean = 0.1)
+
 
 #' SEIR model fitting method to a multiple outbreak model
 #' @description
 #' Create an instance of the hierarchical SEIR stan model incorporating
 #' various data elements and sample model.
-#' @param tmax - total number of time-points in observation
-#' @param n_outbreaks - total number of outbreaks
-#' @param outbreak_cases - Numnber of daily reported cases by outbreak
-#' @param outbreak_sizes - The total size of each facility (initial number of suscepitble and exposed)
-#' @param intervention_switch - Describes whether interventions occur in data (default TRUE)
-#' @param multilevel_intervention - describes whether intervention occurs
+#' @param tmax Total number of time-points in observation
+#' @param n_outbreaks Total number of outbreaks
+#' @param outbreak_cases Numnber of daily reported cases by outbreak
+#' @param outbreak_sizes  The total size of each facility (initial number of suscepitble and exposed)
+#' @param intervention_switch Describes whether interventions occur in data (default TRUE)
+#' @param multilevel_intervention Describes whether intervention occurs
+#' @param prior_list List of priors. See `prior_list`
 #' @param iter number of iterations of MCMC
 #'
 #' @examples
@@ -27,6 +37,7 @@ seir_model_fit <- function(tmax,
                            outbreak_sizes,
                            intervention_switch = TRUE,
                            multilevel_intervention = FALSE,
+                           prior_list = prior_list,
                            iter=600
                            ){
 
@@ -41,15 +52,26 @@ seir_model_fit <- function(tmax,
                    independent_r0 = FALSE,
                    independent_zeta = FALSE,
                    n_prior_mean = outbreak_sizes,
-                   tau_prior_mean = 0.1,
+                   tau_prior_mean = prior_list$tau_mean,
                    t0 = 0,
                    tn = tmax,
                    ts = c(1:tmax),
-                   fake_ts = c(1:tmax)
+                   fake_ts = c(1:tmax),
+                   # define priors
+                   gamma_mean = prior_list$gamma_mean,
+                   gamma_sd = prior_list$gamma_sd,
+                   sigma_mean = prior_list$sigma_mean,
+                   sigma_sd = prior_list$sigma_sd,
+                   S0_mean = prior_list$S0_mean,
+                   S0_sd = prior_list$S0_sd,
+                   r0_mean = prior_list$r0_mean,
+                   r0_sd = prior_list$r0_sd,
+                   zeta_mean = prior_list$zeta_mean,
+                   zeta_sd = prior_list$zeta_sd
   )
 
   # Which parameters to monitor in the model:
-  params_monitor = c("y0", "params","r0k" , "r0" , "r0_sigma",
+  params_monitor = c("y0", "params","r0k" , "r0" , "r0_sigma", "zetak",
                      "incidence" , "hyper_priors","fake_incidence",
                      "predictive_r0")
 
