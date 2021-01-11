@@ -11,6 +11,7 @@ vignette: >
 library(tidyverse)
 knitr::opts_chunk$set(dev="png", collapse = T, comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L)
+options(mc.cores = parallel::detectCores())
 
 ```
 
@@ -28,17 +29,40 @@ The package will expect the data in a certain format, such as the following,
 
 ```{r}
 # maximum time
-tmax <- 5
+tmax <- 21
+# number of outbreaks
 n_outbreaks <- 2
-outbreak_cases <- matrix(c(0,0,1,2,3,0,0,2,4,5),ncol=2)
+# number of daily cases per outbreak
+outbreak_cases <- matrix(c(1,0,0,0,0,1,5,2,6,5,10,11,13,11,9,4,2,6,0,3,1,
+                           1,1,0,1,0,0,0,1,3,0,3,2,0,0,3,6,5,6,6,6,10
+                           ),ncol=2)
+# number of susceptible individuals by location
 outbreak_sizes <- c(100,100)
 ```
 
-## Fit model
+
+## Constructing priors
+
+Parameterisation of the priors are kept in the list `prior_list` and can be updated shown below,
 
 ```{r}
+# define list of priors
+new_prior_list <- cr0eso::prior_list
+
+# update mean of r0 prior to be 2
+new_prior_list$r0_mean <- 2
+```
+
+
+## Fit model
+
+Fit model with no intervention and updated priors,
+
+```{r}
+
 fit <- cr0eso::seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
-                       intervention_switch = FALSE)
+                       intervention_switch = FALSE,
+                       priors = new_prior_list)
 ```
 
 ## Plot model output

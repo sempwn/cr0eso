@@ -11,23 +11,26 @@ seir_model_fit(
   outbreak_sizes,
   intervention_switch = TRUE,
   multilevel_intervention = FALSE,
+  priors = prior_list,
   iter = 600
 )
 }
 \arguments{
-\item{tmax}{- total number of time-points in observation}
+\item{tmax}{Total number of time-points in observation}
 
-\item{n_outbreaks}{- total number of outbreaks}
+\item{n_outbreaks}{Total number of outbreaks}
 
-\item{outbreak_cases}{- Numnber of daily reported cases by outbreak}
+\item{outbreak_cases}{Numnber of daily reported cases by outbreak}
 
-\item{outbreak_sizes}{- The total size of each facility (initial number of suscepitble and exposed)}
+\item{outbreak_sizes}{The total size of each facility (initial number of suscepitble and exposed)}
 
-\item{intervention_switch}{- Describes whether interventions occur in data (default TRUE)}
+\item{intervention_switch}{Describes whether interventions occur in data (default TRUE)}
 
-\item{multilevel_intervention}{- describes whether intervention occurs}
+\item{multilevel_intervention}{Describes whether intervention occurs}
 
 \item{iter}{number of iterations of MCMC}
+
+\item{prior_list}{List of priors. See [prior_list]}
 }
 \value{
 An object of class `stanfit` returned by `rstan::sampling`

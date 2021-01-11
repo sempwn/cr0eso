@@ -76,7 +76,19 @@ data {
   // priors
   real<lower=0> n_prior_mean[n_outbreaks]; // mean of population size
   real<lower=0> tau_prior_mean; // mean of tau (start of intervention)
+  real<lower=0> gamma_mean;
+  real<lower=0> gamma_sd;
+  real<lower=0> sigma_mean;
+  real<lower=0> sigma_sd;
+  real<lower=0> S0_mean;
+  real<lower=0> S0_sd;
+  real<lower=0> r0_mean;
+  real<lower=0> r0_sd;
+  real<lower=0> zeta_mean;
+  real<lower=0> zeta_sd;
 
+
+  //time-points
   real t0; // Initial time point (zero)
   real tn; // final time-point
   real ts[n_obs]; // Time points that were sampled
@@ -130,22 +142,22 @@ transformed parameters{
   real eps = 1e-4;
 
   // se rates from their periods
-  gamma = 0.125 + 0.0125*std_gamma;
-  sigma = 0.2 + 0.025*std_sigma;
+  gamma = gamma_mean + gamma_sd*std_gamma;
+  sigma = sigma_mean + sigma_sd*std_sigma;
 
   // S0 from standardized S0
-  S0 = 0.9 + 0.01*std_S0;
+  S0 = S0_mean + S0_sd*std_S0;
 
   // define noncentred r0k
   if(independent_r0==1){
-    r0k = 3.0 + 1.0 * r0k_raw;
+    r0k = r0_mean + r0_sd * r0k_raw;
   }else{
     r0k = r0 + r0_sigma * r0k_raw;
   }
 
   //define noncentred zetak
   if(independent_zeta == 1){
-    zetak = 0.1 + 0.1 * zetak_raw;
+    zetak = zeta_mean + zeta_sd * zetak_raw;
   } else{
     zetak = zeta + zeta_sigma * zetak_raw;
   }
@@ -193,7 +205,7 @@ transformed parameters{
 model {
 
   // list priors that will be updated
-  r0 ~ normal(3.0, 1.0); // multilevel prior previous var 1.0
+  r0 ~ normal(r0_mean, r0_sd); // multilevel prior previous var 1.0
   r0_sigma ~ normal(0,1);
   r0k_raw ~ std_normal();
 
@@ -206,7 +218,7 @@ model {
   // if including intervention has int params
   // else hard set to zero so does not effect R0
   tau ~ normal(tau_prior_mean,1.0);
-  zeta ~ normal(0.1,0.1); // previous var 0.1
+  zeta ~ normal(zeta_mean,zeta_sd); // previous var 0.1
   // multilevel priors for zeta. Only used if multilevel priors are switched on
   zeta_sigma ~ normal(0,1);
   zetak_raw ~ std_normal();
@@ -255,11 +267,11 @@ generated quantities {
   // generate priors for testing purposes
 
   //priors
-  p_r0 = normal_lb_rng(3.0, 1.0, 0);
-  p_gamma = normal_lb_rng(0.167,0.005, 0);
-  p_sigma = normal_lb_rng(0.2,0.01, 0);
+  p_r0 = normal_lb_rng(r0_mean, r0_sd, 0);
+  p_gamma = normal_lb_rng(gamma_mean,gamma_sd, 0);
+  p_sigma = normal_lb_rng(sigma_mean,sigma_sd, 0);
   p_tau = normal_lb_rng(tau_prior_mean,1.0, 0);
-  p_zeta = normal_lb_rng(0.1,0.1, 0);
+  p_zeta = normal_lb_rng(zeta_mean,zeta_sd, 0);
 
 
   // create vector of priors
