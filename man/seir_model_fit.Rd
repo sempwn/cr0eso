@@ -11,7 +11,7 @@ seir_model_fit(
   outbreak_sizes,
   intervention_switch = TRUE,
   multilevel_intervention = FALSE,
-  prior_list = prior_list,
+  priors = prior_list,
   iter = 600
 )
 }
@@ -28,9 +28,9 @@ seir_model_fit(
 
 \item{multilevel_intervention}{Describes whether intervention occurs}
 
-\item{prior_list}{List of priors. See `prior_list`}
-
 \item{iter}{number of iterations of MCMC}
+
+\item{prior_list}{List of priors. See [prior_list]}
 }
 \value{
 An object of class `stanfit` returned by `rstan::sampling`

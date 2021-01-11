@@ -98,9 +98,14 @@
 <p>The package will expect the data in a certain format, such as the following,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># maximum time</span>
-<span class="va">tmax</span> <span class="op">&lt;-</span> <span class="fl">5</span>
+<span class="va">tmax</span> <span class="op">&lt;-</span> <span class="fl">21</span>
+<span class="co"># number of outbreaks</span>
 <span class="va">n_outbreaks</span> <span class="op">&lt;-</span> <span class="fl">2</span>
-<span class="va">outbreak_cases</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">5</span><span class="op">)</span>,ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<span class="co"># number of daily cases per outbreak</span>
+<span class="va">outbreak_cases</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">5</span>,<span class="fl">2</span>,<span class="fl">6</span>,<span class="fl">5</span>,<span class="fl">10</span>,<span class="fl">11</span>,<span class="fl">13</span>,<span class="fl">11</span>,<span class="fl">9</span>,<span class="fl">4</span>,<span class="fl">2</span>,<span class="fl">6</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">1</span>,
+                           <span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">2</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">6</span>,<span class="fl">5</span>,<span class="fl">6</span>,<span class="fl">6</span>,<span class="fl">6</span>,<span class="fl">10</span>
+                           <span class="op">)</span>,ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
+<span class="co"># number of susceptible individuals by location</span>
 <span class="va">outbreak_sizes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="constructing-priors" class="section level2">
@@ -123,106 +128,9 @@
 <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">cr0eso</span><span class="fu">::</span><span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
                        intervention_switch <span class="op">=</span> <span class="cn">FALSE</span>,
                        priors <span class="op">=</span> <span class="va">new_prior_list</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 1).</span>
-<span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: Gradient evaluation took 0.001 seconds</span>
-<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.</span>
-<span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
-<span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: Iteration:   1 / 600 [  0%]  (Warmup)</span>
-<span class="co">#&gt; Chain 1: Iteration:  60 / 600 [ 10%]  (Warmup)</span>
-<span class="co">#&gt; Chain 1: Iteration: 120 / 600 [ 20%]  (Warmup)</span>
-<span class="co">#&gt; Chain 1: Iteration: 180 / 600 [ 30%]  (Warmup)</span>
-<span class="co">#&gt; Chain 1: Iteration: 240 / 600 [ 40%]  (Warmup)</span>
-<span class="co">#&gt; Chain 1: Iteration: 300 / 600 [ 50%]  (Warmup)</span>
-<span class="co">#&gt; Chain 1: Iteration: 301 / 600 [ 50%]  (Sampling)</span>
-<span class="co">#&gt; Chain 1: Iteration: 360 / 600 [ 60%]  (Sampling)</span>
-<span class="co">#&gt; Chain 1: Iteration: 420 / 600 [ 70%]  (Sampling)</span>
-<span class="co">#&gt; Chain 1: Iteration: 480 / 600 [ 80%]  (Sampling)</span>
-<span class="co">#&gt; Chain 1: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
-<span class="co">#&gt; Chain 1: Iteration: 600 / 600 [100%]  (Sampling)</span>
-<span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 19.611 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                2.441 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                22.052 seconds (Total)</span>
-<span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 2).</span>
-<span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2: Gradient evaluation took 0.001 seconds</span>
-<span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.</span>
-<span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span>
-<span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2: Iteration:   1 / 600 [  0%]  (Warmup)</span>
-<span class="co">#&gt; Chain 2: Iteration:  60 / 600 [ 10%]  (Warmup)</span>
-<span class="co">#&gt; Chain 2: Iteration: 120 / 600 [ 20%]  (Warmup)</span>
-<span class="co">#&gt; Chain 2: Iteration: 180 / 600 [ 30%]  (Warmup)</span>
-<span class="co">#&gt; Chain 2: Iteration: 240 / 600 [ 40%]  (Warmup)</span>
-<span class="co">#&gt; Chain 2: Iteration: 300 / 600 [ 50%]  (Warmup)</span>
-<span class="co">#&gt; Chain 2: Iteration: 301 / 600 [ 50%]  (Sampling)</span>
-<span class="co">#&gt; Chain 2: Iteration: 360 / 600 [ 60%]  (Sampling)</span>
-<span class="co">#&gt; Chain 2: Iteration: 420 / 600 [ 70%]  (Sampling)</span>
-<span class="co">#&gt; Chain 2: Iteration: 480 / 600 [ 80%]  (Sampling)</span>
-<span class="co">#&gt; Chain 2: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
-<span class="co">#&gt; Chain 2: Iteration: 600 / 600 [100%]  (Sampling)</span>
-<span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2:  Elapsed Time: 6.156 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 2:                2.371 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 2:                8.527 seconds (Total)</span>
-<span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 3).</span>
-<span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3: Gradient evaluation took 0.001 seconds</span>
-<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.</span>
-<span class="co">#&gt; Chain 3: Adjust your expectations accordingly!</span>
-<span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3: Iteration:   1 / 600 [  0%]  (Warmup)</span>
-<span class="co">#&gt; Chain 3: Iteration:  60 / 600 [ 10%]  (Warmup)</span>
-<span class="co">#&gt; Chain 3: Iteration: 120 / 600 [ 20%]  (Warmup)</span>
-<span class="co">#&gt; Chain 3: Iteration: 180 / 600 [ 30%]  (Warmup)</span>
-<span class="co">#&gt; Chain 3: Iteration: 240 / 600 [ 40%]  (Warmup)</span>
-<span class="co">#&gt; Chain 3: Iteration: 300 / 600 [ 50%]  (Warmup)</span>
-<span class="co">#&gt; Chain 3: Iteration: 301 / 600 [ 50%]  (Sampling)</span>
-<span class="co">#&gt; Chain 3: Iteration: 360 / 600 [ 60%]  (Sampling)</span>
-<span class="co">#&gt; Chain 3: Iteration: 420 / 600 [ 70%]  (Sampling)</span>
-<span class="co">#&gt; Chain 3: Iteration: 480 / 600 [ 80%]  (Sampling)</span>
-<span class="co">#&gt; Chain 3: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
-<span class="co">#&gt; Chain 3: Iteration: 600 / 600 [100%]  (Sampling)</span>
-<span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3:  Elapsed Time: 4.534 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 3:                2.309 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 3:                6.843 seconds (Total)</span>
-<span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 4).</span>
-<span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4: Gradient evaluation took 0 seconds</span>
-<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.</span>
-<span class="co">#&gt; Chain 4: Adjust your expectations accordingly!</span>
-<span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4: Iteration:   1 / 600 [  0%]  (Warmup)</span>
-<span class="co">#&gt; Chain 4: Iteration:  60 / 600 [ 10%]  (Warmup)</span>
-<span class="co">#&gt; Chain 4: Iteration: 120 / 600 [ 20%]  (Warmup)</span>
-<span class="co">#&gt; Chain 4: Iteration: 180 / 600 [ 30%]  (Warmup)</span>
-<span class="co">#&gt; Chain 4: Iteration: 240 / 600 [ 40%]  (Warmup)</span>
-<span class="co">#&gt; Chain 4: Iteration: 300 / 600 [ 50%]  (Warmup)</span>
-<span class="co">#&gt; Chain 4: Iteration: 301 / 600 [ 50%]  (Sampling)</span>
-<span class="co">#&gt; Chain 4: Iteration: 360 / 600 [ 60%]  (Sampling)</span>
-<span class="co">#&gt; Chain 4: Iteration: 420 / 600 [ 70%]  (Sampling)</span>
-<span class="co">#&gt; Chain 4: Iteration: 480 / 600 [ 80%]  (Sampling)</span>
-<span class="co">#&gt; Chain 4: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
-<span class="co">#&gt; Chain 4: Iteration: 600 / 600 [100%]  (Sampling)</span>
-<span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4:  Elapsed Time: 20.691 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 4:                3.093 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 4:                23.784 seconds (Total)</span>
-<span class="co">#&gt; Chain 4:</span></code></pre></div>
+<span class="co">#&gt; Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="co">#&gt; Running the chains for more iterations may help. See</span>
+<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#tail-ess</span></code></pre></div>
 </div>
 <div id="plot-model-output" class="section level2">
 <h2 class="hasAnchor">
