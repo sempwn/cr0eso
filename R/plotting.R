@@ -21,7 +21,7 @@ hom_extract_posterior_draws <- function(posts){
   # extract R0
   r0s <- tibble::as_tibble(posts$r0k) %>%
     tidyr::pivot_longer(dplyr::everything(),names_to="location",values_to="r0") %>%
-    dplyr::mutate(location = str_remove_all(location,"V"))
+    dplyr::mutate(location = stringr::str_remove_all(location,"V"))
 
   # extract zeta (only applicable where zeta is multilevel)
   zetas <- NULL
