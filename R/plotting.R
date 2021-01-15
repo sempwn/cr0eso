@@ -47,7 +47,7 @@ hom_extract_posterior_draws <- function(posts){
 
   # simulate Poisson random variate and get credible intervals
   model_incidence <- model_incidence %>%
-    dplyr::mutate(rincidence = rpois(n(),incidence)) %>%
+    dplyr::mutate(rincidence = rpois(dplyr::n(),incidence)) %>%
     dplyr::group_by(time,location) %>%
     dplyr::summarise(m = mean(rincidence,na.rm=TRUE),
               liqr = quantile(rincidence,0.25,na.rm=TRUE),
