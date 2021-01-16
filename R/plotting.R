@@ -110,8 +110,8 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
     )))
 
   p <- plot_data %>%
-    ggplot2::ggplot(aes(y=r0,x=location)) +
-    ggplot2::geom_violin(alpha=0.5,aes(fill=type)) +
+    ggplot2::ggplot(ggplot2::aes(y=r0,x=location)) +
+    ggplot2::geom_violin(alpha=0.5,ggplot2::aes(fill=type)) +
 
     ggplot2::stat_summary(fun.data = function(z){
       lc <- quantile(z,0.05)
@@ -186,12 +186,13 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
                        dplyr::select(zeta) %>%
                        dplyr::mutate(type="group") %>%
                        dplyr::mutate(location="Total")) %>%
-    dplyr::mutate(location = forcats::fct_rev(fct_relevel(location,
+    dplyr::mutate(location = forcats::fct_rev(forcats::fct_relevel(location,
                                           c(loc_ordering,"Total")
     )))
 
-  p <- plot_data %>% ggplot(aes(y=zeta,x=location)) +
-    ggplot2::geom_violin(alpha=0.5,aes(fill=type)) +
+  p <- plot_data %>%
+    ggplot2::ggplot(ggplot2::aes(y=zeta,x=location)) +
+    ggplot2::geom_violin(alpha=0.5,ggplot2::aes(fill=type)) +
 
     ggplot2::stat_summary(fun.data = function(z){
       lc <- quantile(z,0.05)
@@ -292,10 +293,10 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
 
   p <- plot_data %>%
     ggplot2::ggplot(ggplot2::aes(x=time, group=location)) +
-    ggplot2::geom_ribbon(aes(ymin=lc,ymax=uc),fill="steelblue",alpha=0.3) +
-    ggplot2::geom_ribbon(aes(ymin=liqr,ymax=uiqr),fill="steelblue",alpha=0.3) +
-    ggplot2::geom_line(aes(y=m)) +
-    ggplot2::geom_point(aes(y=data_incidence),fill="white",size=1.5) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin=lc,ymax=uc),fill="steelblue",alpha=0.3) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin=liqr,ymax=uiqr),fill="steelblue",alpha=0.3) +
+    ggplot2::geom_line(ggplot2::aes(y=m)) +
+    ggplot2::geom_point(ggplot2::aes(y=data_incidence),fill="white",size=1.5) +
     ggplot2::facet_wrap(ggplot2::vars(location),ncol=3,scales="free_y") +
     ggplot2::theme_classic() +
     ggplot2::theme(strip.text = ggplot2::element_text(size=11)) +
