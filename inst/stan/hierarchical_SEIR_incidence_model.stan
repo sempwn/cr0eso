@@ -237,9 +237,14 @@ generated quantities {
   // Generate predicted data over the whole time series:
   real fake_I[n_fake, n_difeq];
 
-  // Generate posterior predictive check
-  real fake_incidence[n_fake];
+  // generate posterior predictive check for cases
+  real pp_cases[n_obs,n_outbreaks];
+
+  // Generate posterior predictive check for counterfactual
+  real cparams[6]; // Model parameters
+  real counterfactual_cases[n_obs,n_outbreaks];
   real diff_I;
+
   // Model prior parameters
   real hyper_priors[5];
   real<lower=0> p_r0;
@@ -250,15 +255,39 @@ generated quantities {
   //R0 predictive distribution
   real<lower=0> predictive_r0;
 
-  fake_I = integrate_ode_rk45(SEI, y0, t0, fake_ts, params, x_r, x_i);
 
-  fake_incidence[1] = 0;
-  for(i in 2:n_fake){
-    diff_I = fake_I[i,5] - fake_I[i-1,5];
-    if(diff_I < 0){
-      diff_I = 1e-3; // small value if incidence is negative.
+  // posterior predictive cases counterfactual scenario
+  for(k in 1:n_outbreaks){
+    // create posterior vector
+    // multilevel parameter
+    cparams[1] = r0k[k];
+    cparams[2] = sigma;
+    cparams[3] = gamma;
+    cparams[4] = n[k];
+
+    // set intervention effect to 0
+    cparams[5] = 0;
+    cparams[6] = 0;
+
+    fake_I = integrate_ode_rk45(SEI, y0, t0, ts, cparams, x_r, x_i);
+
+    counterfactual_cases[k,1] = 0;
+    for(i in 2:n_obs){
+      diff_I = fake_I[i,5] - fake_I[i-1,5]; //y_hat[,5] cumulative incidence
+      if(diff_I < 0){
+        diff_I = 1e-3; // small value if incidence is negative.
+      }
+      counterfactual_cases[k,i] = poisson_rng(diff_I);
     }
-    fake_incidence[i] = poisson_rng(diff_I); //y_hat[,5] cumulative incidence
+  }
+
+
+
+  // posterior predictive cases
+  for(k in 1:n_outbreaks){
+    for(i in 2:n_obs){
+      pp_cases[i,k] = poisson_rng(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]));
+    }
   }
 
   // generate predictive distribution for R0
