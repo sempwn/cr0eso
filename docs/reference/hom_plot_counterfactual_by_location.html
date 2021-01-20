@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • cr0eso</title>
+<title>plot incidence and counterfactual scenario — hom_plot_counterfactual_by_location • cr0eso</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="plot incidence and counterfactual scenario — hom_plot_counterfactual_by_location" />
+<meta property="og:description" content="on same plot show counterfactual and incidence posterior predictive distributions
+across time and faceted by location. Shaded regions represent the 50
+draws shown as lines." />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -117,32 +120,59 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1 data-toc-skip>Changelog <small></small></h1>
-      
+    <h1>plot incidence and counterfactual scenario</h1>
+    
+    <div class="hidden name"><code>hom_plot_counterfactual_by_location.Rd</code></div>
     </div>
 
-    <div id="cr0eso-009" class="section level1">
-<h1 class="page-header" data-toc-text="0.0.9">
-<a href="#cr0eso-009" class="anchor"></a>cr0eso 0.0.9</h1>
-<ul>
-<li><p>New <code><a href="../reference/hom_plot_counterfactual_by_location.html">hom_plot_counterfactual_by_location()</a></code> plot counterfactual and predictive distribution (#17).</p></li>
-<li><p>New <code>prior_list</code> list of parameterizations of priors that can be added to <code><a href="../reference/seir_model_fit.html">seir_model_fit()</a></code>.</p></li>
-<li><p>In <code><a href="../reference/seir_model_fit.html">seir_model_fit()</a></code>, also takes optional <code>priors</code> variable (#1).</p></li>
-<li><p>New <code><a href="../reference/hom_plot_incidence_by_location.html">hom_plot_incidence_by_location()</a></code> plots posterior predictive distribution of incidence with incidence data by location.</p></li>
-<li><p>New <code><a href="../reference/hom_plot_zeta_by_location.html">hom_plot_zeta_by_location()</a></code> plots model marginal posterior of intervention strength zeta by location with predictive marginal distribution.</p></li>
-<li><p>New <code><a href="../reference/hom_plot_r0_by_location.html">hom_plot_r0_by_location()</a></code> plots model marginal posterior of r0 by location with predictive marginal distribution.</p></li>
-<li><p>New <code><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws()</a></code> simplifies extraction of posterior from rstan fit.</p></li>
-<li><p>New <code><a href="../reference/seir_model_fit.html">seir_model_fit()</a></code> provides mechanism for fitting multiple outbreaks.</p></li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    <p>on same plot show counterfactual and incidence posterior predictive distributions
+across time and faceted by location. Shaded regions represent the 50<!-- % and 90% CrI, with median of -->
+draws shown as lines.</p>
+    </div>
 
+    <pre class="usage"><span class='fu'>hom_plot_counterfactual_by_location</span><span class='op'>(</span><span class='va'>fit</span>, outbreak_cases <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>fit</th>
+      <td><p>output of [seir_model_fit]</p></td>
+    </tr>
+    <tr>
+      <th>outbreak_cases</th>
+      <td><p>matrix of outbreak case data</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>list containing:
+ * plot - ggplot object
+ * table - tibble object of results</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+ <span class='va'>tmax</span> <span class='op'>&lt;-</span> <span class='fl'>5</span>
+ <span class='va'>pop_size</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
+ <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>pop_size</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
+ <span class='va'>example_incidence</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>2</span><span class='op'>)</span>,ncol<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+ <span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='seir_model_fit.html'>seir_model_fit</a></span><span class='op'>(</span><span class='va'>tmax</span>,<span class='fl'>1</span>,<span class='va'>example_incidence</span>,<span class='va'>pop_size</span><span class='op'>)</span>
+ <span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='hom_plot_incidence_by_location.html'>hom_plot_incidence_by_location</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span>
+ <span class='co'># plot results</span>
+ <span class='fu'>show</span><span class='op'>(</span><span class='va'>result</span><span class='op'>$</span><span class='va'>plot</span><span class='op'>)</span>
+ <span class='op'>}</span>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
 
 

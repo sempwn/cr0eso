@@ -72,15 +72,15 @@ seir_model_fit <- function(tmax,
 
   # Which parameters to monitor in the model:
   params_monitor = c("y0", "params","r0k" , "r0" , "r0_sigma", "zetak",
-                     "incidence" , "hyper_priors","fake_incidence",
-                     "predictive_r0")
+                     "incidence" , "hyper_priors","counterfactual_cases",
+                     "pp_cases","predictive_r0")
 
 
   # Fit and sample from the posterior
   mod = rstan::sampling(stanmodels$hierarchical_SEIR_incidence_model,
              data = stan_data,
              pars = params_monitor,
-             seed = 42,
+             seed = 42, # fix seed to replicate results
              chains = 4,
              warmup = floor(iter/2),
              iter = iter,

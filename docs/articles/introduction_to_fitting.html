@@ -125,12 +125,9 @@
 <p>Fit model with no intervention and updated priors,</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">cr0eso</span><span class="fu">::</span><span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
+<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
                        intervention_switch <span class="op">=</span> <span class="cn">FALSE</span>,
-                       priors <span class="op">=</span> <span class="va">new_prior_list</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-<span class="co">#&gt; Running the chains for more iterations may help. See</span>
-<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#tail-ess</span></code></pre></div>
+                       priors <span class="op">=</span> <span class="va">new_prior_list</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="plot-model-output" class="section level2">
 <h2 class="hasAnchor">
@@ -146,8 +143,8 @@
 <span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
 <span class="co">#&gt; Warning: Problem with `mutate()` input `rincidence`.</span>
 <span class="co">#&gt; i NAs produced</span>
-<span class="co">#&gt; i Input `rincidence` is `rpois(n(), incidence)`.</span>
-<span class="co">#&gt; Warning in rpois(n(), incidence): NAs produced</span>
+<span class="co">#&gt; i Input `rincidence` is `rpois(dplyr::n(), incidence)`.</span>
+<span class="co">#&gt; Warning in rpois(dplyr::n(), incidence): NAs produced</span>
 <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_r0_by_location.html">hom_plot_r0_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Ignoring unknown parameters: fun.y</span>
 
@@ -163,14 +160,36 @@
 <code class="sourceCode R"><span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and r0</span>
 <span class="co">#&gt; Warning: Problem with `mutate()` input `rincidence`.</span>
 <span class="co">#&gt; i NAs produced</span>
-<span class="co">#&gt; i Input `rincidence` is `rpois(n(), incidence)`.</span>
-<span class="co">#&gt; Warning in rpois(n(), incidence): NAs produced</span>
+<span class="co">#&gt; i Input `rincidence` is `rpois(dplyr::n(), incidence)`.</span>
+<span class="co">#&gt; Warning in rpois(dplyr::n(), incidence): NAs produced</span>
 <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_incidence_by_location.html">hom_plot_incidence_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span>,
                                          outbreak_cases <span class="op">=</span> <span class="va">outbreak_cases</span><span class="op">)</span>
 <span class="co"># plot results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">plot</span>
 <span class="co">#&gt; Warning: Removed 2 row(s) containing missing values (geom_path).</span></code></pre></div>
 <p><img src="introduction_to_fitting_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+</div>
+<div id="plot-counterfactual-scenario" class="section level2">
+<h2 class="hasAnchor">
+<a href="#plot-counterfactual-scenario" class="anchor"></a>Plot counterfactual scenario</h2>
+<p>The code below extracts and plots the counterfactual scenario and also provides a summary table of cases by location in the baseline, scenario, where there was no intervention and the difference and proportional difference representing the cases averted. The final row provides a total summary of cases.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_counterfactual_by_location.html">hom_plot_counterfactual_by_location</a></span><span class="op">(</span><span class="va">fit</span>,
+                                      outbreak_cases <span class="op">=</span> <span class="va">outbreak_cases</span><span class="op">)</span>
+
+<span class="co"># plot results</span>
+<span class="fu">show</span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">plot</span><span class="op">)</span></code></pre></div>
+<p><img src="introduction_to_fitting_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="co"># show table of results</span>
+<span class="va">result</span><span class="op">$</span><span class="va">table</span>
+<span class="co">#&gt; # A tibble: 3 x 5</span>
+<span class="co">#&gt;   location baseline        counterfactual  averted      proportion_averted </span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;          &lt;glue&gt;          &lt;glue&gt;       &lt;glue&gt;             </span>
+<span class="co">#&gt; 1 1        86 (68 - 105)   86 (69 - 106)   1 (-20 - 22) 0.01 (-0.27 - 0.22)</span>
+<span class="co">#&gt; 2 2        53 (39 - 68)    54 (40 - 73)    1 (-15 - 20) 0.02 (-0.34 - 0.31)</span>
+<span class="co">#&gt; 3 total    139 (116 - 162) 141 (116 - 166) 2 (-25 - 31) 0.01 (-0.19 - 0.2)</span></code></pre></div>
 </div>
   </div>
 

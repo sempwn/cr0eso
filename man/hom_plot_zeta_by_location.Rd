@@ -2,9 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{hom_plot_zeta_by_location}
 \alias{hom_plot_zeta_by_location}
-\title{Plot zeta by location as extracted from hierarchical outbreak model.
-If extracted_posts is NULL then posts object is used to first extract the zeta
-and incidence draws from posterior (note this will take longer)}
+\title{Plot zeta by location as extracted from hierarchical outbreak model.}
 \usage{
 hom_plot_zeta_by_location(extracted_posts = NULL, posts = NULL)
 }
@@ -19,7 +17,6 @@ list containing:
  * table - tibble object of results
 }
 \description{
-Plot zeta by location as extracted from hierarchical outbreak model.
 If extracted_posts is NULL then posts object is used to first extract the zeta
 and incidence draws from posterior (note this will take longer)
 }

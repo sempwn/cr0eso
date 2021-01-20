@@ -60,7 +60,7 @@ hom_extract_posterior_draws <- function(posts){
 }
 
 #' Plot r0 by location as extracted from hierarchical outbreak model.
-#' If extracted_posts is NULL then posts object is used to first extract the R0
+#' @description If extracted_posts is NULL then posts object is used to first extract the R0
 #' and incidence draws from posterior (note this will take longer)
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param extracted_posts object returned by hom_extract_posterior_draws
@@ -141,7 +141,7 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 }
 
 #' Plot zeta by location as extracted from hierarchical outbreak model.
-#' If extracted_posts is NULL then posts object is used to first extract the zeta
+#' @description If extracted_posts is NULL then posts object is used to first extract the zeta
 #' and incidence draws from posterior (note this will take longer)
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param extracted_posts object returned by hom_extract_posterior_draws
@@ -222,7 +222,7 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 
 
 #' Plot incidence by location as extracted from hierarchical outbreak model.
-#' If extracted_posts is NULL then posts object is used to first extract the
+#' @description If extracted_posts is NULL then posts object is used to first extract the
 #' incidence draws from posterior (note this will take longer)
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param extracted_posts object returned by hom_extract_posterior_draws
@@ -304,3 +304,139 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
 
   list(plot=p,data=plot_data)
 }
+
+
+#' plot incidence and counterfactual scenario
+#' @description on same plot show counterfactual and incidence posterior predictive distributions
+#' across time and faceted by location. Shaded regions represent the 50% and 90% CrI, with median of
+#' draws shown as lines.
+#' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
+#' @param fit output of [seir_model_fit]
+#' @param outbreak_cases matrix of outbreak case data
+#' @importFrom magrittr %>%
+#' @importFrom stats quantile median
+#' @return list containing:
+#'  * plot - ggplot object
+#'  * table - tibble object of results
+#' @examples
+#' \dontrun{
+#'  tmax <- 5
+#'  pop_size <- 100
+#'  dim(pop_size) <- c(1)
+#'  example_incidence <- matrix(c(1,1,2,3,2),ncol=1)
+#'  fit <- seir_model_fit(tmax,1,example_incidence,pop_size)
+#'  result <- hom_plot_incidence_by_location(fit)
+#'  # plot results
+#'  show(result$plot)
+#'  }
+#' @export
+hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL){
+
+  # extract posterior predictive distribution
+  pp_cases <- fit$model %>%
+    tidybayes::spread_draws(pp_cases[time,location]) %>%
+    dplyr::filter(time > 1)
+
+  # extract posterior counterfactual distribution
+  counterfactual <- fit$model %>%
+    tidybayes::spread_draws(counterfactual_cases[time,location]) %>%
+      dplyr::filter(time > 1)
+
+  # transform outbreak case data for plotting
+  if(!is.null(outbreak_cases)){
+    cases_data <- tibble::as_tibble(outbreak_cases)
+    names(cases_data) <- as.character(1:ncol(cases_data))
+    cases_data <- cases_data %>%
+      tibble::rowid_to_column("time") %>%
+      tidyr::pivot_longer(-time,names_to="location",values_to="data_incidence")
+  }
+
+  plot_data <- dplyr::inner_join(pp_cases,counterfactual,
+                                 by=c("time","location",
+                                      ".chain",".iteration",".draw")) %>%
+    mutate(location = as.character(location)) %>%
+    tidyr::pivot_longer(c("pp_cases","counterfactual_cases"),
+                        names_to="scenario",
+                        values_to="cases") %>%
+    dplyr::mutate(scenario = dplyr::recode(scenario,
+                                           "pp_cases" = "baseline",
+                                           "counterfactual_cases" = "counterfactual"))
+
+  # create counterfactual summary table
+  counterfactual_table <- plot_data %>%
+    # note draw is unique code for each draw from posterior
+    dplyr::group_by(location,scenario,.draw) %>%
+    dplyr::summarise(total_cases = sum(cases)) %>%
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(names_from="scenario",values_from="total_cases")
+
+  # create total row by first summing across all locations and then summarising
+  total_counterfactual_table <- counterfactual_table %>%
+    dplyr::group_by(.draw) %>%
+    dplyr::summarise(counterfactual = sum(counterfactual),
+                     baseline = sum(baseline)
+                     ) %>%
+    dplyr::mutate(averted = counterfactual - baseline,
+                  proportion_averted = averted/counterfactual
+    ) %>%
+    dplyr::summarise(baseline = summary_m_95cri(baseline),
+                     counterfactual = summary_m_95cri(counterfactual),
+                     averted = summary_m_95cri(averted),
+                     proportion_averted = summary_m_95cri(proportion_averted)
+    ) %>%
+    dplyr::mutate(location = "total")
+
+  counterfactual_table <- counterfactual_table %>%
+    dplyr::mutate(averted = counterfactual - baseline,
+                  proportion_averted = averted/counterfactual
+    ) %>%
+    dplyr::group_by(location) %>%
+    dplyr::summarise(baseline = summary_m_95cri(baseline),
+                     counterfactual = summary_m_95cri(counterfactual),
+                     averted = summary_m_95cri(averted),
+                     proportion_averted = summary_m_95cri(proportion_averted)
+                     ) %>%
+    dplyr::mutate(location = as.character(location)) %>%
+    dplyr::bind_rows(total_counterfactual_table)
+
+
+  # create 5,25,50,75,95 percentile by time
+  plot_data <- plot_data %>%
+    dplyr::group_by(time,location,scenario) %>%
+    dplyr::summarise(m = median(cases,na.rm=TRUE),
+              liqr = quantile(cases,0.25,na.rm=TRUE),
+              uiqr = quantile(cases,0.75,na.rm=TRUE),
+              lc = quantile(cases,0.05,na.rm=TRUE),
+              uc = quantile(cases,0.95,na.rm=TRUE))
+
+
+  # if including data then add to plot_data object
+  if(!is.null(outbreak_cases)){
+    plot_data <- plot_data %>%
+      dplyr::inner_join(cases_data,by=c("time","location"))
+  }
+
+  p <- plot_data %>%
+    ggplot2::ggplot(ggplot2::aes(x=time,y=m,fill=scenario)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin=liqr,ymax=uiqr),alpha=0.3) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin=lc,ymax=uc),alpha=0.3) +
+    ggplot2::geom_line(ggplot2::aes(color=scenario))
+
+  # if including data then add to plot
+  if(!is.null(outbreak_cases)){
+    p <- p +
+      ggplot2::geom_point(ggplot2::aes(y=data_incidence),
+                          fill="white",size=1.5)
+  }
+
+  p <- p +
+    ggplot2::facet_wrap(ggplot2::vars(location), ncol=3,scales="free_y") +
+    ggplot2::theme_classic() +
+    ggplot2::labs(y="Cases",x="Time since initial case (days)")
+
+  list(plot=p,table=counterfactual_table)
+}
+
+
+
+

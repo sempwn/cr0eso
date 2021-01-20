@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_hierarchical_SEIR_incidence_model");
-    reader.add_event(291, 289, "end", "model_hierarchical_SEIR_incidence_model");
+    reader.add_event(322, 320, "end", "model_hierarchical_SEIR_incidence_model");
     return reader;
 }
 template <typename T0__, typename T1__, typename T2__, typename T3__>
@@ -1137,7 +1137,9 @@ public:
         names__.push_back("S0");
         names__.push_back("eps");
         names__.push_back("fake_I");
-        names__.push_back("fake_incidence");
+        names__.push_back("pp_cases");
+        names__.push_back("cparams");
+        names__.push_back("counterfactual_cases");
         names__.push_back("diff_I");
         names__.push_back("hyper_priors");
         names__.push_back("p_r0");
@@ -1208,7 +1210,15 @@ public:
         dims__.push_back(n_difeq);
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back(n_fake);
+        dims__.push_back(n_obs);
+        dims__.push_back(n_outbreaks);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(6);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(n_obs);
+        dims__.push_back(n_outbreaks);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dimss__.push_back(dims__);
@@ -1511,106 +1521,167 @@ public:
             stan::math::initialize(fake_I, DUMMY_VAR__);
             stan::math::fill(fake_I, DUMMY_VAR__);
             current_statement_begin__ = 241;
-            validate_non_negative_index("fake_incidence", "n_fake", n_fake);
-            std::vector<double> fake_incidence(n_fake, double(0));
-            stan::math::initialize(fake_incidence, DUMMY_VAR__);
-            stan::math::fill(fake_incidence, DUMMY_VAR__);
-            current_statement_begin__ = 242;
+            validate_non_negative_index("pp_cases", "n_obs", n_obs);
+            validate_non_negative_index("pp_cases", "n_outbreaks", n_outbreaks);
+            std::vector<std::vector<double> > pp_cases(n_obs, std::vector<double>(n_outbreaks, double(0)));
+            stan::math::initialize(pp_cases, DUMMY_VAR__);
+            stan::math::fill(pp_cases, DUMMY_VAR__);
+            current_statement_begin__ = 244;
+            validate_non_negative_index("cparams", "6", 6);
+            std::vector<double> cparams(6, double(0));
+            stan::math::initialize(cparams, DUMMY_VAR__);
+            stan::math::fill(cparams, DUMMY_VAR__);
+            current_statement_begin__ = 245;
+            validate_non_negative_index("counterfactual_cases", "n_obs", n_obs);
+            validate_non_negative_index("counterfactual_cases", "n_outbreaks", n_outbreaks);
+            std::vector<std::vector<double> > counterfactual_cases(n_obs, std::vector<double>(n_outbreaks, double(0)));
+            stan::math::initialize(counterfactual_cases, DUMMY_VAR__);
+            stan::math::fill(counterfactual_cases, DUMMY_VAR__);
+            current_statement_begin__ = 246;
             double diff_I;
             (void) diff_I;  // dummy to suppress unused var warning
             stan::math::initialize(diff_I, DUMMY_VAR__);
             stan::math::fill(diff_I, DUMMY_VAR__);
-            current_statement_begin__ = 244;
+            current_statement_begin__ = 249;
             validate_non_negative_index("hyper_priors", "5", 5);
             std::vector<double> hyper_priors(5, double(0));
             stan::math::initialize(hyper_priors, DUMMY_VAR__);
             stan::math::fill(hyper_priors, DUMMY_VAR__);
-            current_statement_begin__ = 245;
+            current_statement_begin__ = 250;
             double p_r0;
             (void) p_r0;  // dummy to suppress unused var warning
             stan::math::initialize(p_r0, DUMMY_VAR__);
             stan::math::fill(p_r0, DUMMY_VAR__);
-            current_statement_begin__ = 246;
+            current_statement_begin__ = 251;
             double p_gamma;
             (void) p_gamma;  // dummy to suppress unused var warning
             stan::math::initialize(p_gamma, DUMMY_VAR__);
             stan::math::fill(p_gamma, DUMMY_VAR__);
-            current_statement_begin__ = 247;
+            current_statement_begin__ = 252;
             double p_sigma;
             (void) p_sigma;  // dummy to suppress unused var warning
             stan::math::initialize(p_sigma, DUMMY_VAR__);
             stan::math::fill(p_sigma, DUMMY_VAR__);
-            current_statement_begin__ = 248;
+            current_statement_begin__ = 253;
             double p_tau;
             (void) p_tau;  // dummy to suppress unused var warning
             stan::math::initialize(p_tau, DUMMY_VAR__);
             stan::math::fill(p_tau, DUMMY_VAR__);
-            current_statement_begin__ = 249;
+            current_statement_begin__ = 254;
             double p_zeta;
             (void) p_zeta;  // dummy to suppress unused var warning
             stan::math::initialize(p_zeta, DUMMY_VAR__);
             stan::math::fill(p_zeta, DUMMY_VAR__);
-            current_statement_begin__ = 251;
+            current_statement_begin__ = 256;
             double predictive_r0;
             (void) predictive_r0;  // dummy to suppress unused var warning
             stan::math::initialize(predictive_r0, DUMMY_VAR__);
             stan::math::fill(predictive_r0, DUMMY_VAR__);
             // generated quantities statements
-            current_statement_begin__ = 253;
-            stan::math::assign(fake_I, integrate_ode_rk45(SEI_functor__(), y0, t0, fake_ts, params, x_r, x_i, pstream__));
-            current_statement_begin__ = 255;
-            stan::model::assign(fake_incidence, 
-                        stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list()), 
-                        0, 
-                        "assigning variable fake_incidence");
-            current_statement_begin__ = 256;
-            for (int i = 2; i <= n_fake; ++i) {
-                current_statement_begin__ = 257;
-                stan::math::assign(diff_I, (get_base1(get_base1(fake_I, i, "fake_I", 1), 5, "fake_I", 2) - get_base1(get_base1(fake_I, (i - 1), "fake_I", 1), 5, "fake_I", 2)));
-                current_statement_begin__ = 258;
-                if (as_bool(logical_lt(diff_I, 0))) {
-                    current_statement_begin__ = 259;
-                    stan::math::assign(diff_I, 1e-3);
+            current_statement_begin__ = 260;
+            for (int k = 1; k <= n_outbreaks; ++k) {
+                current_statement_begin__ = 263;
+                stan::model::assign(cparams, 
+                            stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list()), 
+                            get_base1(r0k, k, "r0k", 1), 
+                            "assigning variable cparams");
+                current_statement_begin__ = 264;
+                stan::model::assign(cparams, 
+                            stan::model::cons_list(stan::model::index_uni(2), stan::model::nil_index_list()), 
+                            sigma, 
+                            "assigning variable cparams");
+                current_statement_begin__ = 265;
+                stan::model::assign(cparams, 
+                            stan::model::cons_list(stan::model::index_uni(3), stan::model::nil_index_list()), 
+                            gamma, 
+                            "assigning variable cparams");
+                current_statement_begin__ = 266;
+                stan::model::assign(cparams, 
+                            stan::model::cons_list(stan::model::index_uni(4), stan::model::nil_index_list()), 
+                            get_base1(n, k, "n", 1), 
+                            "assigning variable cparams");
+                current_statement_begin__ = 269;
+                stan::model::assign(cparams, 
+                            stan::model::cons_list(stan::model::index_uni(5), stan::model::nil_index_list()), 
+                            0, 
+                            "assigning variable cparams");
+                current_statement_begin__ = 270;
+                stan::model::assign(cparams, 
+                            stan::model::cons_list(stan::model::index_uni(6), stan::model::nil_index_list()), 
+                            0, 
+                            "assigning variable cparams");
+                current_statement_begin__ = 272;
+                stan::math::assign(fake_I, integrate_ode_rk45(SEI_functor__(), y0, t0, ts, cparams, x_r, x_i, pstream__));
+                current_statement_begin__ = 274;
+                stan::model::assign(counterfactual_cases, 
+                            stan::model::cons_list(stan::model::index_uni(1), stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list())), 
+                            0, 
+                            "assigning variable counterfactual_cases");
+                current_statement_begin__ = 275;
+                for (int i = 2; i <= n_obs; ++i) {
+                    current_statement_begin__ = 276;
+                    stan::math::assign(diff_I, (get_base1(get_base1(fake_I, i, "fake_I", 1), 5, "fake_I", 2) - get_base1(get_base1(fake_I, (i - 1), "fake_I", 1), 5, "fake_I", 2)));
+                    current_statement_begin__ = 277;
+                    if (as_bool(logical_lt(diff_I, 0))) {
+                        current_statement_begin__ = 278;
+                        stan::math::assign(diff_I, 1e-3);
+                    }
+                    current_statement_begin__ = 280;
+                    stan::model::assign(counterfactual_cases, 
+                                stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list())), 
+                                poisson_rng(diff_I, base_rng__), 
+                                "assigning variable counterfactual_cases");
                 }
-                current_statement_begin__ = 261;
-                stan::model::assign(fake_incidence, 
-                            stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            poisson_rng(diff_I, base_rng__), 
-                            "assigning variable fake_incidence");
             }
-            current_statement_begin__ = 265;
+            current_statement_begin__ = 287;
+            for (int k = 1; k <= n_outbreaks; ++k) {
+                current_statement_begin__ = 289;
+                stan::model::assign(pp_cases, 
+                            stan::model::cons_list(stan::model::index_uni(1), stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list())), 
+                            0, 
+                            "assigning variable pp_cases");
+                current_statement_begin__ = 290;
+                for (int i = 2; i <= n_obs; ++i) {
+                    current_statement_begin__ = 291;
+                    stan::model::assign(pp_cases, 
+                                stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list())), 
+                                poisson_rng(max(stan::math::to_row_vector(stan::math::array_builder<local_scalar_t__ >().add((get_base1(get_base1(incidence, i, "incidence", 1), k, "incidence", 2) - get_base1(get_base1(incidence, (i - 1), "incidence", 1), k, "incidence", 2))).add(1e-10).array())), base_rng__), 
+                                "assigning variable pp_cases");
+                }
+            }
+            current_statement_begin__ = 296;
             stan::math::assign(predictive_r0, normal_lb_rng(r0, r0_sigma, 0, base_rng__, pstream__));
-            current_statement_begin__ = 270;
+            current_statement_begin__ = 301;
             stan::math::assign(p_r0, normal_lb_rng(r0_mean, r0_sd, 0, base_rng__, pstream__));
-            current_statement_begin__ = 271;
+            current_statement_begin__ = 302;
             stan::math::assign(p_gamma, normal_lb_rng(gamma_mean, gamma_sd, 0, base_rng__, pstream__));
-            current_statement_begin__ = 272;
+            current_statement_begin__ = 303;
             stan::math::assign(p_sigma, normal_lb_rng(sigma_mean, sigma_sd, 0, base_rng__, pstream__));
-            current_statement_begin__ = 273;
+            current_statement_begin__ = 304;
             stan::math::assign(p_tau, normal_lb_rng(tau_prior_mean, 1.0, 0, base_rng__, pstream__));
-            current_statement_begin__ = 274;
+            current_statement_begin__ = 305;
             stan::math::assign(p_zeta, normal_lb_rng(zeta_mean, zeta_sd, 0, base_rng__, pstream__));
-            current_statement_begin__ = 278;
+            current_statement_begin__ = 309;
             stan::model::assign(hyper_priors, 
                         stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list()), 
                         p_r0, 
                         "assigning variable hyper_priors");
-            current_statement_begin__ = 279;
+            current_statement_begin__ = 310;
             stan::model::assign(hyper_priors, 
                         stan::model::cons_list(stan::model::index_uni(2), stan::model::nil_index_list()), 
                         p_sigma, 
                         "assigning variable hyper_priors");
-            current_statement_begin__ = 280;
+            current_statement_begin__ = 311;
             stan::model::assign(hyper_priors, 
                         stan::model::cons_list(stan::model::index_uni(3), stan::model::nil_index_list()), 
                         p_gamma, 
                         "assigning variable hyper_priors");
-            current_statement_begin__ = 281;
+            current_statement_begin__ = 312;
             stan::model::assign(hyper_priors, 
                         stan::model::cons_list(stan::model::index_uni(4), stan::model::nil_index_list()), 
                         p_tau, 
                         "assigning variable hyper_priors");
-            current_statement_begin__ = 282;
+            current_statement_begin__ = 313;
             stan::model::assign(hyper_priors, 
                         stan::model::cons_list(stan::model::index_uni(5), stan::model::nil_index_list()), 
                         p_zeta, 
@@ -1625,33 +1696,49 @@ public:
                 }
             }
             current_statement_begin__ = 241;
-            size_t fake_incidence_k_0_max__ = n_fake;
-            for (size_t k_0__ = 0; k_0__ < fake_incidence_k_0_max__; ++k_0__) {
-                vars__.push_back(fake_incidence[k_0__]);
+            size_t pp_cases_k_0_max__ = n_obs;
+            size_t pp_cases_k_1_max__ = n_outbreaks;
+            for (size_t k_1__ = 0; k_1__ < pp_cases_k_1_max__; ++k_1__) {
+                for (size_t k_0__ = 0; k_0__ < pp_cases_k_0_max__; ++k_0__) {
+                    vars__.push_back(pp_cases[k_0__][k_1__]);
+                }
             }
-            current_statement_begin__ = 242;
-            vars__.push_back(diff_I);
             current_statement_begin__ = 244;
+            size_t cparams_k_0_max__ = 6;
+            for (size_t k_0__ = 0; k_0__ < cparams_k_0_max__; ++k_0__) {
+                vars__.push_back(cparams[k_0__]);
+            }
+            current_statement_begin__ = 245;
+            size_t counterfactual_cases_k_0_max__ = n_obs;
+            size_t counterfactual_cases_k_1_max__ = n_outbreaks;
+            for (size_t k_1__ = 0; k_1__ < counterfactual_cases_k_1_max__; ++k_1__) {
+                for (size_t k_0__ = 0; k_0__ < counterfactual_cases_k_0_max__; ++k_0__) {
+                    vars__.push_back(counterfactual_cases[k_0__][k_1__]);
+                }
+            }
+            current_statement_begin__ = 246;
+            vars__.push_back(diff_I);
+            current_statement_begin__ = 249;
             size_t hyper_priors_k_0_max__ = 5;
             for (size_t k_0__ = 0; k_0__ < hyper_priors_k_0_max__; ++k_0__) {
                 vars__.push_back(hyper_priors[k_0__]);
             }
-            current_statement_begin__ = 245;
+            current_statement_begin__ = 250;
             check_greater_or_equal(function__, "p_r0", p_r0, 0);
             vars__.push_back(p_r0);
-            current_statement_begin__ = 246;
+            current_statement_begin__ = 251;
             check_greater_or_equal(function__, "p_gamma", p_gamma, 0);
             vars__.push_back(p_gamma);
-            current_statement_begin__ = 247;
+            current_statement_begin__ = 252;
             check_greater_or_equal(function__, "p_sigma", p_sigma, 0);
             vars__.push_back(p_sigma);
-            current_statement_begin__ = 248;
+            current_statement_begin__ = 253;
             check_greater_or_equal(function__, "p_tau", p_tau, 0);
             vars__.push_back(p_tau);
-            current_statement_begin__ = 249;
+            current_statement_begin__ = 254;
             check_greater_or_equal(function__, "p_zeta", p_zeta, 0);
             vars__.push_back(p_zeta);
-            current_statement_begin__ = 251;
+            current_statement_begin__ = 256;
             check_greater_or_equal(function__, "predictive_r0", predictive_r0, 0);
             vars__.push_back(predictive_r0);
         } catch (const std::exception& e) {
@@ -1793,11 +1880,29 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
-        size_t fake_incidence_k_0_max__ = n_fake;
-        for (size_t k_0__ = 0; k_0__ < fake_incidence_k_0_max__; ++k_0__) {
+        size_t pp_cases_k_0_max__ = n_obs;
+        size_t pp_cases_k_1_max__ = n_outbreaks;
+        for (size_t k_1__ = 0; k_1__ < pp_cases_k_1_max__; ++k_1__) {
+            for (size_t k_0__ = 0; k_0__ < pp_cases_k_0_max__; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "pp_cases" << '.' << k_0__ + 1 << '.' << k_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
+        size_t cparams_k_0_max__ = 6;
+        for (size_t k_0__ = 0; k_0__ < cparams_k_0_max__; ++k_0__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "fake_incidence" << '.' << k_0__ + 1;
+            param_name_stream__ << "cparams" << '.' << k_0__ + 1;
             param_names__.push_back(param_name_stream__.str());
+        }
+        size_t counterfactual_cases_k_0_max__ = n_obs;
+        size_t counterfactual_cases_k_1_max__ = n_outbreaks;
+        for (size_t k_1__ = 0; k_1__ < counterfactual_cases_k_1_max__; ++k_1__) {
+            for (size_t k_0__ = 0; k_0__ < counterfactual_cases_k_0_max__; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "counterfactual_cases" << '.' << k_0__ + 1 << '.' << k_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
         }
         param_name_stream__.str(std::string());
         param_name_stream__ << "diff_I";
@@ -1940,11 +2045,29 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
-        size_t fake_incidence_k_0_max__ = n_fake;
-        for (size_t k_0__ = 0; k_0__ < fake_incidence_k_0_max__; ++k_0__) {
+        size_t pp_cases_k_0_max__ = n_obs;
+        size_t pp_cases_k_1_max__ = n_outbreaks;
+        for (size_t k_1__ = 0; k_1__ < pp_cases_k_1_max__; ++k_1__) {
+            for (size_t k_0__ = 0; k_0__ < pp_cases_k_0_max__; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "pp_cases" << '.' << k_0__ + 1 << '.' << k_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
+        size_t cparams_k_0_max__ = 6;
+        for (size_t k_0__ = 0; k_0__ < cparams_k_0_max__; ++k_0__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "fake_incidence" << '.' << k_0__ + 1;
+            param_name_stream__ << "cparams" << '.' << k_0__ + 1;
             param_names__.push_back(param_name_stream__.str());
+        }
+        size_t counterfactual_cases_k_0_max__ = n_obs;
+        size_t counterfactual_cases_k_1_max__ = n_outbreaks;
+        for (size_t k_1__ = 0; k_1__ < counterfactual_cases_k_1_max__; ++k_1__) {
+            for (size_t k_0__ = 0; k_0__ < counterfactual_cases_k_0_max__; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "counterfactual_cases" << '.' << k_0__ + 1 << '.' << k_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
         }
         param_name_stream__.str(std::string());
         param_name_stream__ << "diff_I";

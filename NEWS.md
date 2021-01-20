@@ -1,6 +1,8 @@
 
 # cr0eso 0.0.9
 
+* New `hom_plot_counterfactual_by_location()` plot counterfactual and predictive distribution (#17).
+
 * New `prior_list` list of parameterizations of priors that can be added to `seir_model_fit()`. 
 
 * In `seir_model_fit()`, also takes optional `priors` variable (#1).
