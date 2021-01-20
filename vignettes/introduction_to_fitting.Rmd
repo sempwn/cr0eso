@@ -93,11 +93,11 @@ result$plot
 The code below extracts and plots the counterfactual scenario and also provides a summary table of cases by location in the baseline, scenario, where there was no intervention and the difference and proportional difference representing the cases averted. The final row provides a total summary of cases.
 
 ```{r}
-result <- hom_extract_posterior_draws(fit,
+result <- hom_plot_counterfactual_by_location(fit,
                                       outbreak_cases = outbreak_cases)
 
 # plot results
-result$plot
+show(result$plot)
 
 # show table of results
 result$table
