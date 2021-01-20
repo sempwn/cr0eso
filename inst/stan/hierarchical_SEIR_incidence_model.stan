@@ -271,13 +271,13 @@ generated quantities {
 
     fake_I = integrate_ode_rk45(SEI, y0, t0, ts, cparams, x_r, x_i);
 
-    counterfactual_cases[k,1] = 0;
+    counterfactual_cases[1,k] = 0;
     for(i in 2:n_obs){
       diff_I = fake_I[i,5] - fake_I[i-1,5]; //y_hat[,5] cumulative incidence
       if(diff_I < 0){
         diff_I = 1e-3; // small value if incidence is negative.
       }
-      counterfactual_cases[k,i] = poisson_rng(diff_I);
+      counterfactual_cases[i,k] = poisson_rng(diff_I);
     }
   }
 
@@ -285,6 +285,8 @@ generated quantities {
 
   // posterior predictive cases
   for(k in 1:n_outbreaks){
+    // set day 0 cases to 0
+    pp_cases[1,k] = 0;
     for(i in 2:n_obs){
       pp_cases[i,k] = poisson_rng(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]));
     }
