@@ -14,14 +14,14 @@ Before installation, you will need a C++ compiler installed to compile the Stan 
 
 The following must return `TRUE` before continuing:
 
-```r
+``` r
 # install.packages("pkgbuild")
 pkgbuild::has_build_tools(debug = TRUE)
 ```
 
 Then, install the **cr0eso** package with:
 
-```r
+``` r
 # install.packages("remotes")
 remotes::install_github("sempwn/cr0eso")
 ```
@@ -30,12 +30,18 @@ See the example in `?seir_model_fit` and the [vignette](https://sempwn.github.io
 
 To install the package with the vignette:
 
-```r
+``` r
 remotes::install_github("sempwn/cr0eso", build_vignettes = TRUE)
 ```
 
 and run:
 
-```r
+``` r
 browseVignettes("cr0eso")
 ```
+
+## Data
+
+Data for facility outbreaks in BC is pending, but once released will be included
+within the [/data/](./data/) folder. See the [Changelog](https://sempwn.github.io/cr0eso/news/index.html) for updates to the
+package included new data.
