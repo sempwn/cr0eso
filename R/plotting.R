@@ -10,6 +10,9 @@
 #' @export
 hom_extract_posterior_draws <- function(posts){
 
+  location <- run <- name <- time <- cincidence <- incidence <- rincidence <- NULL
+
+
   # extract posterior samples
   post_param <- tibble::tibble(r0=posts$predictive_r0,
                        sigma=posts$params[,2],
@@ -80,6 +83,8 @@ hom_extract_posterior_draws <- function(posts){
 #'  }
 #' @export
 hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
+
+  r0 <- type <- ob_code <- location <- NULL
 
   if(is.null(extracted_posts)){
     extracted_posts <- hom_extract_posterior_draws(posts)
@@ -162,6 +167,8 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 #'  }
 #' @export
 hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
+
+  location <- zeta <- type <- ob_code <- NULL
 
   if(is.null(extracted_posts)){
     extracted_posts <- hom_extract_posterior_draws(posts)
@@ -248,6 +255,8 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
                                     outbreak_cases=NULL, end_time=60){
 
+  r0 <- time <- location <- label <- lc <- uc <- liqr <- uiqr <- m <- data_incidence <- NULL
+
   if(is.null(extracted_posts)){
     extracted_posts <- hom_extract_posterior_draws(posts)
   }
@@ -332,6 +341,10 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
 #' @export
 hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL){
 
+  location <- counterfactual_cases <- scenario <- .draw <- cases <- baseline <- NULL
+  averted <- proportion_averted <- m <- liqr <- uiqr <- lc <- uc <- data_incidence <- NULL
+  time <- NULL
+
   # extract posterior predictive distribution
   pp_cases <- fit$model %>%
     tidybayes::spread_draws(pp_cases[time,location]) %>%
@@ -354,7 +367,7 @@ hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL){
   plot_data <- dplyr::inner_join(pp_cases,counterfactual,
                                  by=c("time","location",
                                       ".chain",".iteration",".draw")) %>%
-    mutate(location = as.character(location)) %>%
+    dplyr::mutate(location = as.character(location)) %>%
     tidyr::pivot_longer(c("pp_cases","counterfactual_cases"),
                         names_to="scenario",
                         values_to="cases") %>%

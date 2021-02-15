@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The 'cr0eso' package. — cr0eso-package • cr0eso</title>
+<title>Create comparison table for multiple posteriors — create_pub_tables • cr0eso</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="The 'cr0eso' package. — cr0eso-package" />
-<meta property="og:description" content="Bayesian hierarchical estimation of R0 from facility data" />
+<meta property="og:title" content="Create comparison table for multiple posteriors — create_pub_tables" />
+<meta property="og:description" content="Create a comparison table of posteriors generated from the same
+data. For example you may wish to compare the R0 where an intervention is
+assumed compared to another model where no intervention is assumed" />
 
 
 
@@ -118,21 +120,30 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>The 'cr0eso' package.</h1>
+    <h1>Create comparison table for multiple posteriors</h1>
     
-    <div class="hidden name"><code>cr0eso-package.Rd</code></div>
+    <div class="hidden name"><code>create_pub_tables.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Bayesian hierarchical estimation of R0 from facility data</p>
+    <p>Create a comparison table of posteriors generated from the same
+data. For example you may wish to compare the R0 where an intervention is
+assumed compared to another model where no intervention is assumed</p>
     </div>
 
+    <pre class="usage"><span class='fu'>create_pub_tables</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
 
 
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.21.2. https://mc-stan.org</p>
+    <p>tibble of model results</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>create_pub_tables</span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
+<span class='fu'>create_pub_tables</span><span class='op'>(</span>intervention <span class='op'>=</span> <span class='va'>mod</span>,no_intervention<span class='op'>=</span> <span class='va'>mod2</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
