@@ -104,3 +104,17 @@ result$table
 
 ```
 
+## Create summary table
+
+The code below takes the output of `seir_model_fit` and creates a table of 
+$R_0$ and intervention strength $\zeta$ summaries by location as well as a total
+representing the predictive distribution. Also included is a critical time column,
+which is the estimated time from the outbreak to where the effective R is below
+one. The function also allows for adding more than one model to compare the outputs,
+for example comparing a model with intervention to one with no intervention assumed.
+
+```{r}
+create_pub_tables(model1 = fit) %>%
+  knitr::kable()
+
+```

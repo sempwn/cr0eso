@@ -1,6 +1,8 @@
 
 # cr0eso 0.0.9
 
+* New `create_pub_tables()` create tibble of $R_0$, $\zeta$ and critical time for variable number of models (#21).
+
 * New `hom_plot_counterfactual_by_location()` plot counterfactual and predictive distribution (#17).
 
 * New `prior_list` list of parameterizations of priors that can be added to `seir_model_fit()`. 

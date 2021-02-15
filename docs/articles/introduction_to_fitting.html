@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -72,7 +72,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="introduction_to_fitting_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to fitting multiple outbreak model</h1>
@@ -190,6 +190,42 @@
 <span class="co">#&gt; 1 1        86 (68 - 105)   86 (69 - 106)   1 (-20 - 22) 0.01 (-0.27 - 0.22)</span>
 <span class="co">#&gt; 2 2        53 (39 - 68)    54 (40 - 73)    1 (-15 - 20) 0.02 (-0.34 - 0.31)</span>
 <span class="co">#&gt; 3 total    139 (116 - 162) 141 (116 - 166) 2 (-25 - 31) 0.01 (-0.19 - 0.2)</span></code></pre></div>
+</div>
+<div id="create-summary-table" class="section level2">
+<h2 class="hasAnchor">
+<a href="#create-summary-table" class="anchor"></a>Create summary table</h2>
+<p>The code below takes the output of <code>seir_model_fit</code> and creates a table of <span class="math inline">\(R_0\)</span> and intervention strength <span class="math inline">\(\zeta\)</span> summaries by location as well as a total representing the predictive distribution. Also included is a critical time column, which is the estimated time from the outbreak to where the effective R is below one. The function also allows for adding more than one model to compare the outputs, for example comparing a model with intervention to one with no intervention assumed.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/create_pub_tables.html">create_pub_tables</a></span><span class="op">(</span>model1 <span class="op">=</span> <span class="va">fit</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">location</th>
+<th align="left">r0 model1</th>
+<th align="left">zeta model1</th>
+<th align="left">critical_time model1</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">4.26 (3.39 - 5.32)</td>
+<td align="left">0.37 (0.02 - 2.25)</td>
+<td align="left">3.91 (0.63 - 66.91)</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">8.7 (6.82 - 11.1)</td>
+<td align="left">0.35 (0.02 - 2.21)</td>
+<td align="left">5.92 (0.99 - 131.69)</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">3.05 (1.61 - 4.23)</td>
+<td align="left">0.37 (0.02 - 2.24)</td>
+<td align="left">NA (NA - NA)</td>
+</tr>
+</tbody>
+</table>
 </div>
   </div>
 
