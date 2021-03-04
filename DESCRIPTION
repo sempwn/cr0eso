@@ -1,6 +1,6 @@
 Package: cr0eso
 Title: Estimation of R0 For Multiple Outbreaks
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     c(person(given = "Mike",
            family = "Irvine",
