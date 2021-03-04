@@ -1,5 +1,9 @@
 
-# cr0eso 0.0.9
+# cr0eso 0.0.0.9001
+
+* New `BC_LTHC_outbreaks_100Imputs` data on facility outbreaks in BC (#24).
+
+# cr0eso 0.0.0.9
 
 * New `create_pub_tables()` create tibble of $R_0$, $\zeta$ and critical time for variable number of models (#21).
 
