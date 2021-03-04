@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>list of parameterisations for priors — prior_list • cr0eso</title>
+<title>Long Term Health Care facility COVID-19 outbreaks in British Columbia, with 100 imputations of missing data — BC_LTHC_outbreaks_100Imputs • cr0eso</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="list of parameterisations for priors — prior_list" />
-<meta property="og:description" content="list of parameterisations for priors" />
+<meta property="og:title" content="Long Term Health Care facility COVID-19 outbreaks in British Columbia, with 100 imputations of missing data — BC_LTHC_outbreaks_100Imputs" />
+<meta property="og:description" content="A dataset containing 100 replicates of LTHC covid-19 outbreaks in BC, Canada, each
+with a random imputation of missing symptom onset times." />
 
 
 
@@ -118,21 +119,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>list of parameterisations for priors</h1>
+    <h1>Long Term Health Care facility COVID-19 outbreaks in British Columbia, with 100 imputations of missing data</h1>
     
-    <div class="hidden name"><code>prior_list.Rd</code></div>
+    <div class="hidden name"><code>BC_LTHC_outbreaks_100Imputs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>list of parameterisations for priors</p>
+    <p>A dataset containing 100 replicates of LTHC covid-19 outbreaks in BC, Canada, each
+with a random imputation of missing symptom onset times.</p>
     </div>
 
-    <pre class="usage"><span class='va'>prior_list</span></pre>
+    <pre class="usage"><span class='va'>BC_LTHC_outbreaks_100Imputs</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>An object of class <code>list</code> of length 11.</p>
+    <p>A list with 100 elements, corresponding to 100 imputations of missing symptom onset data, each with 6 sub-elements</p><dl>
+  <dt>Location</dt><dd><p>Long Term Health Care facility identifier</p></dd>
+  <dt>num_cases</dt><dd><p>Total number of COVID-19 cases identified in each location's outbreak</p></dd>
+  <dt>time_series</dt><dd><p>Daily symptom onset incidence in each location's outbreak e.g. time_series[[2]][3] gives the number of cases with symptom onset on the third day of Location[2]'s outbreak.</p></dd>
+  <dt>capacity</dt><dd><p>Resident capacity of each location</p></dd>
+  <dt>reported_date</dt><dd><p>Date of first case reported in each location's outbreak</p></dd>
+  <dt>case_matrix</dt><dd><p>time_series objects combined into a matrix, where each column is a different facility outbreak and rows 1,...,n give the number of cases with symptom onset on day 1,...,n in that outbreak. Used in Stan model fitting.</p></dd>
+  ...
+
+</dl>
+
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>British Columbia Centre for Disease Control</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
