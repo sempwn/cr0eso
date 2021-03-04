@@ -42,6 +42,8 @@ browseVignettes("cr0eso")
 
 ## Data
 
-Data for facility outbreaks in BC is pending, but once released will be included
-within the [/data/](./data/) folder. See the [Changelog](https://sempwn.github.io/cr0eso/news/index.html) for updates to the
-package included new data.
+Data for facility outbreaks in BC is now included in the package, and can be found
+within the [/data/](./data/) folder, or in the [docs](https://sempwn.github.io/cr0eso/reference/BC_LTHC_outbreaks_100Imputs.html). 
+
+See the [Changelog](https://sempwn.github.io/cr0eso/news/index.html) for any more updates to the
+package including new data.
