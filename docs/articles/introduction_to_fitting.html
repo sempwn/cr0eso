@@ -127,14 +127,23 @@
 <code class="sourceCode R">
 <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
                        intervention_switch <span class="op">=</span> <span class="cn">FALSE</span>,
-                       priors <span class="op">=</span> <span class="va">new_prior_list</span><span class="op">)</span></code></pre></div>
+                       priors <span class="op">=</span> <span class="va">new_prior_list</span><span class="op">)</span>
+<span class="co">#&gt; Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
+<span class="co">#&gt; Running the chains for more iterations may help. See</span>
+<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#r-hat</span>
+<span class="co">#&gt; Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="co">#&gt; Running the chains for more iterations may help. See</span>
+<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class="co">#&gt; Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class="co">#&gt; Running the chains for more iterations may help. See</span>
+<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#tail-ess</span></code></pre></div>
 </div>
 <div id="plot-model-output" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-model-output" class="anchor"></a>Plot model output</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Extract the posterior samples to a structured list:</span>
-<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
+<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstan/man/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
 
 <span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and zeta</span>
 <span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
@@ -177,11 +186,11 @@
 <span class="co"># show table of results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">table</span>
 <span class="co">#&gt; # A tibble: 3 x 5</span>
-<span class="co">#&gt;   location baseline        counterfactual  averted      proportion_averted </span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;          &lt;glue&gt;          &lt;glue&gt;       &lt;glue&gt;             </span>
-<span class="co">#&gt; 1 1        86 (68 - 105)   86 (69 - 106)   1 (-20 - 22) 0.01 (-0.27 - 0.22)</span>
-<span class="co">#&gt; 2 2        53 (39 - 68)    54 (40 - 73)    1 (-15 - 20) 0.02 (-0.34 - 0.31)</span>
-<span class="co">#&gt; 3 total    139 (116 - 162) 141 (116 - 166) 2 (-25 - 31) 0.01 (-0.19 - 0.2)</span></code></pre></div>
+<span class="co">#&gt;   location baseline        counterfactual    averted          proportion_averted</span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;          &lt;glue&gt;            &lt;glue&gt;           &lt;glue&gt;            </span>
+<span class="co">#&gt; 1 1        86 (68 - 105)   87 (68 - 106)     1 (-21 - 21)     0.01 (-0.28 - 0.2~</span>
+<span class="co">#&gt; 2 2        52 (39 - 68)    55 (40 - 71)      3 (-14 - 21)     0.04 (-0.31 - 0.3~</span>
+<span class="co">#&gt; 3 total    139 (116 - 163) 142.5 (118 - 165) 3.5 (-25 - 31.0~ 0.02 (-0.19 - 0.2~</span></code></pre></div>
 </div>
 <div id="create-summary-table" class="section level2">
 <h2 class="hasAnchor">
@@ -200,20 +209,20 @@
 <tbody>
 <tr class="odd">
 <td align="left">2</td>
-<td align="left">4.26 (3.39 - 5.32)</td>
-<td align="left">0.37 (0.02 - 2.25)</td>
-<td align="left">3.91 (0.63 - 66.91)</td>
+<td align="left">4.23 (3.42 - 5.5)</td>
+<td align="left">0.39 (0.02 - 2.22)</td>
+<td align="left">3.68 (0.63 - 67.48)</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
-<td align="left">8.7 (6.82 - 11.1)</td>
-<td align="left">0.35 (0.02 - 2.21)</td>
-<td align="left">5.92 (0.99 - 131.69)</td>
+<td align="left">8.71 (6.84 - 11.26)</td>
+<td align="left">0.38 (0.02 - 2.33)</td>
+<td align="left">5.58 (0.91 - 92.83)</td>
 </tr>
 <tr class="odd">
 <td align="left">Total</td>
-<td align="left">3.05 (1.61 - 4.23)</td>
-<td align="left">0.37 (0.02 - 2.24)</td>
+<td align="left">3.08 (1.57 - 4.25)</td>
+<td align="left">0.39 (0.02 - 2.28)</td>
 <td align="left">NA (NA - NA)</td>
 </tr>
 </tbody>
