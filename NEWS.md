@@ -1,6 +1,8 @@
 
 # cr0eso 0.0.0.9001
 
+* New `BC_OSABC_facilitydata` meta-data on facilities in BC (#24).
+
 * New `BC_LTHC_outbreaks_100Imputs` data on facility outbreaks in BC (#24).
 
 # cr0eso 0.0.0.9
