@@ -20,7 +20,9 @@ prior_list <- list(gamma_mean = 0.125,gamma_sd = 0.0125,
 #' @param intervention_switch Describes whether interventions occur in data (default TRUE)
 #' @param multilevel_intervention Describes whether intervention occurs
 #' @param prior_list List of priors. See [prior_list]
+#' @param chains Number of chains to sample
 #' @param iter number of iterations of MCMC
+#' @param fit_type string "NUTS" or "VB" (VB quicker but less accurate).
 #'
 #' @examples
 #' tmax <- 5
@@ -29,7 +31,7 @@ prior_list <- list(gamma_mean = 0.125,gamma_sd = 0.0125,
 #' example_incidence <- matrix(c(1,1,2,3,2),ncol=1)
 #' fit <- seir_model_fit(tmax,1,example_incidence,pop_size)
 #' @author Mike Irvine
-#' @return An object of class `stanfit` returned by `rstan::sampling`
+#' @return An object of class `stanfit` returned by \link[rstan]{sampling}
 #' @export
 seir_model_fit <- function(tmax,
                            n_outbreaks,
@@ -38,8 +40,15 @@ seir_model_fit <- function(tmax,
                            intervention_switch = TRUE,
                            multilevel_intervention = FALSE,
                            priors = prior_list,
-                           iter=600
+                           chains = 4,
+                           iter=600,
+                           fit_type = "NUTS"
                            ){
+
+  # parameter checks
+  if(!fit_type %in% c("NUTS","VB")){
+    stop(glue::glue("{fit_type} should be NUTS or VB."))
+  }
 
   # define STAN data
   stan_data = list(n_obs = tmax,
@@ -77,14 +86,30 @@ seir_model_fit <- function(tmax,
 
 
   # Fit and sample from the posterior
-  mod = rstan::sampling(stanmodels$hierarchical_SEIR_incidence_model,
-             data = stan_data,
-             pars = params_monitor,
-             seed = 42, # fix seed to replicate results
-             chains = 4,
-             warmup = floor(iter/2),
-             iter = iter,
-             control = list(adapt_delta = 0.95))
+  if(fit_type=="NUTS"){
+    mod <- rstan::sampling(stanmodels$hierarchical_SEIR_incidence_model,
+               data = stan_data,
+               pars = params_monitor,
+               seed = 42, # fix seed to replicate results
+               chains = chains,
+               warmup = floor(iter/2),
+               iter = iter,
+               control = list(adapt_delta = 0.95))
+  }else{
+
+      cat("Sampling with the VB algorithm.\n")
+      mod <- rstan::vb(
+        stanmodels$hierarchical_SEIR_incidence_model,
+        data = stan_data,
+        iter = iter,
+        seed = 42,
+        pars = params_monitor,
+        algorithm = "fullrank",
+        tol_rel_obj = 0.0001,
+        importance_resampling = TRUE
+      )
+
+  }
 
   list(model = mod)
 }

@@ -137,7 +137,9 @@ various data elements and sample model.</p>
   intervention_switch <span class='op'>=</span> <span class='cn'>TRUE</span>,
   multilevel_intervention <span class='op'>=</span> <span class='cn'>FALSE</span>,
   priors <span class='op'>=</span> <span class='va'>prior_list</span>,
-  iter <span class='op'>=</span> <span class='fl'>600</span>
+  cahins <span class='op'>=</span> <span class='fl'>4</span>,
+  iter <span class='op'>=</span> <span class='fl'>600</span>,
+  fit_type <span class='op'>=</span> <span class='st'>"NUTS"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -172,14 +174,22 @@ various data elements and sample model.</p>
       <td><p>number of iterations of MCMC</p></td>
     </tr>
     <tr>
+      <th>fit_type</th>
+      <td><p>string "NUTS" or "VB" (VB quicker but less accurate).</p></td>
+    </tr>
+    <tr>
       <th>prior_list</th>
       <td><p>List of priors. See [prior_list]</p></td>
+    </tr>
+    <tr>
+      <th>chains</th>
+      <td><p>Number of chains to sample</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class `stanfit` returned by `rstan::sampling`</p>
+    <p>An object of class `stanfit` returned by <a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Mike Irvine</p>
@@ -190,7 +200,110 @@ various data elements and sample model.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>pop_size</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>example_incidence</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>2</span><span class='op'>)</span>,ncol<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'>seir_model_fit</span><span class='op'>(</span><span class='va'>tmax</span>,<span class='fl'>1</span>,<span class='va'>example_incidence</span>,<span class='va'>pop_size</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in seir_model_fit(tmax, 1, example_incidence, pop_size): could not find function "seir_model_fit"</span></div></pre>
+</div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 0 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 600 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 600 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 600 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration: 180 / 600 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 240 / 600 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 300 / 600 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 301 / 600 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 360 / 600 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 420 / 600 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 480 / 600 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 540 / 600 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 600 / 600 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 1.783 seconds (Warm-up)
+#&gt; Chain 1:                1.57 seconds (Sampling)
+#&gt; Chain 1:                3.353 seconds (Total)
+#&gt; Chain 1: 
+#&gt; 
+#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 2).
+#&gt; Chain 2: 
+#&gt; Chain 2: Gradient evaluation took 0 seconds
+#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+#&gt; Chain 2: Adjust your expectations accordingly!
+#&gt; Chain 2: 
+#&gt; Chain 2: 
+#&gt; Chain 2: Iteration:   1 / 600 [  0%]  (Warmup)
+#&gt; Chain 2: Iteration:  60 / 600 [ 10%]  (Warmup)
+#&gt; Chain 2: Iteration: 120 / 600 [ 20%]  (Warmup)
+#&gt; Chain 2: Iteration: 180 / 600 [ 30%]  (Warmup)
+#&gt; Chain 2: Iteration: 240 / 600 [ 40%]  (Warmup)
+#&gt; Chain 2: Iteration: 300 / 600 [ 50%]  (Warmup)
+#&gt; Chain 2: Iteration: 301 / 600 [ 50%]  (Sampling)
+#&gt; Chain 2: Iteration: 360 / 600 [ 60%]  (Sampling)
+#&gt; Chain 2: Iteration: 420 / 600 [ 70%]  (Sampling)
+#&gt; Chain 2: Iteration: 480 / 600 [ 80%]  (Sampling)
+#&gt; Chain 2: Iteration: 540 / 600 [ 90%]  (Sampling)
+#&gt; Chain 2: Iteration: 600 / 600 [100%]  (Sampling)
+#&gt; Chain 2: 
+#&gt; Chain 2:  Elapsed Time: 1.876 seconds (Warm-up)
+#&gt; Chain 2:                1.007 seconds (Sampling)
+#&gt; Chain 2:                2.883 seconds (Total)
+#&gt; Chain 2: 
+#&gt; 
+#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 3).
+#&gt; Chain 3: 
+#&gt; Chain 3: Gradient evaluation took 0 seconds
+#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+#&gt; Chain 3: Adjust your expectations accordingly!
+#&gt; Chain 3: 
+#&gt; Chain 3: 
+#&gt; Chain 3: Iteration:   1 / 600 [  0%]  (Warmup)
+#&gt; Chain 3: Iteration:  60 / 600 [ 10%]  (Warmup)
+#&gt; Chain 3: Iteration: 120 / 600 [ 20%]  (Warmup)
+#&gt; Chain 3: Iteration: 180 / 600 [ 30%]  (Warmup)
+#&gt; Chain 3: Iteration: 240 / 600 [ 40%]  (Warmup)
+#&gt; Chain 3: Iteration: 300 / 600 [ 50%]  (Warmup)
+#&gt; Chain 3: Iteration: 301 / 600 [ 50%]  (Sampling)
+#&gt; Chain 3: Iteration: 360 / 600 [ 60%]  (Sampling)
+#&gt; Chain 3: Iteration: 420 / 600 [ 70%]  (Sampling)
+#&gt; Chain 3: Iteration: 480 / 600 [ 80%]  (Sampling)
+#&gt; Chain 3: Iteration: 540 / 600 [ 90%]  (Sampling)
+#&gt; Chain 3: Iteration: 600 / 600 [100%]  (Sampling)
+#&gt; Chain 3: 
+#&gt; Chain 3:  Elapsed Time: 13.112 seconds (Warm-up)
+#&gt; Chain 3:                0.869 seconds (Sampling)
+#&gt; Chain 3:                13.981 seconds (Total)
+#&gt; Chain 3: 
+#&gt; 
+#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 4).
+#&gt; Chain 4: 
+#&gt; Chain 4: Gradient evaluation took 0 seconds
+#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+#&gt; Chain 4: Adjust your expectations accordingly!
+#&gt; Chain 4: 
+#&gt; Chain 4: 
+#&gt; Chain 4: Iteration:   1 / 600 [  0%]  (Warmup)
+#&gt; Chain 4: Iteration:  60 / 600 [ 10%]  (Warmup)
+#&gt; Chain 4: Iteration: 120 / 600 [ 20%]  (Warmup)
+#&gt; Chain 4: Iteration: 180 / 600 [ 30%]  (Warmup)
+#&gt; Chain 4: Iteration: 240 / 600 [ 40%]  (Warmup)
+#&gt; Chain 4: Iteration: 300 / 600 [ 50%]  (Warmup)
+#&gt; Chain 4: Iteration: 301 / 600 [ 50%]  (Sampling)
+#&gt; Chain 4: Iteration: 360 / 600 [ 60%]  (Sampling)
+#&gt; Chain 4: Iteration: 420 / 600 [ 70%]  (Sampling)
+#&gt; Chain 4: Iteration: 480 / 600 [ 80%]  (Sampling)
+#&gt; Chain 4: Iteration: 540 / 600 [ 90%]  (Sampling)
+#&gt; Chain 4: Iteration: 600 / 600 [100%]  (Sampling)
+#&gt; Chain 4: 
+#&gt; Chain 4:  Elapsed Time: 1.749 seconds (Warm-up)
+#&gt; Chain 4:                1.092 seconds (Sampling)
+#&gt; Chain 4:                2.841 seconds (Total)
+#&gt; Chain 4: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
