@@ -12,7 +12,9 @@ seir_model_fit(
   intervention_switch = TRUE,
   multilevel_intervention = FALSE,
   priors = prior_list,
-  iter = 600
+  cahins = 4,
+  iter = 600,
+  fit_type = "NUTS"
 )
 }
 \arguments{
@@ -30,10 +32,14 @@ seir_model_fit(
 
 \item{iter}{number of iterations of MCMC}
 
+\item{fit_type}{string "NUTS" or "VB" (VB quicker but less accurate).}
+
 \item{prior_list}{List of priors. See [prior_list]}
+
+\item{chains}{Number of chains to sample}
 }
 \value{
-An object of class `stanfit` returned by `rstan::sampling`
+An object of class `stanfit` returned by \link[rstan]{sampling}
 }
 \description{
 Create an instance of the hierarchical SEIR stan model incorporating

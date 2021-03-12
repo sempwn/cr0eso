@@ -122,15 +122,38 @@
 <div id="fit-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fit-model" class="anchor"></a>Fit model</h2>
-<p>Fit model with no intervention and updated priors,</p>
+<p>Fit model with no intervention and updated priors (for speed we only fit one chain but multiple should be sampled),</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
                        intervention_switch <span class="op">=</span> <span class="cn">FALSE</span>,
-                       priors <span class="op">=</span> <span class="va">new_prior_list</span><span class="op">)</span>
-<span class="co">#&gt; Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
-<span class="co">#&gt; Running the chains for more iterations may help. See</span>
-<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#r-hat</span>
+                       priors <span class="op">=</span> <span class="va">new_prior_list</span>,
+                       chains <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 1).</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0.001 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.</span>
+<span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1: Iteration:   1 / 600 [  0%]  (Warmup)</span>
+<span class="co">#&gt; Chain 1: Iteration:  60 / 600 [ 10%]  (Warmup)</span>
+<span class="co">#&gt; Chain 1: Iteration: 120 / 600 [ 20%]  (Warmup)</span>
+<span class="co">#&gt; Chain 1: Iteration: 180 / 600 [ 30%]  (Warmup)</span>
+<span class="co">#&gt; Chain 1: Iteration: 240 / 600 [ 40%]  (Warmup)</span>
+<span class="co">#&gt; Chain 1: Iteration: 300 / 600 [ 50%]  (Warmup)</span>
+<span class="co">#&gt; Chain 1: Iteration: 301 / 600 [ 50%]  (Sampling)</span>
+<span class="co">#&gt; Chain 1: Iteration: 360 / 600 [ 60%]  (Sampling)</span>
+<span class="co">#&gt; Chain 1: Iteration: 420 / 600 [ 70%]  (Sampling)</span>
+<span class="co">#&gt; Chain 1: Iteration: 480 / 600 [ 80%]  (Sampling)</span>
+<span class="co">#&gt; Chain 1: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
+<span class="co">#&gt; Chain 1: Iteration: 600 / 600 [100%]  (Sampling)</span>
+<span class="co">#&gt; Chain 1: </span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 10.998 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                6.828 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                17.826 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:</span>
 <span class="co">#&gt; Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="co">#&gt; Running the chains for more iterations may help. See</span>
 <span class="co">#&gt; http://mc-stan.org/misc/warnings.html#bulk-ess</span>
@@ -143,7 +166,7 @@
 <a href="#plot-model-output" class="anchor"></a>Plot model output</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Extract the posterior samples to a structured list:</span>
-<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstan/man/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
+<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
 
 <span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and zeta</span>
 <span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
@@ -186,11 +209,11 @@
 <span class="co"># show table of results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">table</span>
 <span class="co">#&gt; # A tibble: 3 x 5</span>
-<span class="co">#&gt;   location baseline        counterfactual    averted          proportion_averted</span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;          &lt;glue&gt;            &lt;glue&gt;           &lt;glue&gt;            </span>
-<span class="co">#&gt; 1 1        86 (68 - 105)   87 (68 - 106)     1 (-21 - 21)     0.01 (-0.28 - 0.2~</span>
-<span class="co">#&gt; 2 2        52 (39 - 68)    55 (40 - 71)      3 (-14 - 21)     0.04 (-0.31 - 0.3~</span>
-<span class="co">#&gt; 3 total    139 (116 - 163) 142.5 (118 - 165) 3.5 (-25 - 31.0~ 0.02 (-0.19 - 0.2~</span></code></pre></div>
+<span class="co">#&gt;   location baseline         counterfactual     averted        proportion_averted</span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;           &lt;glue&gt;             &lt;glue&gt;         &lt;glue&gt;            </span>
+<span class="co">#&gt; 1 1        84.5 (68 - 105.~ 86 (68.95 - 107.0~ 1 (-20 - 20.1) 0.01 (-0.26 - 0.2~</span>
+<span class="co">#&gt; 2 2        52 (37 - 70.05)  54 (38 - 74)       2 (-15.05 - 2~ 0.03 (-0.33 - 0.3~</span>
+<span class="co">#&gt; 3 total    139 (113 - 162)  140 (114 - 167)    2 (-25.05 - 3~ 0.02 (-0.19 - 0.2)</span></code></pre></div>
 </div>
 <div id="create-summary-table" class="section level2">
 <h2 class="hasAnchor">
@@ -209,20 +232,20 @@
 <tbody>
 <tr class="odd">
 <td align="left">2</td>
-<td align="left">4.23 (3.42 - 5.5)</td>
-<td align="left">0.39 (0.02 - 2.22)</td>
-<td align="left">3.68 (0.63 - 67.48)</td>
+<td align="left">4.2 (3.26 - 5.32)</td>
+<td align="left">0.4 (0.01 - 2.63)</td>
+<td align="left">3.6 (0.59 - 113.17)</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
-<td align="left">8.71 (6.84 - 11.26)</td>
-<td align="left">0.38 (0.02 - 2.33)</td>
-<td align="left">5.58 (0.91 - 92.83)</td>
+<td align="left">8.64 (6.8 - 11.05)</td>
+<td align="left">0.39 (0.02 - 2.34)</td>
+<td align="left">5.48 (0.92 - 129.89)</td>
 </tr>
 <tr class="odd">
 <td align="left">Total</td>
-<td align="left">3.08 (1.57 - 4.25)</td>
-<td align="left">0.39 (0.02 - 2.28)</td>
+<td align="left">3 (1.54 - 4.27)</td>
+<td align="left">0.4 (0.01 - 2.39)</td>
 <td align="left">NA (NA - NA)</td>
 </tr>
 </tbody>

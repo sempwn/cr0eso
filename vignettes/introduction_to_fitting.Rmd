@@ -56,13 +56,14 @@ new_prior_list$r0_mean <- 2
 
 ## Fit model
 
-Fit model with no intervention and updated priors,
+Fit model with no intervention and updated priors (for speed we only fit one chain but multiple should be sampled),
 
 ```{r}
 
 fit <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
                        intervention_switch = FALSE,
-                       priors = new_prior_list)
+                       priors = new_prior_list,
+                       chains = 1)
 ```
 
 ## Plot model output
