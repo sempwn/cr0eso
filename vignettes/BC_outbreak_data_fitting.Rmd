@@ -1,0 +1,239 @@
+---
+title: "BC outbreak data fitting"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{BC outbreak data fitting}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dev="png", collapse = T, comment = "#>")
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+options(mc.cores = parallel::detectCores())
+
+# load libraries
+library(tidyverse)
+library(rstan)
+library(kableExtra)
+library(here)
+library(tidybayes)
+library(latex2exp)
+library(cr0eso)
+
+
+# constants
+bootstrap_options <- c("striped", "hover")
+
+```
+
+## Load long-term healthcare outbreak data
+
+Data loaded includes number of cases since outbreak on a given day for each location, the number of outbreaks, the size of the facility, as well as the labels for the outbreaks.
+
+```{r load data}
+
+
+
+n_outbreaks <- length(BC_LTHC_outbreaks_100Imputs[[1]]$capacity)
+outbreak_sizes <- BC_LTHC_outbreaks_100Imputs[[1]]$capacity
+outbreak_cases_series <- BC_LTHC_outbreaks_100Imputs[[1]]$time_series
+ob_codes <- BC_LTHC_outbreaks_100Imputs[[1]]$Location
+tmax <- 50
+
+# create matrix for cases
+# outbreak_cases <- matrix(nrow=tmax,ncol=n_outbreaks)
+# 
+# for(i in 1:length(outbreak_cases_series)){
+#   # case number for outbreak i
+#   ob_cases <- outbreak_cases_series[[i]]
+#   # truncate at 50
+#   ob_cases <- ob_cases[1:min(tmax,length(ob_cases))]
+#   padded_ob_cases <- replace(rep(0,tmax), seq(from= 1, to = length(ob_cases)), 
+#                              ob_cases)
+#   outbreak_cases[,i] <- padded_ob_cases
+# }
+
+outbreak_cases <- BC_LTHC_outbreaks_100Imputs[[1]]$case_matrix
+
+# plot cases from matrix
+as_tibble(outbreak_cases,rownames="time") %>%
+  mutate(time = as.double(time)) %>%
+  pivot_longer(-time,names_to = "location",values_to="cases") %>%
+  ggplot(aes(x=time,y=cases,color=location)) +
+  geom_line() +
+  theme(legend.position = "none")
+  
+
+
+```
+
+## Fit model
+
+Fit model including estimating intervention. This code chunk is not run in the
+vignette, but provides the syntax for how to produce posterior samples. The
+`bc_fit` data object is including in the package.
+
+```{r fit model, eval = FALSE}
+bc_fit <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
+                       intervention_switch = TRUE)
+
+usethis::use_data(bc_fit)
+  
+
+```
+
+
+
+## Model diagnositc checking
+
+```{r model diagnostic plot}
+pairs(bc_fit$model, pars = c("params"))
+rstan::check_hmc_diagnostics(fit$model)
+# print(mod)
+
+traceplot(bc_fit$model, pars = c("params[1]", "params[2]"), inc_warmup = TRUE, nrow = 2)
+
+rhats <- bayesplot::rhat(fit$model)
+rhats[rhats>1.03]
+bayesplot::mcmc_rhat(rhats)
+
+bayesplot::mcmc_nuts_divergence(bayesplot::nuts_params(bc_fit$model), 
+                                bayesplot::log_posterior(bc_fit$model))
+
+```
+
+
+## Plot model output
+
+```{r}
+# Extract the posterior samples to a structured list:
+posts <- rstan::extract(bc_fit$model)
+
+extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
+result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
+
+# plot results
+show(result$plot + labs(y=TeX("$R_{0,k}$")))
+
+
+
+```
+
+## Plot model fit to incidence
+
+```{r, fig.height=12,fig.width=8}
+extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and r0
+result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
+                                         outbreak_cases = outbreak_cases)
+# plot results
+result$plot
+
+
+```
+
+## Plot counterfactual scenario
+
+The code below extracts and plots the counterfactual scenario and also provides a summary table of cases by location in the baseline, scenario, where there was no intervention and the difference and proportional difference representing the cases averted. The final row provides a total summary of cases.
+
+```{r, fig.height=12,fig.width=8}
+result <- hom_plot_counterfactual_by_location(bc_fit,
+                                      outbreak_cases = outbreak_cases)
+
+# plot results
+show(result$plot)
+
+
+
+# show table of results
+result$table %>%
+  kableExtra::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped","responsive"))
+
+```
+
+## Fit hierarcichal intervention model
+
+Fit model including estimating intervention by each location in a hierarchical
+design,
+
+```{r fit zeta model, eval = FALSE}
+bc_fit_zeta <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
+                       intervention_switch = TRUE,
+                       multilevel_intervention = TRUE)
+
+usethis::use_data(bc_fit_zeta)
+  
+
+```
+
+
+
+## Plot model output - zeta model
+
+```{r}
+# Extract the posterior samples to a structured list:
+posts <- rstan::extract(bc_fit_zeta$model)
+
+extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
+result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
+
+# plot results
+show(result$plot + labs(y=TeX("$R_{0,k}$")))
+
+
+```
+
+
+## Plot hierarchical intervention strength by location (zeta)
+
+```{r fig.hieght=12,fig.width=8}
+
+# TODO fix cr0eso package and update
+```
+
+## Plot model fit to incidence - zeta model
+
+```{r, fig.height=12,fig.width=8}
+extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and r0
+result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
+                                         outbreak_cases = outbreak_cases)
+# plot results
+result$plot
+
+
+```
+
+
+
+## Plot counterfactual scenario - zeta model
+
+The code below extracts and plots the counterfactual scenario and also provides a summary table of cases by location in the baseline, scenario, where there was no intervention and the difference and proportional difference representing the cases averted. The final row provides a total summary of cases.
+
+```{r, fig.height=12,fig.width=8}
+result <- hom_plot_counterfactual_by_location(bc_fit_zeta,
+                                      outbreak_cases = outbreak_cases)
+
+# plot results
+show(result$plot)
+
+# show table of results
+result$table %>%
+  kableExtra::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped","responsive"))
+
+```
+
+## Create parameter comparison table
+
+
+```{r parameter comparison table}
+
+res <- create_pub_tables("Fixed intervention"= fit,
+                               "Multiple intervention" = bc_fit_zeta)
+
+res %>%
+  kableExtra::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = "striped")
+
+```
