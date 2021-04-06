@@ -78,9 +78,6 @@ vignette, but provides the syntax for how to produce posterior samples. The
 bc_fit <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
                        intervention_switch = TRUE)
 
-usethis::use_data(bc_fit)
-  
-
 ```
 
 
@@ -89,12 +86,12 @@ usethis::use_data(bc_fit)
 
 ```{r model diagnostic plot}
 pairs(bc_fit$model, pars = c("params"))
-rstan::check_hmc_diagnostics(fit$model)
+rstan::check_hmc_diagnostics(bc_fit$model)
 # print(mod)
 
 traceplot(bc_fit$model, pars = c("params[1]", "params[2]"), inc_warmup = TRUE, nrow = 2)
 
-rhats <- bayesplot::rhat(fit$model)
+rhats <- bayesplot::rhat(bc_fit$model)
 rhats[rhats>1.03]
 bayesplot::mcmc_rhat(rhats)
 
@@ -116,7 +113,9 @@ result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
 # plot results
 show(result$plot + labs(y=TeX("$R_{0,k}$")))
 
-
+result$table %>%
+  kableExtra::kbl() %>%
+  kableExtra::kable_styling(bootstrap_options=bootstrap_options)
 
 ```
 
@@ -162,9 +161,6 @@ bc_fit_zeta <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
                        intervention_switch = TRUE,
                        multilevel_intervention = TRUE)
 
-usethis::use_data(bc_fit_zeta)
-  
-
 ```
 
 
@@ -180,6 +176,10 @@ result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
 
 # plot results
 show(result$plot + labs(y=TeX("$R_{0,k}$")))
+
+result$table %>%
+  kableExtra::kbl() %>%
+  kableExtra::kable_styling(bootstrap_options=bootstrap_options)
 
 
 ```
@@ -229,7 +229,7 @@ result$table %>%
 
 ```{r parameter comparison table}
 
-res <- create_pub_tables("Fixed intervention"= fit,
+res <- create_pub_tables("Fixed intervention"= bc_fit,
                                "Multiple intervention" = bc_fit_zeta)
 
 res %>%

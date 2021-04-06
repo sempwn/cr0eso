@@ -140,8 +140,8 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
               uc = quantile(r0,0.95)) %>%
     dplyr::mutate_if(is.numeric,~round(.,2)) %>%
     dplyr::mutate(r0 = glue::glue("{m} ({lc} - {uc})")) %>%
-    dplyr::mutate(ob_code = c(rev(ob_codes),"Total")) %>%
-    dplyr::select(ob_code,location,r0)
+    #dplyr::mutate(ob_code = c(rev(ob_codes),"Total")) %>%
+    dplyr::select(location,r0)
   list(plot=p,table=r0_table)
 }
 
@@ -189,7 +189,7 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 
   plot_data <- zetas %>%
     dplyr::mutate(type="individual") %>%
-    dplyr::bind_rows(params %>%
+    dplyr::bind_rows(zetas %>%
                        dplyr::select(zeta) %>%
                        dplyr::mutate(type="group") %>%
                        dplyr::mutate(location="Total")) %>%
