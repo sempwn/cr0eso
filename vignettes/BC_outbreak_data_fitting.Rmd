@@ -76,7 +76,8 @@ vignette, but provides the syntax for how to produce posterior samples. The
 
 ```{r fit model, eval = FALSE}
 bc_fit <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
-                       intervention_switch = TRUE)
+                       intervention_switch = TRUE,
+                       multilevel_intervention = FALSE)
 
 ```
 
@@ -161,6 +162,8 @@ bc_fit_zeta <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
                        intervention_switch = TRUE,
                        multilevel_intervention = TRUE)
 
+
+
 ```
 
 
@@ -189,7 +192,16 @@ result$table %>%
 
 ```{r fig.hieght=12,fig.width=8}
 
-# TODO fix cr0eso package and update
+result <- hom_plot_zeta_by_location(extracted_posts=extracted_posts)
+
+# plot results
+show(result$plot)
+
+result$table %>%
+  kableExtra::kbl() %>%
+  kableExtra::kable_styling(bootstrap_options=bootstrap_options)
+
+
 ```
 
 ## Plot model fit to incidence - zeta model

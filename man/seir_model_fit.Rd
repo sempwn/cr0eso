@@ -12,7 +12,7 @@ seir_model_fit(
   intervention_switch = TRUE,
   multilevel_intervention = FALSE,
   priors = prior_list,
-  cahins = 4,
+  chains = 4,
   iter = 600,
   fit_type = "NUTS"
 )
@@ -30,13 +30,13 @@ seir_model_fit(
 
 \item{multilevel_intervention}{Describes whether intervention occurs}
 
+\item{chains}{Number of chains to sample}
+
 \item{iter}{number of iterations of MCMC}
 
 \item{fit_type}{string "NUTS" or "VB" (VB quicker but less accurate).}
 
 \item{prior_list}{List of priors. See [prior_list]}
-
-\item{chains}{Number of chains to sample}
 }
 \value{
 An object of class `stanfit` returned by \link[rstan]{sampling}

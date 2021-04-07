@@ -222,7 +222,7 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
               uc = quantile(zeta,0.95)) %>%
     dplyr::mutate_if(is.numeric,~round(.,2)) %>%
     dplyr::mutate(zeta = glue::glue("{m} ({lc} - {uc})")) %>%
-    dplyr::mutate(ob_code = c(rev(ob_codes),"Total")) %>%
+    #dplyr::mutate(ob_code = c(rev(ob_codes),"Total")) %>%
     dplyr::select(ob_code,location,zeta)
   list(plot=p,table=zeta_table)
 }
