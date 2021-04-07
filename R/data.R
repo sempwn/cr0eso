@@ -48,8 +48,16 @@
 #' @source Office of the Seniors Advocate, British Columbia \url{https://www.seniorsadvocatebc.ca/quickfacts/location} and British Columbia Centre for Disease Control
 "BC_OSABC_facilitydata"
 
-#' Object created from `seir_model_fit` for BC data with fixed intervention. See vignettes for more information.
+#' BC outbreak data posterior
+#'
+#' Object created from `seir_model_fit` for BC data with fixed intervention.
+#' For more details see the BC model fitting vignette:
+#' \code{vignette("BC_outbreak_data_fitting", package = "cr0eso")}
 "bc_fit"
 
-#' Object created from `seir_model_fit` for BC data with hierarchical intervention. See vignettes for more intervention.
+#' BC outbreak data hierarchical intervention posterior
+#'
+#' Object created from `seir_model_fit` for BC data with hierarchical intervention.
+#' For more details see the BC model fitting vignette:
+#' \code{vignette("BC_outbreak_data_fitting", package = "cr0eso")}
 "bc_fit_zeta"
