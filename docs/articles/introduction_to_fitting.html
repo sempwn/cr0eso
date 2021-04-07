@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/BC_outbreak_data_fitting.html">BC outbreak data fitting</a>
+    </li>
+    <li>
       <a href="../articles/introduction_to_fitting.html">Introduction to fitting multiple outbreak model</a>
     </li>
   </ul>
@@ -72,7 +75,7 @@
 
       
 
-      </header><script src="introduction_to_fitting_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="introduction_to_fitting_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to fitting multiple outbreak model</h1>
@@ -150,10 +153,13 @@
 <span class="co">#&gt; Chain 1: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: Iteration: 600 / 600 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 10.998 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                6.828 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                17.826 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 25.687 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                7.633 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                33.32 seconds (Total)</span>
 <span class="co">#&gt; Chain 1:</span>
+<span class="co">#&gt; Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
+<span class="co">#&gt; Running the chains for more iterations may help. See</span>
+<span class="co">#&gt; http://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="co">#&gt; Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 <span class="co">#&gt; Running the chains for more iterations may help. See</span>
 <span class="co">#&gt; http://mc-stan.org/misc/warnings.html#bulk-ess</span>
@@ -166,11 +172,16 @@
 <a href="#plot-model-output" class="anchor"></a>Plot model output</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Extract the posterior samples to a structured list:</span>
-<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
+<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstan/man/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
 
 <span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and zeta</span>
 <span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
 <span class="co">#&gt; Using compatibility `.name_repair`.</span>
+<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
+<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
+<span class="co">#&gt; Warning: Problem with `mutate()` input `rincidence`.</span>
+<span class="co">#&gt; i NAs produced</span>
+<span class="co">#&gt; i Input `rincidence` is `rpois(dplyr::n(), incidence)`.</span>
 <span class="co">#&gt; Warning in rpois(dplyr::n(), incidence): NAs produced</span>
 <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_r0_by_location.html">hom_plot_r0_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Ignoring unknown parameters: fun.y</span>
@@ -185,6 +196,9 @@
 <a href="#plot-model-fit-to-incidence" class="anchor"></a>Plot model fit to incidence</h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and r0</span>
+<span class="co">#&gt; Warning: Problem with `mutate()` input `rincidence`.</span>
+<span class="co">#&gt; i NAs produced</span>
+<span class="co">#&gt; i Input `rincidence` is `rpois(dplyr::n(), incidence)`.</span>
 <span class="co">#&gt; Warning in rpois(dplyr::n(), incidence): NAs produced</span>
 <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_incidence_by_location.html">hom_plot_incidence_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span>,
                                          outbreak_cases <span class="op">=</span> <span class="va">outbreak_cases</span><span class="op">)</span>
@@ -209,11 +223,11 @@
 <span class="co"># show table of results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">table</span>
 <span class="co">#&gt; # A tibble: 3 x 5</span>
-<span class="co">#&gt;   location baseline         counterfactual     averted        proportion_averted</span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;           &lt;glue&gt;             &lt;glue&gt;         &lt;glue&gt;            </span>
-<span class="co">#&gt; 1 1        84.5 (68 - 105.~ 86 (68.95 - 107.0~ 1 (-20 - 20.1) 0.01 (-0.26 - 0.2~</span>
-<span class="co">#&gt; 2 2        52 (37 - 70.05)  54 (38 - 74)       2 (-15.05 - 2~ 0.03 (-0.33 - 0.3~</span>
-<span class="co">#&gt; 3 total    139 (113 - 162)  140 (114 - 167)    2 (-25.05 - 3~ 0.02 (-0.19 - 0.2)</span></code></pre></div>
+<span class="co">#&gt;   location baseline          counterfactual    averted        proportion_averted</span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;            &lt;glue&gt;            &lt;glue&gt;         &lt;glue&gt;            </span>
+<span class="co">#&gt; 1 1        85 (68.9 - 106)   86 (68.95 - 104)  -1 (-23.05 - ~ -0.01 (-0.3 - 0.2~</span>
+<span class="co">#&gt; 2 2        54 (40 - 71)      54 (37.95 - 70.0~ 0 (-19.05 - 1~ 0 (-0.43 - 0.28)  </span>
+<span class="co">#&gt; 3 total    139 (116.95 - 16~ 140 (117 - 161.0~ -1 (-30.05 - ~ -0.01 (-0.24 - 0.~</span></code></pre></div>
 </div>
 <div id="create-summary-table" class="section level2">
 <h2 class="hasAnchor">
@@ -232,20 +246,20 @@
 <tbody>
 <tr class="odd">
 <td align="left">2</td>
-<td align="left">4.2 (3.26 - 5.32)</td>
-<td align="left">0.4 (0.01 - 2.63)</td>
-<td align="left">3.6 (0.59 - 113.17)</td>
+<td align="left">4.08 (3.35 - 5.09)</td>
+<td align="left">0.47 (0.1 - 2.15)</td>
+<td align="left">2.88 (0.63 - 13.89)</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
-<td align="left">8.64 (6.8 - 11.05)</td>
-<td align="left">0.39 (0.02 - 2.34)</td>
-<td align="left">5.48 (0.92 - 129.89)</td>
+<td align="left">8.52 (6.56 - 10.53)</td>
+<td align="left">0.46 (0.1 - 2.61)</td>
+<td align="left">4.52 (0.85 - 20.99)</td>
 </tr>
 <tr class="odd">
 <td align="left">Total</td>
-<td align="left">3 (1.54 - 4.27)</td>
-<td align="left">0.4 (0.01 - 2.39)</td>
+<td align="left">3.16 (1.72 - 4.16)</td>
+<td align="left">0.47 (0.1 - 2.41)</td>
 <td align="left">NA (NA - NA)</td>
 </tr>
 </tbody>
