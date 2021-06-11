@@ -6,23 +6,26 @@ prior_list <- list(gamma_mean = 0.125,gamma_sd = 0.0125,
                    S0_mean = 0.9, S0_sd = 0.01,
                    r0_mean=3.0,r0_sd=1.0,
                    zeta_mean=0.1,zeta_sd=0.1,
-                   tau_mean = 0.1)
+                   tau_mean = 0.1,
+                   phi = c(1, 1))
 
 
 #' SEIR model fitting method to a multiple outbreak model
 #' @description
-#' Create an instance of the hierarchical SEIR stan model incorporating
+#' Create an instance of the hierarchical SEIR Stan model incorporating
 #' various data elements and sample model.
 #' @param tmax Total number of time-points in observation
 #' @param n_outbreaks Total number of outbreaks
-#' @param outbreak_cases Numnber of daily reported cases by outbreak
-#' @param outbreak_sizes  The total size of each facility (initial number of suscepitble and exposed)
+#' @param outbreak_cases Number of daily reported cases by outbreak
+#' @param outbreak_sizes  The total size of each facility (initial number of susceptible and exposed)
 #' @param intervention_switch Describes whether interventions occur in data (default TRUE)
 #' @param multilevel_intervention Describes whether intervention occurs
 #' @param prior_list List of priors. See [prior_list]
 #' @param chains Number of chains to sample
 #' @param iter number of iterations of MCMC
 #' @param fit_type string "NUTS" or "VB" (VB quicker but less accurate).
+#' @param data_model string "poisson" or "negative_binomial". If negative_binomial
+#'   selected then uses phi prior to control for overdispersion
 #'
 #' @examples
 #' tmax <- 5
@@ -42,7 +45,8 @@ seir_model_fit <- function(tmax,
                            priors = prior_list,
                            chains = 4,
                            iter=600,
-                           fit_type = "NUTS"
+                           fit_type = "NUTS",
+                           data_model="poisson"
                            ){
 
   # parameter checks
@@ -50,6 +54,12 @@ seir_model_fit <- function(tmax,
     stop(glue::glue("{fit_type} should be NUTS or VB."))
   }
 
+  if(!data_model %in% c("poisson","negative_binomial")){
+    stop(glue::glue("{data_model} should be poisson or negative_binomial."))
+  }
+
+  data_model_code <- dplyr::case_when(data_model == "poisson" ~ 0,
+                                      data_model == "negative_binomial" ~ 1)
   # define STAN data
   stan_data = list(n_obs = tmax,
                    n_outbreaks = n_outbreaks,
@@ -60,6 +70,7 @@ seir_model_fit <- function(tmax,
                    multilevel_intervention = multilevel_intervention,
                    independent_r0 = FALSE,
                    independent_zeta = FALSE,
+                   data_model = data_model_code,
                    n_prior_mean = outbreak_sizes,
                    tau_prior_mean = priors$tau_mean,
                    t0 = 0,
@@ -76,7 +87,8 @@ seir_model_fit <- function(tmax,
                    r0_mean = priors$r0_mean,
                    r0_sd = priors$r0_sd,
                    zeta_mean = priors$zeta_mean,
-                   zeta_sd = priors$zeta_sd
+                   zeta_sd = priors$zeta_sd,
+                   phi_prior = priors$phi
   )
 
   # Which parameters to monitor in the model:
