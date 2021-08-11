@@ -5,7 +5,6 @@
 #' @docType package
 #' @name cr0eso-package
 #' @aliases cr0eso
-#' @useDynLib cr0eso, .registration = TRUE
 #' @import methods
 #' @import Rcpp
 #' @importFrom rstan sampling

@@ -14,7 +14,8 @@ seir_model_fit(
   priors = prior_list,
   chains = 4,
   iter = 600,
-  fit_type = "NUTS"
+  fit_type = "NUTS",
+  data_model = "poisson"
 )
 }
 \arguments{
@@ -22,9 +23,9 @@ seir_model_fit(
 
 \item{n_outbreaks}{Total number of outbreaks}
 
-\item{outbreak_cases}{Numnber of daily reported cases by outbreak}
+\item{outbreak_cases}{Number of daily reported cases by outbreak}
 
-\item{outbreak_sizes}{The total size of each facility (initial number of suscepitble and exposed)}
+\item{outbreak_sizes}{The total size of each facility (initial number of susceptible and exposed)}
 
 \item{intervention_switch}{Describes whether interventions occur in data (default TRUE)}
 
@@ -36,13 +37,16 @@ seir_model_fit(
 
 \item{fit_type}{string "NUTS" or "VB" (VB quicker but less accurate).}
 
+\item{data_model}{string "poisson" or "negative_binomial". If negative_binomial
+selected then uses phi prior to control for overdispersion}
+
 \item{prior_list}{List of priors. See [prior_list]}
 }
 \value{
 An object of class `stanfit` returned by \link[rstan]{sampling}
 }
 \description{
-Create an instance of the hierarchical SEIR stan model incorporating
+Create an instance of the hierarchical SEIR Stan model incorporating
 various data elements and sample model.
 }
 \examples{
