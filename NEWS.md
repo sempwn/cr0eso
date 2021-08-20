@@ -1,3 +1,8 @@
+# cr0eso 0.0.0.9002
+
+* In `seir_model_fit()`, also takes optional `likelihood_type` variable.
+
+
 
 # cr0eso 0.0.0.9001
 
