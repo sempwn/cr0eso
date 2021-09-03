@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="SEIR model fitting method to a multiple outbreak model — seir_model_fit" />
-<meta property="og:description" content="Create an instance of the hierarchical SEIR stan model incorporating
+<meta property="og:description" content="Create an instance of the hierarchical SEIR Stan model incorporating
 various data elements and sample model." />
 
 
@@ -73,7 +73,7 @@ various data elements and sample model." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cr0eso</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
       </span>
     </div>
 
@@ -131,11 +131,12 @@ various data elements and sample model." />
     </div>
 
     <div class="ref-description">
-    <p>Create an instance of the hierarchical SEIR stan model incorporating
+    <p>Create an instance of the hierarchical SEIR Stan model incorporating
 various data elements and sample model.</p>
     </div>
 
     <pre class="usage"><span class='fu'>seir_model_fit</span><span class='op'>(</span>
+  stan_model <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>tmax</span>,
   <span class='va'>n_outbreaks</span>,
   <span class='va'>outbreak_cases</span>,
@@ -145,12 +146,18 @@ various data elements and sample model.</p>
   priors <span class='op'>=</span> <span class='va'>prior_list</span>,
   chains <span class='op'>=</span> <span class='fl'>4</span>,
   iter <span class='op'>=</span> <span class='fl'>600</span>,
-  fit_type <span class='op'>=</span> <span class='st'>"NUTS"</span>
+  seed <span class='op'>=</span> <span class='fl'>42</span>,
+  fit_type <span class='op'>=</span> <span class='st'>"NUTS"</span>,
+  data_model <span class='op'>=</span> <span class='st'>"poisson"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>stan_model</th>
+      <td><p>[rstan] model object</p></td>
+    </tr>
     <tr>
       <th>tmax</th>
       <td><p>Total number of time-points in observation</p></td>
@@ -161,11 +168,11 @@ various data elements and sample model.</p>
     </tr>
     <tr>
       <th>outbreak_cases</th>
-      <td><p>Numnber of daily reported cases by outbreak</p></td>
+      <td><p>Number of daily reported cases by outbreak</p></td>
     </tr>
     <tr>
       <th>outbreak_sizes</th>
-      <td><p>The total size of each facility (initial number of suscepitble and exposed)</p></td>
+      <td><p>The total size of each facility (initial number of susceptible and exposed)</p></td>
     </tr>
     <tr>
       <th>intervention_switch</th>
@@ -184,8 +191,17 @@ various data elements and sample model.</p>
       <td><p>number of iterations of MCMC</p></td>
     </tr>
     <tr>
+      <th>seed</th>
+      <td><p>The seed for random number generation. Set to replicate results.</p></td>
+    </tr>
+    <tr>
       <th>fit_type</th>
       <td><p>string "NUTS" or "VB" (VB quicker but less accurate).</p></td>
+    </tr>
+    <tr>
+      <th>data_model</th>
+      <td><p>string "poisson" or "negative_binomial". If negative_binomial
+selected then uses phi prior to control for overdispersion</p></td>
     </tr>
     <tr>
       <th>prior_list</th>
@@ -195,22 +211,24 @@ various data elements and sample model.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class `stanfit` returned by <a href='https://rdrr.io/pkg/rstan/man/stanmodel-method-sampling.html'>sampling</a></p>
+    <p>An object of class `stanfit` returned by <a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>sampling</a></p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Mike Irvine</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>tmax</span> <span class='op'>&lt;-</span> <span class='fl'>5</span>
+    <pre class="examples"><div class='input'><span class='va'>stan_mod</span> <span class='op'>&lt;-</span> <span class='fu'>rstan</span><span class='fu'>::</span><span class='fu'><a href='https://mc-stan.org/rstan/reference/stan_model.html'>stan_model</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"stan"</span>,
+  <span class='st'>"hierarchical_SEIR_incidence_model.stan"</span>, package <span class='op'>=</span> <span class='st'>"cr0eso"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>tmax</span> <span class='op'>&lt;-</span> <span class='fl'>5</span>
 <span class='va'>pop_size</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
 <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>pop_size</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>example_incidence</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>2</span><span class='op'>)</span>,ncol<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'>seir_model_fit</span><span class='op'>(</span><span class='va'>tmax</span>,<span class='fl'>1</span>,<span class='va'>example_incidence</span>,<span class='va'>pop_size</span><span class='op'>)</span>
+<span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'>seir_model_fit</span><span class='op'>(</span>stan_model <span class='op'>=</span> <span class='va'>stan_mod</span>, <span class='va'>tmax</span>,<span class='fl'>1</span>,<span class='va'>example_incidence</span>,<span class='va'>pop_size</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 0.001 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.
+#&gt; Chain 1: Gradient evaluation took 0 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -227,15 +245,15 @@ various data elements and sample model.</p>
 #&gt; Chain 1: Iteration: 540 / 600 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 600 / 600 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 2.815 seconds (Warm-up)
-#&gt; Chain 1:                1.942 seconds (Sampling)
-#&gt; Chain 1:                4.757 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 1.641 seconds (Warm-up)
+#&gt; Chain 1:                0.984 seconds (Sampling)
+#&gt; Chain 1:                2.625 seconds (Total)
 #&gt; Chain 1: 
 #&gt; 
 #&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 2).
 #&gt; Chain 2: 
-#&gt; Chain 2: Gradient evaluation took 0.001 seconds
-#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.
+#&gt; Chain 2: Gradient evaluation took 0 seconds
+#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
 #&gt; Chain 2: Adjust your expectations accordingly!
 #&gt; Chain 2: 
 #&gt; Chain 2: 
@@ -252,9 +270,9 @@ various data elements and sample model.</p>
 #&gt; Chain 2: Iteration: 540 / 600 [ 90%]  (Sampling)
 #&gt; Chain 2: Iteration: 600 / 600 [100%]  (Sampling)
 #&gt; Chain 2: 
-#&gt; Chain 2:  Elapsed Time: 2.863 seconds (Warm-up)
-#&gt; Chain 2:                1.294 seconds (Sampling)
-#&gt; Chain 2:                4.157 seconds (Total)
+#&gt; Chain 2:  Elapsed Time: 1.575 seconds (Warm-up)
+#&gt; Chain 2:                1.027 seconds (Sampling)
+#&gt; Chain 2:                2.602 seconds (Total)
 #&gt; Chain 2: 
 #&gt; 
 #&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 3).
@@ -277,15 +295,15 @@ various data elements and sample model.</p>
 #&gt; Chain 3: Iteration: 540 / 600 [ 90%]  (Sampling)
 #&gt; Chain 3: Iteration: 600 / 600 [100%]  (Sampling)
 #&gt; Chain 3: 
-#&gt; Chain 3:  Elapsed Time: 27.433 seconds (Warm-up)
-#&gt; Chain 3:                1.862 seconds (Sampling)
-#&gt; Chain 3:                29.295 seconds (Total)
+#&gt; Chain 3:  Elapsed Time: 10.983 seconds (Warm-up)
+#&gt; Chain 3:                0.696 seconds (Sampling)
+#&gt; Chain 3:                11.679 seconds (Total)
 #&gt; Chain 3: 
 #&gt; 
 #&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 4).
 #&gt; Chain 4: 
-#&gt; Chain 4: Gradient evaluation took 0.001 seconds
-#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.
+#&gt; Chain 4: Gradient evaluation took 0 seconds
+#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
 #&gt; Chain 4: Adjust your expectations accordingly!
 #&gt; Chain 4: 
 #&gt; Chain 4: 
@@ -302,14 +320,10 @@ various data elements and sample model.</p>
 #&gt; Chain 4: Iteration: 540 / 600 [ 90%]  (Sampling)
 #&gt; Chain 4: Iteration: 600 / 600 [100%]  (Sampling)
 #&gt; Chain 4: 
-#&gt; Chain 4:  Elapsed Time: 3.044 seconds (Warm-up)
-#&gt; Chain 4:                1.402 seconds (Sampling)
-#&gt; Chain 4:                4.446 seconds (Total)
-#&gt; Chain 4: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; Chain 4:  Elapsed Time: 12.32 seconds (Warm-up)
+#&gt; Chain 4:                0.708 seconds (Sampling)
+#&gt; Chain 4:                13.028 seconds (Total)
+#&gt; Chain 4: </div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div></pre>
   </div>

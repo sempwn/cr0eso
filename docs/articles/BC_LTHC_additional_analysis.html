@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cr0eso</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
 
       
 
-      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.6/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.10/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -2144,7 +2144,7 @@ R0 (A_r, 115% cap.)
 <span class="va">rho_table</span> <span class="op">&lt;-</span>
   <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2_df</a></span><span class="op">(</span><span class="va">rho_table</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">rho_table</span><span class="op">)</span>,<span class="kw">function</span><span class="op">(</span><span class="va">x</span>,<span class="va">var_name</span><span class="op">)</span><span class="op">{</span>
     <span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html">cor.test</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">BHM</span><span class="op">)</span> <span class="op">%&gt;%</span>
-      <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/generics/man/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+      <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
       <span class="fu">mutate</span><span class="op">(</span>Property <span class="op">=</span> <span class="va">var_name</span><span class="op">)</span>
   <span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Property</span>,<span class="fu">everything</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>

@@ -12,7 +12,6 @@
 #'   \item{capacity}{Resident capacity of each location}
 #'   \item{reported_date}{Date of first case reported in each location's outbreak}
 #'   \item{case_matrix}{time_series objects combined into a matrix, where each column is a different facility outbreak and rows 1,...,n give the number of cases with symptom onset on day 1,...,n in that outbreak. Used in Stan model fitting.}
-#'   ...
 #' }
 #' @source British Columbia Centre for Disease Control
 "BC_LTHC_outbreaks_100Imputs"
@@ -29,7 +28,7 @@
 #' year. Identity of the initial case in each facility outbreak was obtained from the BCCDC.
 #'
 #'
-#' @format A dataframe with 18 rows, corresponding to the 18 LTHC outbreaks in this dataset, and 12 columns of data concerning each outbreak
+#' @format A dataframe with 18 rows, corresponding to the 18 LTHC outbreaks in this dataset, and 12 columns of data concerning each outbreak:
 #' \describe{
 #'   \item{Location}{Long Term Health Care facility identifier}
 #'   \item{LTHC facility type}{Funding type of each facility: Private, Private non-profit or Public, as much as was possible to conclude}
@@ -37,13 +36,12 @@
 #'   \item{Resident room type}{Type of accomodations available for residents: single rooms only, multi-resident rooms only, or a mix (either primarily single rooms or primarily multi-person rooms)}
 #'   \item{Accreditation status}{Has each facility been voluntarily accredited by Accreditation Canada (see https://www2.gov.bc.ca/gov/content/health/accessing-health-care/home-community-care/accountability/quality-and-safety)}
 #'   \item{Direct care hours /resident/day}{Total direct care hours (hours per resident per day), Nursing/Care Aide care + Allied health hours, in each facility}
-#'   \item{Average resident age (years)}{Average age in years of residents in each facility}
-#'   \item{Average resident stay (days)}{Average length of stay in days of residents in each facility}
-#'   \item{Residents dependent for daily activities (%)}{Percent of residents in each facility who are totally dependent in their in activities of daily living}
+#'   \item{Average resident age \(years\)}{Average age in years of residents in each facility}
+#'   \item{Average resident stay \(days\)}{Average length of stay in days of residents in each facility}
+#'   \item{Residents dependent for daily activities (\%)}{Percent of residents in each facility who are totally dependent in their in activities of daily living}
 #'   \item{Number of lodged complaints 2018/19}{Number of licensing complaints lodged in each facility during the 2018/19 year.}
 #'   \item{Number of disease outbreaks 2018/19}{Total number of disease outbreak or occurrence incidents recorded in each facility during the 2018/19 year}
 #'   \item{Identity of initial COVID-19 case}{Identity (staff/worker or resident/patient) of the initial COVID-19 case in each facility, as determined by earliest recorded date of symptom onset.}
-#'   ...
 #' }
 #' @source Office of the Seniors Advocate, British Columbia \url{https://www.seniorsadvocatebc.ca/quickfacts/location} and British Columbia Centre for Disease Control
 "BC_OSABC_facilitydata"

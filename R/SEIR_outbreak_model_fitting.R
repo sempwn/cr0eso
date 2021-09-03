@@ -14,6 +14,7 @@ prior_list <- list(gamma_mean = 0.125,gamma_sd = 0.0125,
 #' @description
 #' Create an instance of the hierarchical SEIR Stan model incorporating
 #' various data elements and sample model.
+#' @param stan_model [rstan] model object
 #' @param tmax Total number of time-points in observation
 #' @param n_outbreaks Total number of outbreaks
 #' @param outbreak_cases Number of daily reported cases by outbreak
@@ -23,20 +24,25 @@ prior_list <- list(gamma_mean = 0.125,gamma_sd = 0.0125,
 #' @param prior_list List of priors. See [prior_list]
 #' @param chains Number of chains to sample
 #' @param iter number of iterations of MCMC
+#' @param seed The seed for random number generation. Set to replicate results.
 #' @param fit_type string "NUTS" or "VB" (VB quicker but less accurate).
 #' @param data_model string "poisson" or "negative_binomial". If negative_binomial
 #'   selected then uses phi prior to control for overdispersion
 #'
 #' @examples
+#' stan_mod <- rstan::stan_model(system.file("stan",
+#'   "hierarchical_SEIR_incidence_model.stan", package = "cr0eso"))
 #' tmax <- 5
 #' pop_size <- 100
 #' dim(pop_size) <- c(1)
 #' example_incidence <- matrix(c(1,1,2,3,2),ncol=1)
-#' fit <- seir_model_fit(tmax,1,example_incidence,pop_size)
+#' fit <- seir_model_fit(stan_model = stan_mod, tmax,1,example_incidence,pop_size)
 #' @author Mike Irvine
 #' @return An object of class `stanfit` returned by \link[rstan]{sampling}
 #' @export
-seir_model_fit <- function(tmax,
+seir_model_fit <- function(
+                           stan_model = NULL,
+                           tmax,
                            n_outbreaks,
                            outbreak_cases,
                            outbreak_sizes,
@@ -45,9 +51,14 @@ seir_model_fit <- function(tmax,
                            priors = prior_list,
                            chains = 4,
                            iter=600,
+                           seed = 42,
                            fit_type = "NUTS",
                            data_model="poisson"
                            ){
+
+  if(is.null(stan_model)){
+    stop("Need to include a stan model. Check examples")
+  }
 
   # parameter checks
   if(!fit_type %in% c("NUTS","VB")){
@@ -94,15 +105,15 @@ seir_model_fit <- function(tmax,
   # Which parameters to monitor in the model:
   params_monitor = c("y0", "params","r0k" , "r0" , "r0_sigma", "zetak",
                      "incidence" , "hyper_priors","counterfactual_cases",
-                     "pp_cases","predictive_r0")
+                     "pp_cases","predictive_r0","phi")
 
 
   # Fit and sample from the posterior
   if(fit_type=="NUTS"){
-    mod <- rstan::sampling(stanmodels$hierarchical_SEIR_incidence_model,
+    mod <- rstan::sampling(stan_model,
                data = stan_data,
                pars = params_monitor,
-               seed = 42, # fix seed to replicate results
+               seed = seed,
                chains = chains,
                warmup = floor(iter/2),
                iter = iter,
@@ -114,7 +125,7 @@ seir_model_fit <- function(tmax,
         stanmodels$hierarchical_SEIR_incidence_model,
         data = stan_data,
         iter = iter,
-        seed = 42,
+        seed = seed,
         pars = params_monitor,
         algorithm = "fullrank",
         tol_rel_obj = 0.0001,
