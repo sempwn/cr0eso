@@ -62,7 +62,7 @@ create_critical_times <- function(posts){
 #' @description Create a comparison table of posteriors generated from the same
 #' data. For example you may wish to compare the R0 where an intervention is
 #' assumed compared to another model where no intervention is assumed
-#' @parameter ... named list where each item is output of [covid_fit_seir]
+#' @param ... named list where each item is output of [covid_fit_seir]
 #' @returns tibble of model results
 #' @importFrom rlang :=
 #' @examples

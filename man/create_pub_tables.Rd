@@ -6,6 +6,9 @@
 \usage{
 create_pub_tables(...)
 }
+\arguments{
+\item{...}{named list where each item is output of [covid_fit_seir]}
+}
 \value{
 tibble of model results
 }

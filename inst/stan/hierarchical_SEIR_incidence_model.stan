@@ -70,10 +70,11 @@ data {
 
   int<lower=0, upper=1> independent_zeta; //logical: if true then each R0 modelled independently
                                         // useful for creating shrinkage plots
-
+  int data_model; //Data model. Can either be 0 = Poisson, 1 = Negative binomial
   int y[n_obs,n_outbreaks]; // The binomially distributed data
 
   // priors
+  real<lower=0> phi_prior[2]; //mean and sd of phi (over-dispersion)
   real<lower=0> n_prior_mean[n_outbreaks]; // mean of population size
   real<lower=0> tau_prior_mean; // mean of tau (start of intervention)
   real<lower=0> gamma_mean;
@@ -124,6 +125,8 @@ parameters {
 
   real<lower = 0> n[n_outbreaks]; //effective population size
   real std_S0; // Initial fraction of hosts susceptible
+
+  real<lower=0> phi; //over-dispersion parameter
 
 }
 
@@ -213,6 +216,9 @@ model {
   std_sigma ~ std_normal();
   n ~ normal(n_prior_mean,10);
 
+  // over-dispersion parameter
+  phi ~ lognormal(phi_prior[1], phi_prior[2]);
+
   std_S0 ~ std_normal();
 
   // if including intervention has int params
@@ -225,7 +231,11 @@ model {
   //zetak ~ normal(zeta, zeta_sigma);
   for(k in 1:n_outbreaks){
     for(i in 2:n_obs){
-      y[i,k] ~ poisson(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]));
+      if(data_model == 0){
+        y[i,k] ~ poisson(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]));
+      }else{ // should be data_model == 1
+        y[i,k] ~ neg_binomial_2_log(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]),phi);
+      }
     }
   }
 
@@ -277,7 +287,11 @@ generated quantities {
       if(diff_I < 0){
         diff_I = 1e-3; // small value if incidence is negative.
       }
-      counterfactual_cases[i,k] = poisson_rng(diff_I);
+      if(data_model == 0){
+        counterfactual_cases[i,k] = poisson_rng(diff_I);
+      }else{
+        counterfactual_cases[i,k] = neg_binomial_2_rng(diff_I,phi);
+      }
     }
   }
 
@@ -288,7 +302,12 @@ generated quantities {
     // set day 0 cases to 0
     pp_cases[1,k] = 0;
     for(i in 2:n_obs){
-      pp_cases[i,k] = poisson_rng(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]));
+      if(data_model == 0){
+        pp_cases[i,k] = poisson_rng(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]));
+      }else{
+        pp_cases[i,k] = neg_binomial_2_rng(max([incidence[i,k] - incidence[i-1,k], 1e-10 ]),
+                                          phi);
+      }
     }
   }
 

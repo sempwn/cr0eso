@@ -60,10 +60,15 @@ Fit model with no intervention and updated priors (for speed we only fit one cha
 
 ```{r}
 
-fit <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
-                       intervention_switch = FALSE,
-                       priors = new_prior_list,
-                       chains = 1)
+# load stan model
+stan_mod <- rstan::stan_model(system.file("stan", "hierarchical_SEIR_incidence_model.stan", package = "cr0eso"))
+
+fit <- seir_model_fit(
+  stan_model = stan_mod,
+  tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
+  intervention_switch = FALSE,
+  priors = new_prior_list,
+  chains = 1)
 ```
 
 ## Plot model output

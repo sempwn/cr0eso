@@ -13,7 +13,6 @@ A list with 100 elements, corresponding to 100 imputations of missing symptom on
   \item{capacity}{Resident capacity of each location}
   \item{reported_date}{Date of first case reported in each location's outbreak}
   \item{case_matrix}{time_series objects combined into a matrix, where each column is a different facility outbreak and rows 1,...,n give the number of cases with symptom onset on day 1,...,n in that outbreak. Used in Stan model fitting.}
-  ...
 }
 }
 \source{

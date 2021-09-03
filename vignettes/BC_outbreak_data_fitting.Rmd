@@ -35,26 +35,15 @@ Data loaded includes number of cases since outbreak on a given day for each loca
 
 
 
-n_outbreaks <- length(BC_LTHC_outbreaks_100Imputs[[1]]$capacity)
-outbreak_sizes <- BC_LTHC_outbreaks_100Imputs[[1]]$capacity
-outbreak_cases_series <- BC_LTHC_outbreaks_100Imputs[[1]]$time_series
-ob_codes <- BC_LTHC_outbreaks_100Imputs[[1]]$Location
+n_outbreaks <- length(BC_LTHC_outbreaks_100Imputs[[100]]$capacity)
+outbreak_sizes <- BC_LTHC_outbreaks_100Imputs[[100]]$capacity
+outbreak_cases_series <- BC_LTHC_outbreaks_100Imputs[[100]]$time_series
+ob_codes <- BC_LTHC_outbreaks_100Imputs[[100]]$Location
+
+
+outbreak_cases <- BC_LTHC_outbreaks_100Imputs[[100]]$case_matrix
+
 tmax <- 50
-
-# create matrix for cases
-# outbreak_cases <- matrix(nrow=tmax,ncol=n_outbreaks)
-# 
-# for(i in 1:length(outbreak_cases_series)){
-#   # case number for outbreak i
-#   ob_cases <- outbreak_cases_series[[i]]
-#   # truncate at 50
-#   ob_cases <- ob_cases[1:min(tmax,length(ob_cases))]
-#   padded_ob_cases <- replace(rep(0,tmax), seq(from= 1, to = length(ob_cases)), 
-#                              ob_cases)
-#   outbreak_cases[,i] <- padded_ob_cases
-# }
-
-outbreak_cases <- BC_LTHC_outbreaks_100Imputs[[1]]$case_matrix
 
 # plot cases from matrix
 as_tibble(outbreak_cases,rownames="time") %>%
@@ -75,7 +64,11 @@ vignette, but provides the syntax for how to produce posterior samples. The
 `bc_fit` data object is including in the package.
 
 ```{r fit model, eval = FALSE}
-bc_fit <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
+stan_mod <- rstan::stan_model(system.file("stan", "hierarchical_SEIR_incidence_model.stan", package = "cr0eso"))
+
+bc_fit <- seir_model_fit(
+                       stan_model = stan_mod,
+                       tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
                        intervention_switch = TRUE,
                        multilevel_intervention = FALSE)
 
@@ -158,9 +151,11 @@ Fit model including estimating intervention by each location in a hierarchical
 design,
 
 ```{r fit zeta model, eval = FALSE}
-bc_fit_zeta <- seir_model_fit(tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
-                       intervention_switch = TRUE,
-                       multilevel_intervention = TRUE)
+bc_fit_zeta <- seir_model_fit(
+  stan_model = stan_mod,
+  tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
+  intervention_switch = TRUE,
+  multilevel_intervention = TRUE)
 
 
 
@@ -249,3 +244,10 @@ res %>%
   kableExtra::kable_styling(bootstrap_options = "striped")
 
 ```
+
+
+
+
+
+
+

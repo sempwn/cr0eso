@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cr0eso</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
       </span>
     </div>
 
@@ -78,7 +78,7 @@
 
       
 
-      </header><script src="introduction_to_fitting_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><script src="introduction_to_fitting_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to fitting multiple outbreak model</h1>
@@ -131,15 +131,20 @@
 <p>Fit model with no intervention and updated priors (for speed we only fit one chain but multiple should be sampled),</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span><span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
-                       intervention_switch <span class="op">=</span> <span class="cn">FALSE</span>,
-                       priors <span class="op">=</span> <span class="va">new_prior_list</span>,
-                       chains <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="co"># load stan model</span>
+<span class="va">stan_mod</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stan_model.html">stan_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"stan"</span>, <span class="st">"hierarchical_SEIR_incidence_model.stan"</span>, package <span class="op">=</span> <span class="st">"cr0eso"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span>
+  stan_model <span class="op">=</span> <span class="va">stan_mod</span>,
+  <span class="va">tmax</span>,<span class="va">n_outbreaks</span>,<span class="va">outbreak_cases</span>,<span class="va">outbreak_sizes</span>,
+  intervention_switch <span class="op">=</span> <span class="cn">FALSE</span>,
+  priors <span class="op">=</span> <span class="va">new_prior_list</span>,
+  chains <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'hierarchical_SEIR_incidence_model' NOW (CHAIN 1).</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: Gradient evaluation took 0.001 seconds</span>
-<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.</span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.</span>
 <span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; Chain 1: </span>
@@ -156,9 +161,9 @@
 <span class="co">#&gt; Chain 1: Iteration: 540 / 600 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: Iteration: 600 / 600 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 30.743 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                8.505 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                39.248 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 6.648 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                3.597 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                10.245 seconds (Total)</span>
 <span class="co">#&gt; Chain 1:</span>
 <span class="co">#&gt; Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
 <span class="co">#&gt; Running the chains for more iterations may help. See</span>
@@ -175,16 +180,11 @@
 <a href="#plot-model-output" class="anchor"></a>Plot model output</h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Extract the posterior samples to a structured list:</span>
-<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstan/man/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
+<span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
 
 <span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and zeta</span>
 <span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
 <span class="co">#&gt; Using compatibility `.name_repair`.</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
-<span class="co">#&gt; Warning: Problem with `mutate()` input `rincidence`.</span>
-<span class="co">#&gt; i NAs produced</span>
-<span class="co">#&gt; i Input `rincidence` is `rpois(dplyr::n(), incidence)`.</span>
 <span class="co">#&gt; Warning in rpois(dplyr::n(), incidence): NAs produced</span>
 <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_r0_by_location.html">hom_plot_r0_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Ignoring unknown parameters: fun.y</span>
@@ -199,9 +199,6 @@
 <a href="#plot-model-fit-to-incidence" class="anchor"></a>Plot model fit to incidence</h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span><span class="op">)</span> <span class="co"># get object of incidence and r0</span>
-<span class="co">#&gt; Warning: Problem with `mutate()` input `rincidence`.</span>
-<span class="co">#&gt; i NAs produced</span>
-<span class="co">#&gt; i Input `rincidence` is `rpois(dplyr::n(), incidence)`.</span>
 <span class="co">#&gt; Warning in rpois(dplyr::n(), incidence): NAs produced</span>
 <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_incidence_by_location.html">hom_plot_incidence_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span>,
                                          outbreak_cases <span class="op">=</span> <span class="va">outbreak_cases</span><span class="op">)</span>
@@ -226,11 +223,11 @@
 <span class="co"># show table of results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">table</span>
 <span class="co">#&gt; # A tibble: 3 x 5</span>
-<span class="co">#&gt;   location baseline          counterfactual    averted        proportion_averted</span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;            &lt;glue&gt;            &lt;glue&gt;         &lt;glue&gt;            </span>
-<span class="co">#&gt; 1 1        85 (68.9 - 106)   86 (68.95 - 104)  -1 (-23.05 - ~ -0.01 (-0.3 - 0.2~</span>
-<span class="co">#&gt; 2 2        54 (40 - 71)      54 (37.95 - 70.0~ 0 (-19.05 - 1~ 0 (-0.43 - 0.28)  </span>
-<span class="co">#&gt; 3 total    139 (116.95 - 16~ 140 (117 - 161.0~ -1 (-30.05 - ~ -0.01 (-0.24 - 0.~</span></code></pre></div>
+<span class="co">#&gt;   location baseline           counterfactual     averted             proportion_aver~</span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;glue&gt;             &lt;glue&gt;             &lt;glue&gt;              &lt;glue&gt;          </span>
+<span class="co">#&gt; 1 1        87.5 (68 - 103.05) 85 (69 - 104)      -1.5 (-24 - 21.05)  -0.02 (-0.33 - ~</span>
+<span class="co">#&gt; 2 2        51.5 (38 - 68)     52 (40.95 - 67)    0 (-17 - 17.05)     0 (-0.38 - 0.28)</span>
+<span class="co">#&gt; 3 total    139 (114 - 163)    137 (117 - 162.05) -3 (-29.05 - 26.05) -0.02 (-0.23 - ~</span></code></pre></div>
 </div>
 <div id="create-summary-table" class="section level2">
 <h2 class="hasAnchor">
@@ -249,20 +246,20 @@
 <tbody>
 <tr class="odd">
 <td align="left">2</td>
-<td align="left">4.08 (3.35 - 5.09)</td>
-<td align="left">0.47 (0.1 - 2.15)</td>
-<td align="left">2.88 (0.63 - 13.89)</td>
+<td align="left">4.13 (3.3 - 5.02)</td>
+<td align="left">0.55 (0.13 - 1.95)</td>
+<td align="left">2.62 (0.69 - 10.79)</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
-<td align="left">8.52 (6.56 - 10.53)</td>
-<td align="left">0.46 (0.1 - 2.61)</td>
-<td align="left">4.52 (0.85 - 20.99)</td>
+<td align="left">8.56 (6.83 - 10.99)</td>
+<td align="left">0.47 (0.11 - 1.82)</td>
+<td align="left">4.43 (1.18 - 20.18)</td>
 </tr>
 <tr class="odd">
 <td align="left">Total</td>
-<td align="left">3.16 (1.72 - 4.16)</td>
-<td align="left">0.47 (0.1 - 2.41)</td>
+<td align="left">2.9 (0.34 - 4.11)</td>
+<td align="left">0.51 (0.11 - 1.94)</td>
 <td align="left">NA (NA - NA)</td>
 </tr>
 </tbody>

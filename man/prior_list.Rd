@@ -5,7 +5,7 @@
 \alias{prior_list}
 \title{list of parameterisations for priors}
 \format{
-An object of class \code{list} of length 11.
+An object of class \code{list} of length 12.
 }
 \usage{
 prior_list
