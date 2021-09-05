@@ -70,7 +70,8 @@ bc_fit <- seir_model_fit(
                        stan_model = stan_mod,
                        tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
                        intervention_switch = TRUE,
-                       multilevel_intervention = FALSE)
+                       multilevel_intervention = FALSE,
+                       iter = 2000)
 
 ```
 
@@ -155,7 +156,8 @@ bc_fit_zeta <- seir_model_fit(
   stan_model = stan_mod,
   tmax,n_outbreaks,outbreak_cases,outbreak_sizes,
   intervention_switch = TRUE,
-  multilevel_intervention = TRUE)
+  multilevel_intervention = TRUE,
+                       iter = 2000)
 
 
 
