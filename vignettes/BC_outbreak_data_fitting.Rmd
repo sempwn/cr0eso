@@ -20,6 +20,8 @@ library(here)
 library(tidybayes)
 library(latex2exp)
 library(cr0eso)
+library(scales)
+library(ggsidekick)
 
 
 # constants
@@ -77,7 +79,7 @@ bc_fit <- seir_model_fit(
 
 
 
-## Model diagnositc checking
+## Model diagnostic checking
 
 ```{r model diagnostic plot}
 pairs(bc_fit$model, pars = c("params"))
@@ -248,6 +250,37 @@ res %>%
 ```
 
 
+## Plot estimates of the critical time
+
+Using the estimates of zeta from the Bayesian hierarchichal model, we estimate the 'critical time', that is, the length of time from the introduction of outbreak interventions to R0 dropping below 1, in each facility.
+
+```{r, fig.width = 7}
+# Order rows by decreasing R0 and remove 'total'
+res_order <- res[order(res$`r0 Fixed intervention`[-nrow(res)]),]
+# Create critical times data frame
+cr_times <- as.numeric(unlist(regmatches(res_order$`critical_time Fixed intervention`, gregexpr('?[0-9,.]+', res_order$`critical_time Fixed intervention`))))
+cr_times <- as.data.frame(matrix(cr_times, ncol = 3,  byrow = TRUE))
+names(cr_times)<-c("Critical_time", "Lower_CI", "Upper_CI")
+cr_times <- cbind(Location = LETTERS[1:(nrow(res)-1)], cr_times) 
+
+# Calculate attack rates
+AR_table <- data.frame("Facility" = BC_LTHC_outbreaks_100Imputs[[100]]$Location,  
+                  "A_r" = 100*BC_LTHC_outbreaks_100Imputs[[100]]$num_cases/BC_LTHC_outbreaks_100Imputs[[100]]$capacity)
+# Order as in cr_times
+AR_table <- AR_table[match(res_order$location,BC_LTHC_outbreaks_100Imputs[[100]]$Location, ),]
+AR_table$Facility = LETTERS[1:(nrow(res)-1)]
+
+cr_times$Attack_rate = AR_table$A_r
+
+# Including uncertainty
+d <- ggplot(cr_times, aes(Location, Critical_time)) +
+  geom_point(aes(colour = Attack_rate/100), size=2.5, stat="identity") +
+  geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI, colour = Attack_rate/100), width = 0.6, size=0.6) +
+  scale_colour_continuous(name = "Attack rate",  labels = percent, type="gradient", low=palette()[2], high=palette()[1]) +
+  ylab("Critical time (days)") + #coord_cartesian(ylim=c(0,100)) + 
+  theme_sleek()
+d
+```
 
 
 
