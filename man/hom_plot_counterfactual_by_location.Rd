@@ -4,12 +4,19 @@
 \alias{hom_plot_counterfactual_by_location}
 \title{plot incidence and counterfactual scenario}
 \usage{
-hom_plot_counterfactual_by_location(fit, outbreak_cases = NULL)
+hom_plot_counterfactual_by_location(
+  fit,
+  outbreak_cases = NULL,
+  location_labels = NULL
+)
 }
 \arguments{
 \item{fit}{output of [seir_model_fit]}
 
 \item{outbreak_cases}{matrix of outbreak case data}
+
+\item{location_labels}{tibble with columns `site` and `location`. Will be used to
+relabel numeric location to values in `site` column}
 }
 \value{
 list containing:

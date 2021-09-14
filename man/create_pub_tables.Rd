@@ -4,7 +4,7 @@
 \alias{create_pub_tables}
 \title{Create comparison table for multiple posteriors}
 \usage{
-create_pub_tables(...)
+create_pub_tables(location_labels = NULL, ...)
 }
 \arguments{
 \item{...}{named list where each item is output of [covid_fit_seir]}

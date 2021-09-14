@@ -8,7 +8,8 @@ hom_plot_incidence_by_location(
   extracted_posts = NULL,
   posts = NULL,
   outbreak_cases = NULL,
-  end_time = 60
+  end_time = 60,
+  location_labels = NULL
 )
 }
 \arguments{
@@ -19,6 +20,9 @@ hom_plot_incidence_by_location(
 \item{outbreak_cases}{matrix of outbreak case data}
 
 \item{end_time}{time in days to plot up until}
+
+\item{location_labels}{tibble with columns `site` and `location`. Will be used to
+relabel numeric location to values in `site` column}
 }
 \value{
 list containing:

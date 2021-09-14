@@ -6,6 +6,8 @@
 
 * In `seir_model_fit()`, also takes optional `seed` variable.
 
+* New `hom_plot_critical_times_by_location()` plots critical time by location.
+
 
 # cr0eso 0.0.0.9001
 

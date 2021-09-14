@@ -4,10 +4,13 @@
 \alias{hom_extract_posterior_draws}
 \title{Extract model incidence and R0s from posterior}
 \usage{
-hom_extract_posterior_draws(posts)
+hom_extract_posterior_draws(posts, location_labels = NULL)
 }
 \arguments{
 \item{posts}{Object after calling extract of stan model object of hierarchical model}
+
+\item{location_labels}{tibble with columns `site` and `location`. Will be used to
+relabel numeric location to values in `site` column}
 }
 \description{
 Extract model incidence and R0s from posterior

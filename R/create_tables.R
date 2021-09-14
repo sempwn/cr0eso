@@ -13,7 +13,7 @@ summarise_by_location <- function(x,post_param,output="r0"){
 
   plot_data <- x %>%
     dplyr::mutate(type="individual") %>%
-    dplyr::bind_rows(post_param %>%
+    dplyr::bind_rows(x %>%
                        dplyr::select({{output}}) %>%
                        dplyr::mutate(type="group") %>%
                        dplyr::mutate(location="Total")) %>%
@@ -71,7 +71,8 @@ create_critical_times <- function(posts){
 #' create_pub_tables(intervention = mod,no_intervention= mod2)
 #' }
 #' @export
-create_pub_tables <- function(...){
+create_pub_tables <- function(location_labels = NULL,
+                              ...){
 
   location <- NULL
 
@@ -133,6 +134,14 @@ create_pub_tables <- function(...){
 
 
   result <- res_list %>% purrr::reduce(dplyr::inner_join, by=c("location"))
+
+  if(!is.null(location_labels)){
+    result <- result %>%
+      replace_location_values(location_labels) %>%
+      dplyr::arrange(location) %>%
+      dplyr::relocate(location) %>%
+      dplyr::mutate(location = tidyr::replace_na(location,"Total"))
+  }
 
 
   return(result)
