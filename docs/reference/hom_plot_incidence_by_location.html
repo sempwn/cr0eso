@@ -139,7 +139,8 @@ incidence draws from posterior (note this will take longer)</p>
   extracted_posts <span class='op'>=</span> <span class='cn'>NULL</span>,
   posts <span class='op'>=</span> <span class='cn'>NULL</span>,
   outbreak_cases <span class='op'>=</span> <span class='cn'>NULL</span>,
-  end_time <span class='op'>=</span> <span class='fl'>60</span>
+  end_time <span class='op'>=</span> <span class='fl'>60</span>,
+  location_labels <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -160,6 +161,11 @@ incidence draws from posterior (note this will take longer)</p>
     <tr>
       <th>end_time</th>
       <td><p>time in days to plot up until</p></td>
+    </tr>
+    <tr>
+      <th>location_labels</th>
+      <td><p>tibble with columns `site` and `location`. Will be used to
+relabel numeric location to values in `site` column</p></td>
     </tr>
     </table>
 

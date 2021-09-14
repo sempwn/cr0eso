@@ -5,10 +5,13 @@
 #' Extract model incidence and R0s from posterior
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param posts Object after calling extract of stan model object of hierarchical model
+#' @param location_labels tibble with columns `site` and `location`. Will be used to
+#'   relabel numeric location to values in `site` column
 #' @importFrom stats quantile rpois
 #' @importFrom magrittr %>%
 #' @export
-hom_extract_posterior_draws <- function(posts){
+hom_extract_posterior_draws <- function(posts,
+                                        location_labels = NULL ){
 
   location <- run <- name <- time <- cincidence <- incidence <- rincidence <- NULL
 
@@ -57,6 +60,21 @@ hom_extract_posterior_draws <- function(posts){
               uiqr = quantile(rincidence,0.75,na.rm=TRUE),
               lc = quantile(rincidence,0.025,na.rm=TRUE),
               uc = quantile(rincidence,0.975,na.rm=TRUE))
+
+  # update labels if provided
+  if(!is.null(location_labels)){
+    r0s <- r0s %>%
+      replace_location_values(location_labels)
+
+    if("zetak" %in% names(posts)){
+      zetas <- zetas %>%
+        replace_location_values(location_labels)
+    }
+
+    model_incidence <- model_incidence %>%
+      replace_location_values(location_labels)
+
+  }
 
   return(list(r0=r0s,incidence=model_incidence,
               zeta=zetas,params=post_param))
@@ -228,6 +246,63 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 }
 
 
+#' Plot the critical time for each location
+#' @description Critical time defined as time in days until the effective
+#'  R number reduces to one or below. Plot also gives 95 credible interval and
+#'  attack rate for each location.
+#' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
+#' @param posts Object after calling extract of stan model object of hierarchical model
+#' @param locations vector of location names
+#' @param num_cases vector of number of cases for each location
+#' @param capacities vector of sizes for each location
+#' @param location_labels tibble with columns `site` and `location`. Will be used to
+#'   relabel numeric location to values in `site` column
+#' @importFrom stats quantile rpois
+#' @importFrom magrittr %>%
+#' @export
+hom_plot_critical_times_by_location <- function(posts,
+                                                locations,
+                                                num_cases,
+                                                capacities,
+                                                location_labels = NULL){
+
+
+  attack_rate <- location <- critical_time <- NULL
+
+
+
+  # Calculate attack rates
+  ar_table <- data.frame("location" = as.character(locations),
+                         "attack_rate" = 100*num_cases/capacities)
+
+  # get critical times and combine
+  plot_data <- create_critical_times(posts) %>%
+    dplyr::group_by(location) %>%
+    dplyr::summarise(m = stats::median(critical_time),
+                     lc = stats::quantile(critical_time,0.05),
+                     uc = stats::quantile(critical_time,0.95)) %>%
+    dplyr::left_join(ar_table,by="location")
+
+  if(!is.null(location_labels)){
+    plot_data <- plot_data %>%
+      replace_location_values(location_labels)
+  }
+
+
+
+  # plot data
+  plot_data %>% ggplot2::ggplot(ggplot2::aes(x=location, y=m)) +
+    ggplot2::geom_point(aes(colour = attack_rate/100), size=2.5, stat="identity") +
+    ggplot2::geom_errorbar(aes(ymin = lc, ymax = uc, colour = attack_rate/100), width = 0.6, size=0.6) +
+    ggplot2::scale_colour_continuous(name = "Attack rate",  labels = scales::percent,
+                                     type="gradient", low="#DF536B",
+                                     high="black") +
+    ggplot2::ylab("Critical time (days)") +
+    ggplot2::xlab("Location") +
+    ggplot2::theme_classic()
+}
+
+
 #' Plot incidence by location as extracted from hierarchical outbreak model.
 #' @description If extracted_posts is NULL then posts object is used to first extract the
 #' incidence draws from posterior (note this will take longer)
@@ -236,6 +311,8 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 #' @param posts Object after calling extract of stan model object of hierarchical model
 #' @param outbreak_cases matrix of outbreak case data
 #' @param end_time time in days to plot up until
+#' @param location_labels tibble with columns `site` and `location`. Will be used to
+#'   relabel numeric location to values in `site` column
 #' @importFrom magrittr %>%
 #' @return list containing:
 #'  * plot - ggplot object
@@ -253,7 +330,8 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
 #'  }
 #' @export
 hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
-                                    outbreak_cases=NULL, end_time=60){
+                                    outbreak_cases=NULL, end_time=60,
+                                    location_labels = NULL){
 
   r0 <- time <- location <- label <- lc <- uc <- liqr <- uiqr <- m <- data_incidence <- NULL
 
@@ -284,6 +362,11 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
   cases_data <- cases_data %>%
     tibble::rowid_to_column("time") %>%
     tidyr::pivot_longer(-time,names_to="location",values_to="data_incidence")
+
+  if(!is.null(location_labels)){
+    cases_data <- cases_data %>%
+      replace_location_values(location_labels)
+  }
 
   # join posterior and data for plotting
   plot_data <- incidence %>%
@@ -322,6 +405,8 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param fit output of [seir_model_fit]
 #' @param outbreak_cases matrix of outbreak case data
+#' @param location_labels tibble with columns `site` and `location`. Will be used to
+#'   relabel numeric location to values in `site` column
 #' @importFrom magrittr %>%
 #' @importFrom stats quantile median
 #' @return list containing:
@@ -339,7 +424,8 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
 #'  show(result$plot)
 #'  }
 #' @export
-hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL){
+hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL,
+                                                location_labels = NULL){
 
   location <- counterfactual_cases <- scenario <- .draw <- cases <- baseline <- NULL
   averted <- proportion_averted <- m <- liqr <- uiqr <- lc <- uc <- data_incidence <- NULL
@@ -355,6 +441,15 @@ hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL){
     tidybayes::spread_draws(counterfactual_cases[time,location]) %>%
       dplyr::filter(time > 1)
 
+  if(!is.null(location_labels)){
+    counterfactual <- counterfactual %>%
+      replace_location_values(location_labels)
+
+    pp_cases <- pp_cases %>%
+      replace_location_values(location_labels)
+
+  }
+
   # transform outbreak case data for plotting
   if(!is.null(outbreak_cases)){
     cases_data <- tibble::as_tibble(outbreak_cases)
@@ -362,6 +457,11 @@ hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL){
     cases_data <- cases_data %>%
       tibble::rowid_to_column("time") %>%
       tidyr::pivot_longer(-time,names_to="location",values_to="data_incidence")
+
+    if(!is.null(location_labels)){
+      cases_data <- cases_data %>%
+        replace_location_values(location_labels)
+    }
   }
 
   plot_data <- dplyr::inner_join(pp_cases,counterfactual,
@@ -451,5 +551,19 @@ hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL){
 }
 
 
+#' convenience function replace location labels with site variables from
+#' location variable tables
+#' @param d dataframe
+#' @param location_labels dataframe with columns `location` and `site`
+#' @noRd
+replace_location_values <- function(d,location_labels){
+  location <- NULL
+  d %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(location = as.character(location)) %>%
+    dplyr::left_join(location_labels,by="location") %>%
+    dplyr::select(-location) %>%
+    dplyr::rename("location" = "site")
+}
 
 

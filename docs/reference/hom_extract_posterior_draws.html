@@ -133,7 +133,7 @@
     <p>Extract model incidence and R0s from posterior</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hom_extract_posterior_draws</span><span class='op'>(</span><span class='va'>posts</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>hom_extract_posterior_draws</span><span class='op'>(</span><span class='va'>posts</span>, location_labels <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,6 +141,11 @@
     <tr>
       <th>posts</th>
       <td><p>Object after calling extract of stan model object of hierarchical model</p></td>
+    </tr>
+    <tr>
+      <th>location_labels</th>
+      <td><p>tibble with columns `site` and `location`. Will be used to
+relabel numeric location to values in `site` column</p></td>
     </tr>
     </table>
 
