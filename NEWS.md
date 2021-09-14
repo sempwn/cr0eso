@@ -1,9 +1,10 @@
 # cr0eso 0.0.0.9002
 
+* In `hom_extract_posterior_draws()`, also takes optional `location_labels` variable.
+
 * In `seir_model_fit()`, also takes optional `likelihood_type` variable.
 
 * In `seir_model_fit()`, also takes optional `seed` variable.
-
 
 
 # cr0eso 0.0.0.9001

@@ -97,14 +97,35 @@ bayesplot::mcmc_nuts_divergence(bayesplot::nuts_params(bc_fit$model),
 
 ```
 
+## Re-label facilities
 
-## Plot model output
+Extract the posterior sample and re-label the facilities by their estimated mean $R_0^k$,
 
 ```{r}
 # Extract the posterior samples to a structured list:
 posts <- rstan::extract(bc_fit$model)
 
-extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and zeta
+
+
+location_labels <- spread_draws(bc_fit$model,r0k[location]) %>% 
+  mutate(location = as.character(location)) %>%
+  group_by(location) %>% 
+  summarise(r0 = mean(r0k)) %>% 
+  arrange(r0) %>% 
+  mutate(site = LETTERS[1:n()]) %>%
+  select(location,site)
+
+# get object of incidence and zeta
+extracted_posts <- hom_extract_posterior_draws(posts,
+                                               location_labels = location_labels) 
+
+
+```
+
+## Plot model output
+
+```{r}
+
 result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
 
 # plot results
@@ -119,9 +140,10 @@ result$table %>%
 ## Plot model fit to incidence
 
 ```{r, fig.height=12,fig.width=8}
-extracted_posts <- hom_extract_posterior_draws(posts) # get object of incidence and r0
+
 result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
-                                         outbreak_cases = outbreak_cases)
+                                         outbreak_cases = outbreak_cases,
+                                         location_labels = location_labels)
 # plot results
 result$plot
 
@@ -134,7 +156,8 @@ The code below extracts and plots the counterfactual scenario and also provides 
 
 ```{r, fig.height=12,fig.width=8}
 result <- hom_plot_counterfactual_by_location(bc_fit,
-                                      outbreak_cases = outbreak_cases)
+                                      outbreak_cases = outbreak_cases,
+                                      location_labels = location_labels)
 
 # plot results
 show(result$plot)
