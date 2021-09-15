@@ -412,6 +412,7 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
 #' @return list containing:
 #'  * plot - ggplot object
 #'  * table - tibble object of results
+#'  * violin_plot - ggplot object
 #' @examples
 #' \dontrun{
 #'  tmax <- 5
@@ -499,6 +500,12 @@ hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL,
     ) %>%
     dplyr::mutate(location = "total")
 
+  # get data to create the violin plots of proportion averted
+  violin_plot_data <- counterfactual_table %>%
+    dplyr::mutate(averted = counterfactual - baseline,
+                  proportion_averted = averted/counterfactual
+    )
+
   counterfactual_table <- counterfactual_table %>%
     dplyr::mutate(averted = counterfactual - baseline,
                   proportion_averted = averted/counterfactual
@@ -547,7 +554,18 @@ hom_plot_counterfactual_by_location <- function(fit, outbreak_cases = NULL,
     ggplot2::theme_classic() +
     ggplot2::labs(y="Cases",x="Time since initial case (days)")
 
-  list(plot=p,table=counterfactual_table)
+  violin_plot <- violin_plot_data %>%
+    ggplot2::ggplot(ggplot2::aes(x=location,y=proportion_averted)) +
+    ggplot2::geom_violin(fill = "#3366FF",
+                         draw_quantiles = c(0.25, 0.5, 0.75)) +
+    ggplot2::coord_cartesian(ylim=c(0,1), expand=FALSE) +
+    ggplot2::scale_y_continuous(labels = scales::percent) +
+    ggplot2::theme_classic() +
+    ggplot2::labs(y="Proportion cases averted",
+                  x="Location")
+
+  list(plot=p,table=counterfactual_table,
+       violin_plot = violin_plot)
 }
 
 

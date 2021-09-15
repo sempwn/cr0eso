@@ -171,6 +171,12 @@ result$table %>%
 
 ```
 
+Provide posterior distribution for the proportion of cases averted by location,
+
+```{r}
+show(result$violin_plot)
+
+```
 
 ## Plot critical times and uncertainty
 
@@ -281,6 +287,15 @@ show(result$plot)
 result$table %>%
   kableExtra::kable() %>%
   kableExtra::kable_styling(bootstrap_options = c("striped","responsive"))
+
+
+
+```
+
+Provide posterior distribution for the proportion of cases averted by location,
+
+```{r}
+show(result$violin_plot)
 
 ```
 

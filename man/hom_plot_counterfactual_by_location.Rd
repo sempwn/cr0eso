@@ -22,6 +22,7 @@ relabel numeric location to values in `site` column}
 list containing:
  * plot - ggplot object
  * table - tibble object of results
+ * violin_plot - ggplot object
 }
 \description{
 on same plot show counterfactual and incidence posterior predictive distributions
