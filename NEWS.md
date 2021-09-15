@@ -1,5 +1,7 @@
 # cr0eso 0.0.0.9002
 
+* In `hom_plot_counterfactual_by_location()`, also returns `violin_plot` object.
+
 * In `hom_extract_posterior_draws()`, also takes optional `location_labels` variable.
 
 * In `seir_model_fit()`, also takes optional `likelihood_type` variable.
