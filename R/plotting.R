@@ -83,9 +83,10 @@ hom_extract_posterior_draws <- function(posts,
 #' Plot r0 by location as extracted from hierarchical outbreak model.
 #' @description If extracted_posts is NULL then posts object is used to first extract the R0
 #' and incidence draws from posterior (note this will take longer)
-#' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
+#' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarchical Outbreak Model
 #' @param extracted_posts object returned by hom_extract_posterior_draws
 #' @param posts Object after calling extract of stan model object of hierarchical model
+#' @param sort TRUE/FALSE. If TRUE (default), locations will be ordered by mean R0
 #' @importFrom stats quantile
 #' @return list containing:
 #'  * plot - ggplot object
@@ -100,7 +101,7 @@ hom_extract_posterior_draws <- function(posts,
 #'  show(result$plot)
 #'  }
 #' @export
-hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
+hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL,sort=TRUE){
 
   r0 <- type <- ob_code <- location <- NULL
 
@@ -119,7 +120,7 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
   loc_ordering <- r0s %>%
     dplyr::group_by(location) %>%
     dplyr::summarise(mean=mean(r0)) %>%
-    dplyr::arrange(mean) %>%
+    dplyr::arrange(if(sort==TRUE){mean}else{location}) %>%
     dplyr::pull(location)
 
   plot_data <- r0s %>%
@@ -169,6 +170,7 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 #' @note Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
 #' @param extracted_posts object returned by hom_extract_posterior_draws
 #' @param posts Object after calling extract of stan model object of hierarchical model
+#' @param sort TRUE/FALSE. If TRUE (default), locations will be ordered by mean R0
 #' @importFrom stats quantile
 #' @importFrom magrittr %>%
 #' @return list containing:
@@ -184,7 +186,7 @@ hom_plot_r0_by_location <- function(extracted_posts=NULL,posts=NULL){
 #'  show(result$plot)
 #'  }
 #' @export
-hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
+hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL,sort=TRUE){
 
   location <- zeta <- type <- ob_code <- NULL
 
@@ -202,7 +204,7 @@ hom_plot_zeta_by_location <- function(extracted_posts=NULL,posts=NULL){
   loc_ordering <- zetas %>%
     dplyr::group_by(location) %>%
     dplyr::summarise(mean=mean(zeta)) %>%
-    dplyr::arrange(mean) %>%
+    dplyr::arrange(if(sort==TRUE){mean}else{location}) %>%
     dplyr::pull(location)
 
   plot_data <- zetas %>%
@@ -313,6 +315,7 @@ hom_plot_critical_times_by_location <- function(posts,
 #' @param end_time time in days to plot up until
 #' @param location_labels tibble with columns `site` and `location`. Will be used to
 #'   relabel numeric location to values in `site` column
+#' @param sort TRUE/FALSE. If TRUE (default), locations will be ordered by mean R0
 #' @importFrom magrittr %>%
 #' @return list containing:
 #'  * plot - ggplot object
@@ -331,7 +334,7 @@ hom_plot_critical_times_by_location <- function(posts,
 #' @export
 hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
                                     outbreak_cases=NULL, end_time=60,
-                                    location_labels = NULL){
+                                    location_labels = NULL,sort=TRUE){
 
   r0 <- time <- location <- label <- lc <- uc <- liqr <- uiqr <- m <- data_incidence <- NULL
 
@@ -349,7 +352,7 @@ hom_plot_incidence_by_location <- function(extracted_posts=NULL,posts=NULL,
   loc_labels <- r0s %>%
     dplyr::group_by(location) %>%
     dplyr::summarise(mean=mean(r0)) %>%
-    dplyr::arrange(mean) %>%
+    dplyr::arrange(if(sort==TRUE){mean}else{location}) %>%
     dplyr::mutate(label = glue::glue("Location: {location}, R0: {round(mean,2)}"))
 
   # get ordering of locations by R0
