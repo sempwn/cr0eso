@@ -4,12 +4,14 @@
 \alias{hom_plot_r0_by_location}
 \title{Plot r0 by location as extracted from hierarchical outbreak model.}
 \usage{
-hom_plot_r0_by_location(extracted_posts = NULL, posts = NULL)
+hom_plot_r0_by_location(extracted_posts = NULL, posts = NULL, sort = TRUE)
 }
 \arguments{
 \item{extracted_posts}{object returned by hom_extract_posterior_draws}
 
 \item{posts}{Object after calling extract of stan model object of hierarchical model}
+
+\item{sort}{TRUE/FALSE. If TRUE (default), locations will be ordered by mean R0}
 }
 \value{
 list containing:
@@ -21,7 +23,7 @@ If extracted_posts is NULL then posts object is used to first extract the R0
 and incidence draws from posterior (note this will take longer)
 }
 \note{
-Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model
+Naming convention throughout is snake case with prefix "hom_" to denote Hierarchical Outbreak Model
 }
 \examples{
 \dontrun{

@@ -9,7 +9,8 @@ hom_plot_incidence_by_location(
   posts = NULL,
   outbreak_cases = NULL,
   end_time = 60,
-  location_labels = NULL
+  location_labels = NULL,
+  sort = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ hom_plot_incidence_by_location(
 
 \item{location_labels}{tibble with columns `site` and `location`. Will be used to
 relabel numeric location to values in `site` column}
+
+\item{sort}{TRUE/FALSE. If TRUE (default), locations will be ordered by mean R0}
 }
 \value{
 list containing:

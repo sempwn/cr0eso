@@ -199,7 +199,7 @@ hom_plot_critical_times_by_location(posts,
 
 ```
 
-# Hierarcichal intervention model
+# Hierarchichal intervention model
 
 Fit model including estimating intervention by each location in a hierarchical
 design,
@@ -227,7 +227,7 @@ posts <- rstan::extract(bc_fit_zeta$model)
 extracted_posts <- hom_extract_posterior_draws(posts,
                                   location_labels = location_labels) 
 
-result <- hom_plot_r0_by_location(extracted_posts=extracted_posts)
+result <- hom_plot_r0_by_location(extracted_posts=extracted_posts, sort=FALSE)
 
 # plot results
 show(result$plot + labs(y=TeX("$R_{0,k}$")))
@@ -244,7 +244,7 @@ result$table %>%
 
 ```{r fig.hieght=12,fig.width=8}
 
-result <- hom_plot_zeta_by_location(extracted_posts=extracted_posts)
+result <- hom_plot_zeta_by_location(extracted_posts=extracted_posts,sort=FALSE)
 
 # plot results
 show(result$plot)
@@ -261,8 +261,8 @@ result$table %>%
 ```{r, fig.height=12,fig.width=8}
 result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
                                          outbreak_cases = outbreak_cases,
-                                         location_labels = location_labels
-                                         )
+                                         location_labels = location_labels,
+                                         sort=FALSE)
 # plot results
 result$plot
 

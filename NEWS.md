@@ -10,6 +10,12 @@
 
 * New `hom_plot_critical_times_by_location()` plots critical time by location.
 
+* In `hom_plot_r0_by_location()`, also takes optional `sort` variable.
+
+* In `hom_plot_zeta_by_location()`, also takes optional `sort` variable.
+
+* In `hom_plot_incidence_by_location`, also takes optional `sort` variable.
+
 
 # cr0eso 0.0.0.9001
 
