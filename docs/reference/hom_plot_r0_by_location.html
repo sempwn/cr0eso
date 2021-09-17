@@ -135,7 +135,7 @@ and incidence draws from posterior (note this will take longer)" />
 and incidence draws from posterior (note this will take longer)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hom_plot_r0_by_location</span><span class='op'>(</span>extracted_posts <span class='op'>=</span> <span class='cn'>NULL</span>, posts <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>hom_plot_r0_by_location</span><span class='op'>(</span>extracted_posts <span class='op'>=</span> <span class='cn'>NULL</span>, posts <span class='op'>=</span> <span class='cn'>NULL</span>, sort <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,6 +148,10 @@ and incidence draws from posterior (note this will take longer)</p>
       <th>posts</th>
       <td><p>Object after calling extract of stan model object of hierarchical model</p></td>
     </tr>
+    <tr>
+      <th>sort</th>
+      <td><p>TRUE/FALSE. If TRUE (default), locations will be ordered by mean R0</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -157,7 +161,7 @@ and incidence draws from posterior (note this will take longer)</p>
  * table - tibble object of results</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Naming convention throughout is snake case with prefix "hom_" to denote Hierarcical Outbreak Model</p>
+    <p>Naming convention throughout is snake case with prefix "hom_" to denote Hierarchical Outbreak Model</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

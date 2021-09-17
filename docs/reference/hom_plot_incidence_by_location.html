@@ -140,7 +140,8 @@ incidence draws from posterior (note this will take longer)</p>
   posts <span class='op'>=</span> <span class='cn'>NULL</span>,
   outbreak_cases <span class='op'>=</span> <span class='cn'>NULL</span>,
   end_time <span class='op'>=</span> <span class='fl'>60</span>,
-  location_labels <span class='op'>=</span> <span class='cn'>NULL</span>
+  location_labels <span class='op'>=</span> <span class='cn'>NULL</span>,
+  sort <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -166,6 +167,10 @@ incidence draws from posterior (note this will take longer)</p>
       <th>location_labels</th>
       <td><p>tibble with columns `site` and `location`. Will be used to
 relabel numeric location to values in `site` column</p></td>
+    </tr>
+    <tr>
+      <th>sort</th>
+      <td><p>TRUE/FALSE. If TRUE (default), locations will be ordered by mean R0</p></td>
     </tr>
     </table>
 

@@ -796,9 +796,9 @@ total
                                     location_labels <span class="op">=</span> <span class="va">location_labels</span><span class="op">)</span></code></pre></div>
 <p><img src="BC_outbreak_data_fitting_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
-<div id="hierarcichal-intervention-model" class="section level1">
+<div id="hierarchichal-intervention-model" class="section level1">
 <h1 class="hasAnchor">
-<a href="#hierarcichal-intervention-model" class="anchor"></a>Hierarcichal intervention model</h1>
+<a href="#hierarchichal-intervention-model" class="anchor"></a>Hierarchichal intervention model</h1>
 <p>Fit model including estimating intervention by each location in a hierarchical design,</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bc_fit_zeta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seir_model_fit.html">seir_model_fit</a></span><span class="op">(</span>
@@ -818,7 +818,7 @@ total
                                   location_labels <span class="op">=</span> <span class="va">location_labels</span><span class="op">)</span> 
 <span class="co">#&gt; Warning in rpois(dplyr::n(), incidence): NAs produced</span>
 
-<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_r0_by_location.html">hom_plot_r0_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span><span class="op">)</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_r0_by_location.html">hom_plot_r0_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span>, sort<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Ignoring unknown parameters: fun.y</span>
 
 <span class="co"># plot results</span>
@@ -850,18 +850,18 @@ Total
 </tr>
 <tr>
 <td style="text-align:left;">
-Q
-</td>
-<td style="text-align:left;">
-9.71 (7.25 - 13.07)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 R
 </td>
 <td style="text-align:left;">
 9.04 (6.86 - 12.51)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Q
+</td>
+<td style="text-align:left;">
+9.71 (7.25 - 13.07)
 </td>
 </tr>
 <tr>
@@ -874,6 +874,14 @@ P
 </tr>
 <tr>
 <td style="text-align:left;">
+O
+</td>
+<td style="text-align:left;">
+6.24 (4.58 - 8.52)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 N
 </td>
 <td style="text-align:left;">
@@ -882,10 +890,42 @@ N
 </tr>
 <tr>
 <td style="text-align:left;">
-O
+M
 </td>
 <td style="text-align:left;">
-6.24 (4.58 - 8.52)
+4.44 (2.76 - 6.91)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+L
+</td>
+<td style="text-align:left;">
+3.42 (2.3 - 5.03)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+K
+</td>
+<td style="text-align:left;">
+2.25 (1.5 - 3.45)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+J
+</td>
+<td style="text-align:left;">
+2.41 (1.57 - 3.63)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+I
+</td>
+<td style="text-align:left;">
+2.62 (1.42 - 4.88)
 </td>
 </tr>
 <tr>
@@ -898,10 +938,10 @@ H
 </tr>
 <tr>
 <td style="text-align:left;">
-M
+G
 </td>
 <td style="text-align:left;">
-4.44 (2.76 - 6.91)
+3.38 (1.69 - 6.38)
 </td>
 </tr>
 <tr>
@@ -922,42 +962,10 @@ E
 </tr>
 <tr>
 <td style="text-align:left;">
-G
-</td>
-<td style="text-align:left;">
-3.38 (1.69 - 6.38)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-L
-</td>
-<td style="text-align:left;">
-3.42 (2.3 - 5.03)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 D
 </td>
 <td style="text-align:left;">
 2.99 (1.33 - 6.59)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B
-</td>
-<td style="text-align:left;">
-2.69 (1.21 - 5.76)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-I
-</td>
-<td style="text-align:left;">
-2.62 (1.42 - 4.88)
 </td>
 </tr>
 <tr>
@@ -970,26 +978,18 @@ C
 </tr>
 <tr>
 <td style="text-align:left;">
+B
+</td>
+<td style="text-align:left;">
+2.69 (1.21 - 5.76)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 A
 </td>
 <td style="text-align:left;">
 2.37 (1.04 - 4.68)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-J
-</td>
-<td style="text-align:left;">
-2.41 (1.57 - 3.63)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-K
-</td>
-<td style="text-align:left;">
-2.25 (1.5 - 3.45)
 </td>
 </tr>
 </tbody>
@@ -1000,7 +1000,7 @@ K
 <a href="#plot-hierarchical-intervention-strength-by-location-zeta" class="anchor"></a>Plot hierarchical intervention strength by location (zeta)</h2>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_zeta_by_location.html">hom_plot_zeta_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span><span class="op">)</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_zeta_by_location.html">hom_plot_zeta_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span>,sort<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Ignoring unknown parameters: fun.y</span>
 
 <span class="co"># plot results</span>
@@ -1032,66 +1032,10 @@ Total
 </tr>
 <tr>
 <td style="text-align:left;">
-A
+R
 </td>
 <td style="text-align:left;">
-0.27 (0.13 - 0.51)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-B
-</td>
-<td style="text-align:left;">
-0.21 (0.09 - 0.46)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-D
-</td>
-<td style="text-align:left;">
-0.2 (0.09 - 0.41)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-H
-</td>
-<td style="text-align:left;">
-0.19 (0.1 - 0.33)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-E
-</td>
-<td style="text-align:left;">
-0.18 (0.08 - 0.34)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-C
-</td>
-<td style="text-align:left;">
-0.16 (0.08 - 0.34)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-F
-</td>
-<td style="text-align:left;">
-0.14 (0.07 - 0.28)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-G
-</td>
-<td style="text-align:left;">
-0.13 (0.07 - 0.23)
+0.03 (0.01 - 0.08)
 </td>
 </tr>
 <tr>
@@ -1100,6 +1044,22 @@ Q
 </td>
 <td style="text-align:left;">
 0.11 (0.08 - 0.13)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+P
+</td>
+<td style="text-align:left;">
+0.06 (0.04 - 0.07)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+O
+</td>
+<td style="text-align:left;">
+0.06 (0.04 - 0.08)
 </td>
 </tr>
 <tr>
@@ -1120,22 +1080,6 @@ M
 </tr>
 <tr>
 <td style="text-align:left;">
-I
-</td>
-<td style="text-align:left;">
-0.07 (0.03 - 0.13)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-O
-</td>
-<td style="text-align:left;">
-0.06 (0.04 - 0.08)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 L
 </td>
 <td style="text-align:left;">
@@ -1144,10 +1088,10 @@ L
 </tr>
 <tr>
 <td style="text-align:left;">
-P
+K
 </td>
 <td style="text-align:left;">
-0.06 (0.04 - 0.07)
+0.03 (0.01 - 0.05)
 </td>
 </tr>
 <tr>
@@ -1160,18 +1104,74 @@ J
 </tr>
 <tr>
 <td style="text-align:left;">
-R
+I
 </td>
 <td style="text-align:left;">
-0.03 (0.01 - 0.08)
+0.07 (0.03 - 0.13)
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-K
+H
 </td>
 <td style="text-align:left;">
-0.03 (0.01 - 0.05)
+0.19 (0.1 - 0.33)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+G
+</td>
+<td style="text-align:left;">
+0.13 (0.07 - 0.23)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+F
+</td>
+<td style="text-align:left;">
+0.14 (0.07 - 0.28)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+E
+</td>
+<td style="text-align:left;">
+0.18 (0.08 - 0.34)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:left;">
+0.2 (0.09 - 0.41)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:left;">
+0.16 (0.08 - 0.34)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:left;">
+0.21 (0.09 - 0.46)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:left;">
+0.27 (0.13 - 0.51)
 </td>
 </tr>
 </tbody>
@@ -1183,8 +1183,8 @@ K
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_plot_incidence_by_location.html">hom_plot_incidence_by_location</a></span><span class="op">(</span>extracted_posts<span class="op">=</span><span class="va">extracted_posts</span>,
                                          outbreak_cases <span class="op">=</span> <span class="va">outbreak_cases</span>,
-                                         location_labels <span class="op">=</span> <span class="va">location_labels</span>
-                                         <span class="op">)</span>
+                                         location_labels <span class="op">=</span> <span class="va">location_labels</span>,
+                                         sort<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="co"># plot results</span>
 <span class="va">result</span><span class="op">$</span><span class="va">plot</span>
 <span class="co">#&gt; Warning: Removed 18 row(s) containing missing values (geom_path).</span></code></pre></div>
