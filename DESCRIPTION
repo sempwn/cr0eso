@@ -55,5 +55,6 @@ RoxygenNote: 7.1.1
 Suggests: 
     R0,
     knitr,
-    rmarkdown
+    rmarkdown,
+    directlabels
 VignetteBuilder: knitr

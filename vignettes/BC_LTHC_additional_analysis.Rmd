@@ -21,6 +21,7 @@ library(ggstance)
 library(scales)
 library(lubridate)
 library(gridExtra)
+library(directlabels)
 
 library("cr0eso")
 
@@ -46,6 +47,114 @@ The data is formatted as a list with 100 imputations of the missing symptom onse
 str(BC_LTHC_outbreaks_100Imputs[[1]])
 
 ```
+
+### Capacity by outbreak size plot
+
+```{r}
+
+outbreak_data <- as_tibble(BC_LTHC_outbreaks_100Imputs[[1]]$case_matrix)
+names(outbreak_data) <- as.character(BC_LTHC_outbreaks_100Imputs[[1]]$Location)
+outbreak_data$date <- 1:nrow(outbreak_data)
+outbreak_data <- outbreak_data %>% 
+  pivot_longer(-date,names_to="location",values_to="cases") %>%
+  left_join(tibble(location=as.character(BC_LTHC_outbreaks_100Imputs[[1]]$Location),
+                   capacity=BC_LTHC_outbreaks_100Imputs[[1]]$capacity,
+                   reported_date=BC_LTHC_outbreaks_100Imputs[[1]]$reported_date,
+                   num_cases=BC_LTHC_outbreaks_100Imputs[[1]]$num_cases,
+                   ),by="location")
+# plot non-zero outbreaks
+plot_data <- outbreak_data %>%
+  group_by(location,capacity) %>%
+  summarize(outbreak_size=sum(cases),
+            reported_date = min(reported_date)) %>%
+  filter(outbreak_size>1)
+  
+lab_dates <- pretty(plot_data$reported_date)
+
+p <- plot_data %>%
+  ggplot(aes(x=capacity,y=outbreak_size,color=as.numeric(reported_date))) +
+  geom_point(size=1.8) +
+  xlim(0,300) +
+  stat_smooth(method='lm', formula=y~0 + x, fullrange=TRUE) +
+  geom_abline(slope=1,intercept=0,linetype="dashed",alpha=0.5) +
+  coord_cartesian(expand=FALSE,xlim = c(0,305), ylim=c(0,95)) +
+  scale_color_continuous(breaks = as.numeric(lab_dates), 
+                       labels = lab_dates,
+                       type = "viridis") +
+  theme_classic() +
+  labs(y="Total outbreak size",x="Maximum capacity",
+       color="Reported date")
+show(p)
+```
+
+
+### Cumulative cases plot
+
+```{r}
+r0_uc_slope <- (3-1)/5.
+r0_lc_slope <- (1.1-1)/5.
+
+
+plot_data <- outbreak_data %>% 
+  mutate(location = as_factor(location)) %>%
+  group_by(location) %>%
+  mutate(
+    start_date = min(reported_date),
+    days_first_case = date
+    ) %>%
+  group_by(location) %>% 
+  arrange(days_first_case) %>% 
+  mutate(cumulative_cases = cumsum(cases)) %>%
+  # filter to day of last case
+  mutate(is_max = cumulative_cases == max(cumulative_cases)) %>%
+  group_by(location,is_max) %>%
+  mutate(max_date = min(days_first_case)) %>%
+  group_by(location) %>%
+  mutate(max_date = max(max_date)) %>%
+  filter(date <= max_date)
+
+
+
+
+# Define the number of colors you want 
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+cols = gg_color_hue(32)
+
+
+p <- plot_data %>%
+  ggplot(aes(x=days_first_case,y=cumulative_cases,color = location)) +
+  geom_line() +
+  scale_y_log10() +
+  coord_equal(ratio = 10) +
+  geom_dl(aes(label = location), method = list(dl.combine("first.points", "last.points"), cex = 0.8)) +
+  scale_colour_manual(values = cols) +
+  geom_abline(slope=r0_lc_slope,intercept=0,linetype="dashed", col="black") + 
+  geom_abline(slope=r0_uc_slope,intercept=0,linetype="dashed", col="black") + 
+  annotate(
+    "text",
+    x = 5,
+    y = exp(5 * r0_uc_slope + 1),
+    angle = atan(r0_uc_slope * 10) * 180/pi,
+    label = "R0 = 3"
+  ) +
+  annotate(
+    "text",
+    x = 10,
+    y = exp(10 * r0_lc_slope - 0.01),
+    angle = atan(r0_lc_slope * 10) * 180/pi,
+    label = "R0 = 1.1"
+  ) +
+  coord_cartesian(ylim=c(1,100), xlim=c(0, 60), expand=FALSE) +
+  theme_classic() +
+  theme(legend.position="none") +
+  labs(y= "Cumulative cases",x="Days since first reported case")
+
+show(p)
+```
+
 ## Estimate R0 in each outbreak, using EG and ML methods
 
 For each of the 100 imputations, we estimate R0 independently in each facility using exponential growth (EG) and maximum likelihood (ML) methods, with the 'R0' library.
