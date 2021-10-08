@@ -78,7 +78,7 @@
 
       
 
-      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.8/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.10/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -124,12 +124,125 @@
 <span class="co">#&gt;  $ capacity     : num [1:18] 139 91 189 120 142 300 87 40 66 236 ...</span>
 <span class="co">#&gt;  $ reported_date: Date[1:18], format: "2020-04-28" "2020-04-25" ...</span>
 <span class="co">#&gt;  $ case_matrix  : num [1:50, 1:18] 1 0 0 1 0 0 1 1 0 1 ...</span></code></pre></div>
+<div id="capacity-by-outbreak-size-plot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#capacity-by-outbreak-size-plot" class="anchor"></a>Capacity by outbreak size plot</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">outbreak_data</span> <span class="op">&lt;-</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">case_matrix</span><span class="op">)</span>
+<span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
+<span class="co">#&gt; Using compatibility `.name_repair`.</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">outbreak_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Location</span><span class="op">)</span>
+<span class="va">outbreak_data</span><span class="op">$</span><span class="va">date</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">outbreak_data</span><span class="op">)</span>
+<span class="va">outbreak_data</span> <span class="op">&lt;-</span> <span class="va">outbreak_data</span> <span class="op">%&gt;%</span> 
+  <span class="fu">pivot_longer</span><span class="op">(</span><span class="op">-</span><span class="va">date</span>,names_to<span class="op">=</span><span class="st">"location"</span>,values_to<span class="op">=</span><span class="st">"cases"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">left_join</span><span class="op">(</span><span class="fu">tibble</span><span class="op">(</span>location<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Location</span><span class="op">)</span>,
+                   capacity<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span>,
+                   reported_date<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">reported_date</span>,
+                   num_cases<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">num_cases</span>,
+                   <span class="op">)</span>,by<span class="op">=</span><span class="st">"location"</span><span class="op">)</span>
+<span class="co"># plot non-zero outbreaks</span>
+<span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="va">outbreak_data</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span>,<span class="va">capacity</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">summarize</span><span class="op">(</span>outbreak_size<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span>,
+            reported_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">reported_date</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">outbreak_size</span><span class="op">&gt;</span><span class="fl">1</span><span class="op">)</span>
+<span class="co">#&gt; `summarise()` has grouped output by 'location'. You can override using the `.groups` argument.</span>
+  
+<span class="va">lab_dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/pretty.html">pretty</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">reported_date</span><span class="op">)</span>
+<span class="co">#&gt; Warning in as.POSIXlt.POSIXct(x): unknown timezone 'GMT'</span>
+
+<span class="va">p</span> <span class="op">&lt;-</span> <span class="va">plot_data</span> <span class="op">%&gt;%</span>
+  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">capacity</span>,y<span class="op">=</span><span class="va">outbreak_size</span>,color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">reported_date</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_point</span><span class="op">(</span>size<span class="op">=</span><span class="fl">1.8</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">xlim</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">stat_smooth</span><span class="op">(</span>method<span class="op">=</span><span class="st">'lm'</span>, formula<span class="op">=</span><span class="va">y</span><span class="op">~</span><span class="fl">0</span> <span class="op">+</span> <span class="va">x</span>, fullrange<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_abline</span><span class="op">(</span>slope<span class="op">=</span><span class="fl">1</span>,intercept<span class="op">=</span><span class="fl">0</span>,linetype<span class="op">=</span><span class="st">"dashed"</span>,alpha<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">coord_cartesian</span><span class="op">(</span>expand<span class="op">=</span><span class="cn">FALSE</span>,xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">305</span><span class="op">)</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">95</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">scale_color_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">lab_dates</span><span class="op">)</span>, 
+                       labels <span class="op">=</span> <span class="va">lab_dates</span>,
+                       type <span class="op">=</span> <span class="st">"viridis"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>y<span class="op">=</span><span class="st">"Total outbreak size"</span>,x<span class="op">=</span><span class="st">"Maximum capacity"</span>,
+       color<span class="op">=</span><span class="st">"Reported date"</span><span class="op">)</span>
+<span class="fu">show</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
+<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+</div>
+<div id="cumulative-cases-plot" class="section level3">
+<h3 class="hasAnchor">
+<a href="#cumulative-cases-plot" class="anchor"></a>Cumulative cases plot</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">r0_uc_slope</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">3</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fl">5.</span>
+<span class="va">r0_lc_slope</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1.1</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fl">5.</span>
+
+
+<span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="va">outbreak_data</span> <span class="op">%&gt;%</span> 
+  <span class="fu">mutate</span><span class="op">(</span>location <span class="op">=</span> <span class="fu">as_factor</span><span class="op">(</span><span class="va">location</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>
+    start_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">reported_date</span><span class="op">)</span>,
+    days_first_case <span class="op">=</span> <span class="va">date</span>
+    <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">arrange</span><span class="op">(</span><span class="va">days_first_case</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">mutate</span><span class="op">(</span>cumulative_cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="co"># filter to day of last case</span>
+  <span class="fu">mutate</span><span class="op">(</span>is_max <span class="op">=</span> <span class="va">cumulative_cases</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">cumulative_cases</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span>,<span class="va">is_max</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>max_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">days_first_case</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>max_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">max_date</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">date</span> <span class="op">&lt;=</span> <span class="va">max_date</span><span class="op">)</span>
+
+
+
+
+<span class="co"># Define the number of colors you want </span>
+<span class="va">gg_color_hue</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">hues</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">375</span>, length <span class="op">=</span> <span class="va">n</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/grDevices/hcl.html">hcl</a></span><span class="op">(</span>h <span class="op">=</span> <span class="va">hues</span>, l <span class="op">=</span> <span class="fl">65</span>, c <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">]</span>
+<span class="op">}</span>
+<span class="va">cols</span> <span class="op">=</span> <span class="fu">gg_color_hue</span><span class="op">(</span><span class="fl">32</span><span class="op">)</span>
+
+
+<span class="va">p</span> <span class="op">&lt;-</span> <span class="va">plot_data</span> <span class="op">%&gt;%</span>
+  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">days_first_case</span>,y<span class="op">=</span><span class="va">cumulative_cases</span>,color <span class="op">=</span> <span class="va">location</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">coord_equal</span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_dl</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">location</span><span class="op">)</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu">dl.combine</span><span class="op">(</span><span class="st">"first.points"</span>, <span class="st">"last.points"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">scale_colour_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_abline</span><span class="op">(</span>slope<span class="op">=</span><span class="va">r0_lc_slope</span>,intercept<span class="op">=</span><span class="fl">0</span>,linetype<span class="op">=</span><span class="st">"dashed"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">geom_abline</span><span class="op">(</span>slope<span class="op">=</span><span class="va">r0_uc_slope</span>,intercept<span class="op">=</span><span class="fl">0</span>,linetype<span class="op">=</span><span class="st">"dashed"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">annotate</span><span class="op">(</span>
+    <span class="st">"text"</span>,
+    x <span class="op">=</span> <span class="fl">5</span>,
+    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fl">5</span> <span class="op">*</span> <span class="va">r0_uc_slope</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>,
+    angle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">atan</a></span><span class="op">(</span><span class="va">r0_uc_slope</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span> <span class="op">*</span> <span class="fl">180</span><span class="op">/</span><span class="va">pi</span>,
+    label <span class="op">=</span> <span class="st">"R0 = 3"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">annotate</span><span class="op">(</span>
+    <span class="st">"text"</span>,
+    x <span class="op">=</span> <span class="fl">10</span>,
+    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fl">10</span> <span class="op">*</span> <span class="va">r0_lc_slope</span> <span class="op">-</span> <span class="fl">0.01</span><span class="op">)</span>,
+    angle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">atan</a></span><span class="op">(</span><span class="va">r0_lc_slope</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span> <span class="op">*</span> <span class="fl">180</span><span class="op">/</span><span class="va">pi</span>,
+    label <span class="op">=</span> <span class="st">"R0 = 1.1"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">coord_cartesian</span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">100</span><span class="op">)</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span><span class="op">)</span>, expand<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">theme</span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>y<span class="op">=</span> <span class="st">"Cumulative cases"</span>,x<span class="op">=</span><span class="st">"Days since first reported case"</span><span class="op">)</span>
+<span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
+
+<span class="fu">show</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
+<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+</div>
 </div>
 <div id="estimate-r0-in-each-outbreak-using-eg-and-ml-methods" class="section level2">
 <h2 class="hasAnchor">
 <a href="#estimate-r0-in-each-outbreak-using-eg-and-ml-methods" class="anchor"></a>Estimate R0 in each outbreak, using EG and ML methods</h2>
 <p>For each of the 100 imputations, we estimate R0 independently in each facility using exponential growth (EG) and maximum likelihood (ML) methods, with the ‘R0’ library.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nIts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">)</span>
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"list"</span>, length <span class="op">=</span> <span class="va">nIts</span><span class="op">)</span>
 
@@ -164,7 +277,7 @@
 <h2 class="hasAnchor">
 <a href="#output-files-and-summary" class="anchor"></a>Output files and summary</h2>
 <p>We collect summaries of the R0 estimates from a single imputation (the final one), and also calculate confidence intervals across all 100 imputations as a sensitivity analysis.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Relabel locations according to manuscript labelling</span>
 <span class="va">fac_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q"</span>, <span class="st">"I"</span>, <span class="st">"J"</span>, <span class="st">"K"</span>, <span class="st">"O"</span>, <span class="st">"A"</span>, <span class="st">"D"</span>, <span class="st">"N"</span>, <span class="st">"B"</span>, <span class="st">"L"</span>, <span class="st">"R"</span>, <span class="st">"H"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"F"</span>, <span class="st">"P"</span>, <span class="st">"E"</span><span class="op">)</span>
 
@@ -644,7 +757,7 @@ R
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Secondly, the final imputation as the primary result</span>
 <span class="va">er_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Location<span class="op">=</span><span class="va">fac_names</span>,
@@ -1116,18 +1229,18 @@ R
 <h2 class="hasAnchor">
 <a href="#quick-results-visualisation" class="anchor"></a>Quick results visualisation</h2>
 <p>Some simple plots of the results.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">EG</span>, breaks<span class="op">=</span><span class="fl">20</span>, main<span class="op">=</span><span class="st">"EG R0 estimates"</span>, xlab<span class="op">=</span><span class="st">"R0"</span>, col<span class="op">=</span><span class="st">"steelblue4"</span><span class="op">)</span></code></pre></div>
-<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span>, breaks<span class="op">=</span><span class="fl">20</span>, main<span class="op">=</span><span class="st">"ML R0 estimates"</span>, xlab<span class="op">=</span><span class="st">"R0"</span>, col<span class="op">=</span><span class="st">"steelblue4"</span><span class="op">)</span></code></pre></div>
-<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
+<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-6-2.png" width="700"></p>
 </div>
 <div id="attack-rates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#attack-rates" class="anchor"></a>Attack rates</h2>
 <p>We calculate the attack rate in each outbreak as the number of cases divided by the facility capacity. We incorporate uncertainty in the attack rate by varying the denominator from 85% to 115% of the known capacity. R0 is also estimated from the attack rate, according to the relation -log(1-A_r)/A_r = R0.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">AR_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">"Facility"</span> <span class="op">=</span> <span class="va">fac_names</span>,  
                   <span class="st">"No. cases"</span> <span class="op">=</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">num_cases</span>,
                   <span class="st">"Capacity"</span> <span class="op">=</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span>,
@@ -1709,7 +1822,7 @@ R
 <h2 class="hasAnchor">
 <a href="#compare-attack-rate-to-r0-estimates-from-different-methods" class="anchor"></a>Compare attack rate to R0 estimates from different methods</h2>
 <p>Next, compare EG and ML estimates with results from the Bayesian hierarchical model, against the attack rate.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># The Bayesian hierarchical model results (from the manuscript) are manually set here, so remember to update these if you are adapting this script for another analysis. </span>
 <span class="va">BHM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.47</span>, <span class="fl">0.68</span>, <span class="fl">0.74</span>, <span class="fl">0.8</span>, <span class="fl">1.06</span>, <span class="fl">1.32</span>, <span class="fl">1.37</span>, <span class="fl">1.38</span>, <span class="fl">1.92</span>, <span class="fl">2.67</span>, <span class="fl">2.83</span>, <span class="fl">2.94</span>, <span class="fl">3.07</span>, <span class="fl">4.27</span>, <span class="fl">5.33</span>, <span class="fl">5.71</span>, <span class="fl">8.32</span>, <span class="fl">8.96</span><span class="op">)</span>
 <span class="co"># The following aren't used until the next chunk:</span>
@@ -1735,13 +1848,13 @@ R
 <span class="co">#&gt; `geom_smooth()` using formula 'y ~ x'</span>
 <span class="co">#&gt; Warning: Removed 2 rows containing non-finite values (stat_smooth).</span>
 <span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
 </div>
 <div id="compare-r0-estimates-from-three-main-methods-bhm-eg-ml" class="section level2">
 <h2 class="hasAnchor">
 <a href="#compare-r0-estimates-from-three-main-methods-bhm-eg-ml" class="anchor"></a>Compare R0 estimates from three main methods (BHM, EG, ML)</h2>
 <p>This figure compares point estimates and confidence intervals/credible intervals from the BHM (single- and multi- level zeta), EG and ML methods.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co">## First combine the results into a data frame</span>
 <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">Location</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,
@@ -1767,14 +1880,14 @@ R
 <span class="va">p</span>
 <span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_errorbarh).</span>
 <span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
 </div>
 <div id="correlations-between-r0-estimates-and-additional-lthc-facility-covariate-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#correlations-between-r0-estimates-and-additional-lthc-facility-covariate-data" class="anchor"></a>Correlations between R0 estimates and additional LTHC facility covariate data</h2>
 <p>In this section we investigate any relationships between the facility R0 estimates and additional data obtained on the LTHC facilities (age of facility, room type etc.). The additional data is primarily contained in <em>italic</em>BC_OSABC_facilitydata.rda<em>italic</em>, and some factors we have loaded already (e.g. outbreak reported date).</p>
 <p>First, we take a look at a few of these individually:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Take a look at the additional factor data:</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">BC_OSABC_facilitydata</span><span class="op">)</span>
@@ -1868,7 +1981,7 @@ R
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"ML and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">)</span><span class="op">]</span>, <span class="va">rep_date</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "ML and facility capacity correlation = -0.044"</span></code></pre></div>
 <p>Finally, we create figures and tables for all factors available.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"> <span class="co"># Make a tibble with the loaded factor data, but also outbreak reported date and facility capacity.</span>
 <span class="va">cor_data</span> <span class="op">&lt;-</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="va">BC_OSABC_facilitydata</span><span class="op">)</span>
 <span class="va">cor_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">cor_data</span>, <span class="va">fac_cap</span>, <span class="va">rep_date</span><span class="op">)</span>
@@ -2185,7 +2298,7 @@ two.sided
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 
 <span class="co"># And correlations for dichotomous categorical factors (point-biserial)</span>
@@ -2218,8 +2331,8 @@ two.sided
   <span class="fu">theme</span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">grid.arrange</span><span class="op">(</span>grobs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">p2</span>, <span class="va">p1</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 22 rows containing missing values (geom_point).</span></code></pre></div>
-<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-9-1.png" width="960"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-11-1.png" width="960"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># If using paper colour scheme, reset the colour theme:</span>
 <span class="co">#ggthemr_reset()</span></code></pre></div>

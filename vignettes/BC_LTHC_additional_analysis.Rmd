@@ -64,9 +64,17 @@ The data is formatted as a list with 100 imputations of the missing symptom onse
 str(BC_LTHC_outbreaks_100Imputs[[100]])
 
 ```
+<<<<<<< HEAD
 ### Capacity by outbreak size plot
 
 ```{r}
+=======
+
+### Capacity by outbreak size plot
+
+```{r}
+
+>>>>>>> d04d8e5629f92838733b479df521fd672b483f35
 outbreak_data <- as_tibble(BC_LTHC_outbreaks_100Imputs[[1]]$case_matrix)
 names(outbreak_data) <- as.character(BC_LTHC_outbreaks_100Imputs[[1]]$Location)
 outbreak_data$date <- 1:nrow(outbreak_data)
@@ -85,6 +93,10 @@ plot_data <- outbreak_data %>%
   filter(outbreak_size>1)
   
 lab_dates <- pretty(plot_data$reported_date)
+<<<<<<< HEAD
+=======
+
+>>>>>>> d04d8e5629f92838733b479df521fd672b483f35
 p <- plot_data %>%
   ggplot(aes(x=capacity,y=outbreak_size,color=as.numeric(reported_date))) +
   geom_point(size=1.8) +
@@ -107,6 +119,11 @@ show(p)
 ```{r}
 r0_uc_slope <- (3-1)/5.
 r0_lc_slope <- (1.1-1)/5.
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> d04d8e5629f92838733b479df521fd672b483f35
 plot_data <- outbreak_data %>% 
   mutate(location = as_factor(location)) %>%
   group_by(location) %>%
@@ -124,12 +141,24 @@ plot_data <- outbreak_data %>%
   group_by(location) %>%
   mutate(max_date = max(max_date)) %>%
   filter(date <= max_date)
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> d04d8e5629f92838733b479df521fd672b483f35
 # Define the number of colors you want 
 gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
 cols = gg_color_hue(32)
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> d04d8e5629f92838733b479df521fd672b483f35
 p <- plot_data %>%
   ggplot(aes(x=days_first_case,y=cumulative_cases,color = location)) +
   geom_line() +
@@ -157,10 +186,17 @@ p <- plot_data %>%
   theme_classic() +
   theme(legend.position="none") +
   labs(y= "Cumulative cases",x="Days since first reported case")
+<<<<<<< HEAD
 show(p)
 ```
 
 
+=======
+
+show(p)
+```
+
+>>>>>>> d04d8e5629f92838733b479df521fd672b483f35
 ## Estimate R0 in each outbreak, using EG and ML methods
 
 For each of the 100 imputations, we estimate R0 independently in each facility using exponential growth (EG) and maximum likelihood (ML) methods, with the 'R0' library.
