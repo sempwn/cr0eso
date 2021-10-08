@@ -16,13 +16,10 @@ options(mc.cores = parallel::detectCores())
 library(tidyverse)
 library(rstan)
 library(kableExtra)
-library(here)
 library(tidybayes)
 library(latex2exp)
 library(cr0eso)
 library(scales)
-library(ggsidekick)
-
 
 # constants
 bootstrap_options <- c("striped", "hover")
