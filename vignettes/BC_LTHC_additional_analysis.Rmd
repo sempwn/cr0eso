@@ -64,7 +64,6 @@ The data is formatted as a list with 100 imputations of the missing symptom onse
 str(BC_LTHC_outbreaks_100Imputs[[100]])
 
 ```
-# START PASTED
 ### Capacity by outbreak size plot
 
 ```{r}
@@ -159,43 +158,6 @@ p <- plot_data %>%
   theme(legend.position="none") +
   labs(y= "Cumulative cases",x="Days since first reported case")
 show(p)
-```
-
-#END PASTED
-
-## Cumulative cases in each outbreak over time
-
-```{r}
-df <- data.frame(BC_LTHC_outbreaks_100Imputs[[100]]$case_matrix)
-colnames(df) <- BC_LTHC_outbreaks_100Imputs[[100]]$Location
-df <- cbind(Day=1:nrow(df),df)
-
-r0_uc_slope <- (3-1)/5
-r0_lc_slope <- (1.1-1)/5
-
-df %>% 
-  pivot_longer(-1) %>% filter(value > 0) %>% group_by(name) %>% mutate(csum = cumsum(value)) %>%
-  ggplot(aes(x = Day, y = csum, group = name, colour = name)) + 
-  geom_line(show.legend = FALSE) + theme_classic() + xlab("Days since first symptom onset") +  ylab("Cumulative cases") + scale_y_log10() +
-  geom_abline(slope=r0_lc_slope,intercept=0,linetype="dashed", col="black") + 
-  geom_abline(slope=r0_uc_slope,intercept=0,linetype="dashed", col="black") +
-  geom_dl(aes(label = name), method = list(dl.combine("last.points"), cex = 0.8)) + 
-  annotate(
-    "text",
-    x = 5,
-    y = exp(5 * r0_uc_slope + 1),
-    angle = atan(r0_uc_slope * 10) * 180/pi,
-    label = "R0 = 3"
-  ) +
-  annotate(
-    "text",
-    x = 10,
-    y = exp(10 * r0_lc_slope - 0.01),
-    angle = atan(r0_lc_slope * 10) * 180/pi,
-    label = "R0 = 1.1"
-  )
-
-
 ```
 
 
