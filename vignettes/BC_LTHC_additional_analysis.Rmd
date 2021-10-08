@@ -43,8 +43,8 @@ set.seed(836361)
 The data is formatted as a list with 100 imputations of the missing symptom onset times. For each imputation, the list contains data on the number of cases, time series of cases (by symptom onset), the facility capacity and the outbreak reported date for each facility outbreak. It also contains the time series of cases as a matrix, but we will not use that here. 
 
 ```{r}
-# View the first imputation of missing data:
-str(BC_LTHC_outbreaks_100Imputs[[1]])
+# View the final imputation of missing data:
+str(BC_LTHC_outbreaks_100Imputs[[100]])
 
 ```
 
