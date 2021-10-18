@@ -78,7 +78,7 @@
 
       
 
-      </header><script src="BC_outbreak_data_fitting_files/header-attrs-2.10/header-attrs.js"></script><script src="BC_outbreak_data_fitting_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_outbreak_data_fitting_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="BC_outbreak_data_fitting_files/header-attrs-2.8/header-attrs.js"></script><script src="BC_outbreak_data_fitting_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_outbreak_data_fitting_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -97,10 +97,7 @@
 <a href="#load-long-term-healthcare-outbreak-data" class="anchor"></a>Load long-term healthcare outbreak data</h2>
 <p>Data loaded includes number of cases since outbreak on a given day for each location, the number of outbreaks, the size of the facility, as well as the labels for the outbreaks.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-
-
-<span class="va">n_outbreaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">n_outbreaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span><span class="op">)</span>
 <span class="va">outbreak_sizes</span> <span class="op">&lt;-</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span>
 <span class="va">outbreak_cases_series</span> <span class="op">&lt;-</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">time_series</span>
 <span class="va">ob_codes</span> <span class="op">&lt;-</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Location</span>
@@ -108,7 +105,7 @@
 
 <span class="va">outbreak_cases</span> <span class="op">&lt;-</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">case_matrix</span>
 
-<span class="va">tmax</span> <span class="op">&lt;-</span> <span class="fl">50</span>
+<span class="va">tmax</span> <span class="op">&lt;-</span> <span class="fl">64</span>
 
 <span class="co"># plot cases from matrix</span>
 <span class="fu">as_tibble</span><span class="op">(</span><span class="va">outbreak_cases</span>,rownames<span class="op">=</span><span class="st">"time"</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -183,15 +180,13 @@
 <code class="sourceCode R"><span class="co"># Extract the posterior samples to a structured list:</span>
 <span class="va">posts</span> <span class="op">&lt;-</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">bc_fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span>
 
-
-
 <span class="va">location_labels</span> <span class="op">&lt;-</span> <span class="fu">spread_draws</span><span class="op">(</span><span class="va">bc_fit</span><span class="op">$</span><span class="va">model</span>,<span class="va">r0k</span><span class="op">[</span><span class="va">location</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">mutate</span><span class="op">(</span>location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">location</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">summarise</span><span class="op">(</span>r0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">r0k</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">arrange</span><span class="op">(</span><span class="va">r0</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">mutate</span><span class="op">(</span>site <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">select</span><span class="op">(</span><span class="va">location</span>,<span class="va">site</span><span class="op">)</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">location</span>,<span class="va">site</span><span class="op">)</span>
 
 <span class="co"># get object of incidence and zeta</span>
 <span class="va">extracted_posts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hom_extract_posterior_draws.html">hom_extract_posterior_draws</a></span><span class="op">(</span><span class="va">posts</span>,

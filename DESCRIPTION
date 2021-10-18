@@ -58,10 +58,7 @@ Suggests:
     R0,
     knitr,
     rmarkdown,
-<<<<<<< HEAD
     ggstance,
     gridExtra,
-=======
->>>>>>> d04d8e5629f92838733b479df521fd672b483f35
     directlabels
 VignetteBuilder: knitr

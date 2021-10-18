@@ -31,9 +31,6 @@ bootstrap_options <- c("striped", "hover")
 Data loaded includes number of cases since outbreak on a given day for each location, the number of outbreaks, the size of the facility, as well as the labels for the outbreaks.
 
 ```{r load data}
-
-
-
 n_outbreaks <- length(BC_LTHC_outbreaks_100Imputs[[100]]$capacity)
 outbreak_sizes <- BC_LTHC_outbreaks_100Imputs[[100]]$capacity
 outbreak_cases_series <- BC_LTHC_outbreaks_100Imputs[[100]]$time_series
@@ -42,7 +39,7 @@ ob_codes <- BC_LTHC_outbreaks_100Imputs[[100]]$Location
 
 outbreak_cases <- BC_LTHC_outbreaks_100Imputs[[100]]$case_matrix
 
-tmax <- 50
+tmax <- 64
 
 # plot cases from matrix
 as_tibble(outbreak_cases,rownames="time") %>%
@@ -102,20 +99,17 @@ Extract the posterior sample and re-label the facilities by their estimated mean
 # Extract the posterior samples to a structured list:
 posts <- rstan::extract(bc_fit$model)
 
-
-
 location_labels <- spread_draws(bc_fit$model,r0k[location]) %>% 
   mutate(location = as.character(location)) %>%
   group_by(location) %>% 
   summarise(r0 = mean(r0k)) %>% 
   arrange(r0) %>% 
   mutate(site = LETTERS[1:n()]) %>%
-  select(location,site)
+  dplyr::select(location,site)
 
 # get object of incidence and zeta
 extracted_posts <- hom_extract_posterior_draws(posts,
                                                location_labels = location_labels) 
-
 
 ```
 
