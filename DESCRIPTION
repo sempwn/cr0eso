@@ -42,7 +42,9 @@ Imports:
     glue,
     stringr,
     tidybayes,
-    purrr
+    purrr,
+    scales,
+    latex2exp
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
@@ -56,5 +58,7 @@ Suggests:
     R0,
     knitr,
     rmarkdown,
+    ggstance,
+    gridExtra,
     directlabels
 VignetteBuilder: knitr

@@ -78,7 +78,7 @@
 
       
 
-      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.10/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.8/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -128,35 +128,13 @@
 <h3 class="hasAnchor">
 <a href="#capacity-by-outbreak-size-plot" class="anchor"></a>Capacity by outbreak size plot</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">outbreak_data</span> <span class="op">&lt;-</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">case_matrix</span><span class="op">)</span>
-<span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
-<span class="co">#&gt; Using compatibility `.name_repair`.</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">outbreak_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Location</span><span class="op">)</span>
-<span class="va">outbreak_data</span><span class="op">$</span><span class="va">date</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">outbreak_data</span><span class="op">)</span>
-<span class="va">outbreak_data</span> <span class="op">&lt;-</span> <span class="va">outbreak_data</span> <span class="op">%&gt;%</span> 
-  <span class="fu">pivot_longer</span><span class="op">(</span><span class="op">-</span><span class="va">date</span>,names_to<span class="op">=</span><span class="st">"location"</span>,values_to<span class="op">=</span><span class="st">"cases"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">left_join</span><span class="op">(</span><span class="fu">tibble</span><span class="op">(</span>location<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Location</span><span class="op">)</span>,
-                   capacity<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span>,
-                   reported_date<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">reported_date</span>,
-                   num_cases<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">num_cases</span>,
-                   <span class="op">)</span>,by<span class="op">=</span><span class="st">"location"</span><span class="op">)</span>
-<span class="co"># plot non-zero outbreaks</span>
-<span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="va">outbreak_data</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span>,<span class="va">capacity</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">summarize</span><span class="op">(</span>outbreak_size<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span>,
-            reported_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">reported_date</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">outbreak_size</span><span class="op">&gt;</span><span class="fl">1</span><span class="op">)</span>
-<span class="co">#&gt; `summarise()` has grouped output by 'location'. You can override using the `.groups` argument.</span>
+<code class="sourceCode R"><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>location<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Location</span>,  capacity<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span>, outbreak_size<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">num_cases</span>, reported_date <span class="op">=</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">reported_date</span><span class="op">)</span>
   
 <span class="va">lab_dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/pretty.html">pretty</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">reported_date</span><span class="op">)</span>
-<span class="co">#&gt; Warning in as.POSIXlt.POSIXct(x): unknown timezone 'GMT'</span>
 
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="va">plot_data</span> <span class="op">%&gt;%</span>
   <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">capacity</span>,y<span class="op">=</span><span class="va">outbreak_size</span>,color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">reported_date</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_point</span><span class="op">(</span>size<span class="op">=</span><span class="fl">1.8</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">xlim</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">stat_smooth</span><span class="op">(</span>method<span class="op">=</span><span class="st">'lm'</span>, formula<span class="op">=</span><span class="va">y</span><span class="op">~</span><span class="fl">0</span> <span class="op">+</span> <span class="va">x</span>, fullrange<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_abline</span><span class="op">(</span>slope<span class="op">=</span><span class="fl">1</span>,intercept<span class="op">=</span><span class="fl">0</span>,linetype<span class="op">=</span><span class="st">"dashed"</span>,alpha<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">coord_cartesian</span><span class="op">(</span>expand<span class="op">=</span><span class="cn">FALSE</span>,xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">305</span><span class="op">)</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">95</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">scale_color_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">lab_dates</span><span class="op">)</span>, 
@@ -168,52 +146,28 @@
 <span class="fu">show</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
 <p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 </div>
-<div id="cumulative-cases-plot" class="section level3">
-<h3 class="hasAnchor">
-<a href="#cumulative-cases-plot" class="anchor"></a>Cumulative cases plot</h3>
+</div>
+<div id="cumulative-cases-plot" class="section level2">
+<h2 class="hasAnchor">
+<a href="#cumulative-cases-plot" class="anchor"></a>Cumulative cases plot</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">r0_uc_slope</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">3</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fl">5.</span>
-<span class="va">r0_lc_slope</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1.1</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fl">5.</span>
+<code class="sourceCode R"><span class="co"># Relabel locations according to manuscript labelling</span>
+<span class="va">fac_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q"</span>, <span class="st">"I"</span>, <span class="st">"J"</span>, <span class="st">"L"</span>, <span class="st">"O"</span>, <span class="st">"A"</span>, <span class="st">"D"</span>, <span class="st">"N"</span>, <span class="st">"B"</span>, <span class="st">"K"</span>, <span class="st">"R"</span>, <span class="st">"H"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"F"</span>, <span class="st">"P"</span>, <span class="st">"E"</span><span class="op">)</span>
 
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">case_matrix</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">fac_names</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>Day<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>,<span class="va">df</span><span class="op">)</span>
 
-<span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="va">outbreak_data</span> <span class="op">%&gt;%</span> 
-  <span class="fu">mutate</span><span class="op">(</span>location <span class="op">=</span> <span class="fu">as_factor</span><span class="op">(</span><span class="va">location</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>
-    start_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">reported_date</span><span class="op">)</span>,
-    days_first_case <span class="op">=</span> <span class="va">date</span>
-    <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">arrange</span><span class="op">(</span><span class="va">days_first_case</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">mutate</span><span class="op">(</span>cumulative_cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">cases</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="co"># filter to day of last case</span>
-  <span class="fu">mutate</span><span class="op">(</span>is_max <span class="op">=</span> <span class="va">cumulative_cases</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">cumulative_cases</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span>,<span class="va">is_max</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>max_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">days_first_case</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>max_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">max_date</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">date</span> <span class="op">&lt;=</span> <span class="va">max_date</span><span class="op">)</span>
+<span class="va">r0_uc_slope</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">3</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fl">5</span>
+<span class="va">r0_lc_slope</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1.1</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fl">5</span>
 
-
-
-
-<span class="co"># Define the number of colors you want </span>
-<span class="va">gg_color_hue</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">hues</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">375</span>, length <span class="op">=</span> <span class="va">n</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/grDevices/hcl.html">hcl</a></span><span class="op">(</span>h <span class="op">=</span> <span class="va">hues</span>, l <span class="op">=</span> <span class="fl">65</span>, c <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">]</span>
-<span class="op">}</span>
-<span class="va">cols</span> <span class="op">=</span> <span class="fu">gg_color_hue</span><span class="op">(</span><span class="fl">32</span><span class="op">)</span>
-
-
-<span class="va">p</span> <span class="op">&lt;-</span> <span class="va">plot_data</span> <span class="op">%&gt;%</span>
-  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">days_first_case</span>,y<span class="op">=</span><span class="va">cumulative_cases</span>,color <span class="op">=</span> <span class="va">location</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">coord_equal</span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_dl</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">location</span><span class="op">)</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu">dl.combine</span><span class="op">(</span><span class="st">"first.points"</span>, <span class="st">"last.points"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_colour_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span>
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">%&gt;%</span> 
+  <span class="fu">pivot_longer</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">value</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">group_by</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>csum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, name<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">name</span>, levels<span class="op">=</span><span class="va">fac_names</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Day</span>, y <span class="op">=</span> <span class="va">csum</span>, group <span class="op">=</span> <span class="va">name</span>, colour <span class="op">=</span> <span class="va">name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">geom_line</span><span class="op">(</span>show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span> <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">xlab</span><span class="op">(</span><span class="st">"Days since first symptom onset"</span><span class="op">)</span> <span class="op">+</span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"Cumulative cases"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_abline</span><span class="op">(</span>slope<span class="op">=</span><span class="va">r0_lc_slope</span>,intercept<span class="op">=</span><span class="fl">0</span>,linetype<span class="op">=</span><span class="st">"dashed"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">geom_abline</span><span class="op">(</span>slope<span class="op">=</span><span class="va">r0_uc_slope</span>,intercept<span class="op">=</span><span class="fl">0</span>,linetype<span class="op">=</span><span class="st">"dashed"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">geom_abline</span><span class="op">(</span>slope<span class="op">=</span><span class="va">r0_uc_slope</span>,intercept<span class="op">=</span><span class="fl">0</span>,linetype<span class="op">=</span><span class="st">"dashed"</span>, col<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_dl</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">name</span><span class="op">)</span>, method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu">dl.combine</span><span class="op">(</span><span class="st">"last.points"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">annotate</span><span class="op">(</span>
     <span class="st">"text"</span>,
     x <span class="op">=</span> <span class="fl">5</span>,
@@ -228,15 +182,10 @@
     angle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">atan</a></span><span class="op">(</span><span class="va">r0_lc_slope</span> <span class="op">*</span> <span class="fl">10</span><span class="op">)</span> <span class="op">*</span> <span class="fl">180</span><span class="op">/</span><span class="va">pi</span>,
     label <span class="op">=</span> <span class="st">"R0 = 1.1"</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">coord_cartesian</span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">100</span><span class="op">)</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span><span class="op">)</span>, expand<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">theme</span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">labs</span><span class="op">(</span>y<span class="op">=</span> <span class="st">"Cumulative cases"</span>,x<span class="op">=</span><span class="st">"Days since first reported case"</span><span class="op">)</span>
-<span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the existing one.</span>
+  <span class="fu">coord_cartesian</span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">100</span><span class="op">)</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">70</span><span class="op">)</span>, expand<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="fu">show</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
+<span class="fu">show</span><span class="op">(</span><span class="va">p2</span><span class="op">)</span></code></pre></div>
 <p><img src="BC_LTHC_additional_analysis_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-</div>
 </div>
 <div id="estimate-r0-in-each-outbreak-using-eg-and-ml-methods" class="section level2">
 <h2 class="hasAnchor">
@@ -278,10 +227,7 @@
 <a href="#output-files-and-summary" class="anchor"></a>Output files and summary</h2>
 <p>We collect summaries of the R0 estimates from a single imputation (the final one), and also calculate confidence intervals across all 100 imputations as a sensitivity analysis.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Relabel locations according to manuscript labelling</span>
-<span class="va">fac_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Q"</span>, <span class="st">"I"</span>, <span class="st">"J"</span>, <span class="st">"K"</span>, <span class="st">"O"</span>, <span class="st">"A"</span>, <span class="st">"D"</span>, <span class="st">"N"</span>, <span class="st">"B"</span>, <span class="st">"L"</span>, <span class="st">"R"</span>, <span class="st">"H"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>, <span class="st">"G"</span>, <span class="st">"F"</span>, <span class="st">"P"</span>, <span class="st">"E"</span><span class="op">)</span>
-
-<span class="co"># First, save the complete nIts=100 sets of estimates to file (the sensitivity analysis) </span>
+<code class="sourceCode R"><span class="co"># First, save the complete nIts=100 sets of estimates to file (the sensitivity analysis) </span>
 <span class="co"># We want the mean of the 100 means, and the CI of those 100 means, per outbreak</span>
 <span class="va">er_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Location<span class="op">=</span><span class="va">fac_names</span>,
                     EG_mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">estr0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
@@ -576,29 +522,6 @@ J
 K
 </td>
 <td style="text-align:right;">
-1.4039891
-</td>
-<td style="text-align:right;">
-1.4039891
-</td>
-<td style="text-align:right;">
-1.4039891
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-L
-</td>
-<td style="text-align:right;">
 2.3304750
 </td>
 <td style="text-align:right;">
@@ -615,6 +538,29 @@ L
 </td>
 <td style="text-align:right;">
 3.471845
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+L
+</td>
+<td style="text-align:right;">
+1.4039891
+</td>
+<td style="text-align:right;">
+1.4039891
+</td>
+<td style="text-align:right;">
+1.4039891
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
 </td>
 </tr>
 <tr>
@@ -1043,29 +989,6 @@ J
 K
 </td>
 <td style="text-align:right;">
-1.4039891
-</td>
-<td style="text-align:right;">
-1.0733626
-</td>
-<td style="text-align:right;">
-1.898347
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-L
-</td>
-<td style="text-align:right;">
 1.3991400
 </td>
 <td style="text-align:right;">
@@ -1082,6 +1005,29 @@ L
 </td>
 <td style="text-align:right;">
 2.249427
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+L
+</td>
+<td style="text-align:right;">
+1.4039891
+</td>
+<td style="text-align:right;">
+1.0733626
+</td>
+<td style="text-align:right;">
+1.898347
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
 </td>
 </tr>
 <tr>
@@ -1588,35 +1534,6 @@ J
 K
 </td>
 <td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-120
-</td>
-<td style="text-align:right;">
-15.000000
-</td>
-<td style="text-align:right;">
-17.647059
-</td>
-<td style="text-align:right;">
-13.043478
-</td>
-<td style="text-align:right;">
-1.083460
-</td>
-<td style="text-align:right;">
-1.069746
-</td>
-<td style="text-align:right;">
-1.097659
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-L
-</td>
-<td style="text-align:right;">
 44
 </td>
 <td style="text-align:right;">
@@ -1639,6 +1556,35 @@ L
 </td>
 <td style="text-align:right;">
 1.125506
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+L
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+120
+</td>
+<td style="text-align:right;">
+15.000000
+</td>
+<td style="text-align:right;">
+17.647059
+</td>
+<td style="text-align:right;">
+13.043478
+</td>
+<td style="text-align:right;">
+1.083460
+</td>
+<td style="text-align:right;">
+1.069746
+</td>
+<td style="text-align:right;">
+1.097659
 </td>
 </tr>
 <tr>
@@ -1823,14 +1769,14 @@ R
 <a href="#compare-attack-rate-to-r0-estimates-from-different-methods" class="anchor"></a>Compare attack rate to R0 estimates from different methods</h2>
 <p>Next, compare EG and ML estimates with results from the Bayesian hierarchical model, against the attack rate.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># The Bayesian hierarchical model results (from the manuscript) are manually set here, so remember to update these if you are adapting this script for another analysis. </span>
-<span class="va">BHM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.47</span>, <span class="fl">0.68</span>, <span class="fl">0.74</span>, <span class="fl">0.8</span>, <span class="fl">1.06</span>, <span class="fl">1.32</span>, <span class="fl">1.37</span>, <span class="fl">1.38</span>, <span class="fl">1.92</span>, <span class="fl">2.67</span>, <span class="fl">2.83</span>, <span class="fl">2.94</span>, <span class="fl">3.07</span>, <span class="fl">4.27</span>, <span class="fl">5.33</span>, <span class="fl">5.71</span>, <span class="fl">8.32</span>, <span class="fl">8.96</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co"># The Bayesian hierarchical model results are manually set here, so remember to update these if you are adapting this script for another analysis. </span>
+<span class="va">BHM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.56</span>, <span class="fl">0.79</span>, <span class="fl">0.86</span>, <span class="fl">0.93</span>, <span class="fl">1.2</span>, <span class="fl">1.47</span>, <span class="fl">1.52</span>, <span class="fl">1.57</span>, <span class="fl">2.1</span>, <span class="fl">2.9</span>, <span class="fl">3.2</span>, <span class="fl">3.27</span>, <span class="fl">3.32</span>, <span class="fl">4.55</span>, <span class="fl">5.73</span>, <span class="fl">6.09</span>, <span class="fl">8.17</span>, <span class="fl">9.17</span><span class="op">)</span>
 <span class="co"># The following aren't used until the next chunk:</span>
-<span class="va">BHM_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2.37</span>, <span class="fl">2.69</span>, <span class="fl">2.44</span>, <span class="fl">2.99</span>, <span class="fl">3.37</span>, <span class="fl">3.44</span>, <span class="fl">3.38</span>, <span class="fl">5.09</span>, <span class="fl">2.62</span>, <span class="fl">2.41</span>, <span class="fl">2.25</span>, <span class="fl">3.42</span>, <span class="fl">4.44</span>, <span class="fl">6.35</span>, <span class="fl">6.24</span>, <span class="fl">6.55</span>, <span class="fl">9.71</span>, <span class="fl">9.04</span><span class="op">)</span> <span class="co"># multi-level zeta point estimates</span>
-<span class="va">BHM_upCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.01</span>, <span class="fl">1.59</span>, <span class="fl">1.37</span>, <span class="fl">1.68</span>, <span class="fl">2.05</span>, <span class="fl">2.25</span>, <span class="fl">2.09</span>, <span class="fl">2.47</span>, <span class="fl">2.94</span>, <span class="fl">3.68</span>, <span class="fl">3.91</span>, <span class="fl">4.03</span>, <span class="fl">4.26</span>, <span class="fl">6.76</span>, <span class="fl">7.2</span>, <span class="fl">7.56</span>, <span class="fl">11.38</span>, <span class="fl">11.64</span><span class="op">)</span> <span class="co"># BHM upper credible interval</span>
-<span class="va">BHM_multi_upCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4.68</span>, <span class="fl">5.76</span>, <span class="fl">4.86</span>, <span class="fl">6.59</span>, <span class="fl">7.11</span>, <span class="fl">6.87</span>, <span class="fl">6.38</span>, <span class="fl">9.41</span>, <span class="fl">4.88</span>, <span class="fl">3.63</span>, <span class="fl">3.45</span>, <span class="fl">5.03</span>, <span class="fl">6.91</span>, <span class="fl">9.85</span>, <span class="fl">8.52</span>, <span class="fl">8.69</span>, <span class="fl">13.07</span>, <span class="fl">12.51</span><span class="op">)</span> <span class="co"># multi-level zeta upper credible interval</span>
-<span class="va">BHM_lowCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.14</span>, <span class="fl">0.18</span>, <span class="fl">0.3</span>, <span class="fl">0.26</span>, <span class="fl">0.37</span>, <span class="fl">0.59</span>, <span class="fl">0.79</span>, <span class="fl">0.56</span>, <span class="fl">1.16</span>, <span class="fl">1.96</span>, <span class="fl">2.02</span>, <span class="fl">2.19</span>, <span class="fl">2.21</span>, <span class="fl">2.83</span>, <span class="fl">3.99</span>, <span class="fl">4.36</span>, <span class="fl">5.27</span>, <span class="fl">6.9</span><span class="op">)</span> <span class="co"># BHM lower credible interval</span>
-<span class="va">BHM_multi_lowCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.04</span>, <span class="fl">1.21</span>, <span class="fl">1.17</span>, <span class="fl">1.33</span>, <span class="fl">1.53</span>, <span class="fl">1.57</span>, <span class="fl">1.69</span>, <span class="fl">2.29</span>, <span class="fl">1.42</span>, <span class="fl">1.57</span>, <span class="fl">1.5</span>, <span class="fl">2.3</span>, <span class="fl">2.76</span>, <span class="fl">3.86</span>, <span class="fl">4.58</span>, <span class="fl">4.94</span>, <span class="fl">7.25</span>, <span class="fl">6.86</span><span class="op">)</span> <span class="co"># multi-level zeta lower credible interval</span>
+<span class="va">BHM_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2.6</span>, <span class="fl">2.97</span>, <span class="fl">2.62</span>, <span class="fl">3.28</span>, <span class="fl">3.73</span>, <span class="fl">3.68</span>, <span class="fl">3.62</span>, <span class="fl">5.39</span>, <span class="fl">2.87</span>, <span class="fl">2.71</span>, <span class="fl">3.82</span>, <span class="fl">2.37</span>, <span class="fl">4.73</span>, <span class="fl">6.65</span>, <span class="fl">6.7</span>, <span class="fl">6.91</span>, <span class="fl">9.95</span>, <span class="fl">9.13</span><span class="op">)</span> <span class="co"># multi-level zeta point estimates</span>
+<span class="va">BHM_upCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.17</span>, <span class="fl">1.79</span>, <span class="fl">1.54</span>, <span class="fl">1.89</span>, <span class="fl">2.21</span>, <span class="fl">2.5</span>, <span class="fl">2.33</span>, <span class="fl">2.69</span>, <span class="fl">3.23</span>, <span class="fl">3.98</span>, <span class="fl">4.35</span>, <span class="fl">4.51</span>, <span class="fl">4.58</span>, <span class="fl">6.98</span>, <span class="fl">7.76</span>, <span class="fl">8.04</span>, <span class="fl">11.38</span>, <span class="fl">11.97</span><span class="op">)</span> <span class="co"># BHM upper credible interval</span>
+<span class="va">BHM_multi_upCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4.96</span>, <span class="fl">5.99</span>, <span class="fl">4.87</span>, <span class="fl">6.81</span>, <span class="fl">7.46</span>, <span class="fl">6.9</span>, <span class="fl">6.54</span>, <span class="fl">9.52</span>, <span class="fl">5.14</span>, <span class="fl">4.03</span>, <span class="fl">5.55</span>, <span class="fl">3.43</span>, <span class="fl">7.23</span>, <span class="fl">10.32</span>, <span class="fl">8.9</span>, <span class="fl">9.01</span>, <span class="fl">13.21</span>, <span class="fl">12.35</span><span class="op">)</span> <span class="co"># multi-level zeta upper credible interval</span>
+<span class="va">BHM_lowCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.16</span>, <span class="fl">0.22</span>, <span class="fl">0.35</span>, <span class="fl">0.3</span>, <span class="fl">0.46</span>, <span class="fl">0.7</span>, <span class="fl">0.91</span>, <span class="fl">0.7</span>, <span class="fl">1.29</span>, <span class="fl">2.13</span>, <span class="fl">2.41</span>, <span class="fl">2.42</span>, <span class="fl">2.43</span>, <span class="fl">3.05</span>, <span class="fl">4.37</span>, <span class="fl">4.7</span>, <span class="fl">5.29</span>, <span class="fl">7.16</span><span class="op">)</span> <span class="co"># BHM lower credible interval</span>
+<span class="va">BHM_multi_lowCI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.26</span>, <span class="fl">1.38</span>, <span class="fl">1.35</span>, <span class="fl">1.59</span>, <span class="fl">1.7</span>, <span class="fl">1.8</span>, <span class="fl">1.85</span>, <span class="fl">2.45</span>, <span class="fl">1.61</span>, <span class="fl">1.83</span>, <span class="fl">2.67</span>, <span class="fl">1.6</span>, <span class="fl">3.08</span>, <span class="fl">4.1</span>, <span class="fl">5.06</span>, <span class="fl">5.31</span>, <span class="fl">7.44</span>, <span class="fl">7.06</span><span class="op">)</span> <span class="co"># multi-level zeta lower credible interval</span>
 
 <span class="va">scatterdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">AR_table</span><span class="op">$</span><span class="va">Facility</span>,<span class="va">AR_table</span><span class="op">$</span><span class="va">Facility</span>,<span class="va">AR_table</span><span class="op">$</span><span class="va">Facility</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span>,<span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span>,<span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">EG</span>,<span class="va">er_df</span><span class="op">$</span><span class="va">ML</span>,<span class="va">BHM</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Exponential growth"</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Maximum likelihood"</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Bayesian hierarchical"</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">scatterdata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Facility"</span>, <span class="st">"ar"</span>, <span class="st">"r0"</span>, <span class="st">"Method"</span><span class="op">)</span>
@@ -1838,7 +1784,8 @@ R
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">scatterdata</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">ar</span>, y<span class="op">=</span><span class="va">r0</span>, color<span class="op">=</span><span class="va">Method</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_point</span><span class="op">(</span>size<span class="op">=</span><span class="fl">3</span>, alpha<span class="op">=</span><span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_smooth</span><span class="op">(</span>method<span class="op">=</span><span class="va">lm</span>, se<span class="op">=</span><span class="cn">FALSE</span>, fullrange<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">+</span>
-  <span class="fu">theme_sleek</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">xlab</span><span class="op">(</span><span class="st">"Attack Rate (%)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ylab</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">R</span><span class="op">[</span><span class="st">'0,k'</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>  <span class="fu">theme</span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"right"</span>, legend.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span>,                                           face<span class="op">=</span><span class="st">"bold"</span><span class="op">)</span>, legend.text<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co">#theme_sleek() + </span>
+  <span class="fu">xlab</span><span class="op">(</span><span class="st">"Attack Rate (%)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ylab</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">R</span><span class="op">[</span><span class="st">'0,k'</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>  <span class="fu">theme</span><span class="op">(</span>legend.position<span class="op">=</span><span class="st">"right"</span>, legend.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span>,                                           face<span class="op">=</span><span class="st">"bold"</span><span class="op">)</span>, legend.text<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="co">#scale_colour_ggthemr_d() +</span>
   <span class="fu">annotate</span><span class="op">(</span>geom<span class="op">=</span><span class="st">"label"</span>, x<span class="op">=</span><span class="fl">75</span>, y<span class="op">=</span><span class="fl">9.7</span>, label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span>, <span class="va">BHM</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palette.html">palette</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">annotate</span><span class="op">(</span>geom<span class="op">=</span><span class="st">"label"</span>, x<span class="op">=</span><span class="fl">75</span>, y<span class="op">=</span><span class="fl">1.7</span>, label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">AR_table</span><span class="op">$</span><span class="va">A_r</span>, <span class="va">er_df</span><span class="op">$</span><span class="va">EG</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>, colour<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palette.html">palette</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span><span class="op">+</span>
@@ -1948,9 +1895,9 @@ R
 
 <span class="co"># Initial case</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM and identity of initial case correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">staff_cat_di</span>, <span class="va">BHM</span><span class="op">[</span><span class="va">staff_cat</span><span class="op">!=</span><span class="st">"Unknown"</span><span class="op">]</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "BHM and identity of initial case correlation = 0.156"</span>
+<span class="co">#&gt; [1] "BHM and identity of initial case correlation = 0.152"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM multi-level and identity of initial case correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">staff_cat_di</span>, <span class="va">BHM_multi</span><span class="op">[</span><span class="va">staff_cat</span><span class="op">!=</span><span class="st">"Unknown"</span><span class="op">]</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "BHM multi-level and identity of initial case correlation = 0.025"</span>
+<span class="co">#&gt; [1] "BHM multi-level and identity of initial case correlation = 0.007"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM and identity of initial case correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">staff_cat_di</span>, <span class="va">er_df</span><span class="op">$</span><span class="va">EG</span><span class="op">[</span><span class="va">staff_cat</span><span class="op">!=</span><span class="st">"Unknown"</span><span class="op">]</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "BHM and identity of initial case correlation = -0.246"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM and identity of initial case correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">unclass</a></span><span class="op">(</span><span class="va">staff_cat</span><span class="op">[</span><span class="va">staff_cat</span><span class="op">!=</span><span class="st">"Unknown"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">[</span><span class="va">staff_cat</span><span class="op">!=</span><span class="st">"Unknown"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co">#only non-NA ML ests</span>
@@ -1960,7 +1907,7 @@ R
 <span class="co"># Facility capacity</span>
 <span class="va">fac_cap</span> <span class="op">&lt;-</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">fac_names</span><span class="op">)</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">BHM</span>, <span class="va">fac_cap</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "BHM and facility capacity correlation = -0.163"</span>
+<span class="co">#&gt; [1] "BHM and facility capacity correlation = -0.167"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM multi-level and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">BHM_multi</span>, <span class="va">fac_cap</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "BHM multi-level and facility capacity correlation = -0.282"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"EG and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">EG</span>, <span class="va">fac_cap</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
@@ -1973,9 +1920,9 @@ R
 <span class="va">rep_date</span> <span class="op">&lt;-</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">reported_date</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">fac_names</span><span class="op">)</span><span class="op">]</span>
 <span class="va">rep_date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html">as.POSIXct</a></span><span class="op">(</span><span class="va">rep_date</span>, format<span class="op">=</span><span class="st">"%Y-%m-%d %H:%M:%S"</span>, tz<span class="op">=</span><span class="st">"GMT"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">BHM</span>, <span class="va">rep_date</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "BHM and facility capacity correlation = -0.25"</span>
+<span class="co">#&gt; [1] "BHM and facility capacity correlation = -0.254"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM multi-level and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">BHM_multi</span>, <span class="va">rep_date</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "BHM multi-level and facility capacity correlation = -0.104"</span>
+<span class="co">#&gt; [1] "BHM multi-level and facility capacity correlation = -0.09"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"EG and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">EG</span>, <span class="va">rep_date</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "EG and facility capacity correlation = -0.069"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"ML and facility capacity correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">)</span><span class="op">]</span>, <span class="va">rep_date</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">er_df</span><span class="op">$</span><span class="va">ML</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
@@ -2040,22 +1987,22 @@ alternative
 Number of disease outbreaks 2018/19
 </td>
 <td style="text-align:right;">
--0.2354314
+-0.2270282
 </td>
 <td style="text-align:right;">
--0.8734106
+-0.8405090
 </td>
 <td style="text-align:right;">
-0.3982862
+0.4158149
 </td>
 <td style="text-align:right;">
 13
 </td>
 <td style="text-align:right;">
--0.6672250
+-0.6622703
 </td>
 <td style="text-align:right;">
-0.3147968
+0.3227725
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2069,22 +2016,22 @@ two.sided
 Number of lodged complaints 2018/19
 </td>
 <td style="text-align:right;">
--0.5348877
+-0.5396202
 </td>
 <td style="text-align:right;">
--2.2825330
+-2.3109734
 </td>
 <td style="text-align:right;">
-0.0399312
+0.0378793
 </td>
 <td style="text-align:right;">
 13
 </td>
 <td style="text-align:right;">
--0.8219372
+-0.8240837
 </td>
 <td style="text-align:right;">
--0.0311638
+-0.0378087
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2098,22 +2045,22 @@ two.sided
 Residents dependent for daily activities (%)
 </td>
 <td style="text-align:right;">
-0.1477617
+0.1531161
 </td>
 <td style="text-align:right;">
-0.5386753
+0.5586554
 </td>
 <td style="text-align:right;">
-0.5992143
+0.5858915
 </td>
 <td style="text-align:right;">
 13
 </td>
 <td style="text-align:right;">
--0.3943507
+-0.3897143
 </td>
 <td style="text-align:right;">
-0.6135809
+0.6169853
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2127,22 +2074,22 @@ two.sided
 Average resident stay (days)
 </td>
 <td style="text-align:right;">
-0.3686115
+0.3763166
 </td>
 <td style="text-align:right;">
-1.4297239
+1.4644810
 </td>
 <td style="text-align:right;">
-0.1763869
+0.1668234
 </td>
 <td style="text-align:right;">
 13
 </td>
 <td style="text-align:right;">
--0.1770906
+-0.1684115
 </td>
 <td style="text-align:right;">
-0.7409616
+0.7449694
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2156,22 +2103,22 @@ two.sided
 Average resident age (years)
 </td>
 <td style="text-align:right;">
-0.0303868
+0.0137734
 </td>
 <td style="text-align:right;">
-0.1096117
+0.0496656
 </td>
 <td style="text-align:right;">
-0.9143913
+0.9611438
 </td>
 <td style="text-align:right;">
 13
 </td>
 <td style="text-align:right;">
--0.4894956
+-0.5020315
 </td>
 <td style="text-align:right;">
-0.5343322
+0.5223508
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2185,22 +2132,22 @@ two.sided
 Direct care hours /resident/day
 </td>
 <td style="text-align:right;">
-0.3901744
+0.3959211
 </td>
 <td style="text-align:right;">
-1.5278932
+1.5545441
 </td>
 <td style="text-align:right;">
-0.1504985
+0.1440545
 </td>
 <td style="text-align:right;">
 13
 </td>
 <td style="text-align:right;">
--0.1525861
+-0.1459408
 </td>
 <td style="text-align:right;">
-0.7521114
+0.7550483
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2214,22 +2161,22 @@ two.sided
 Facility capacity
 </td>
 <td style="text-align:right;">
--0.1631560
+-0.1668244
 </td>
 <td style="text-align:right;">
--0.6614878
+-0.6767814
 </td>
 <td style="text-align:right;">
-0.5177131
+0.5082118
 </td>
 <td style="text-align:right;">
 16
 </td>
 <td style="text-align:right;">
--0.5854322
+-0.5879053
 </td>
 <td style="text-align:right;">
-0.3287563
+0.3253887
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2243,22 +2190,22 @@ two.sided
 COVID-19 outbreak reported date
 </td>
 <td style="text-align:right;">
--0.2502444
+-0.2543562
 </td>
 <td style="text-align:right;">
--1.0338727
+-1.0520253
 </td>
 <td style="text-align:right;">
-0.3165705
+0.3084179
 </td>
 <td style="text-align:right;">
 16
 </td>
 <td style="text-align:right;">
--0.6420972
+-0.6446708
 </td>
 <td style="text-align:right;">
-0.2452824
+0.2411508
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2272,22 +2219,22 @@ two.sided
 Year facility opened
 </td>
 <td style="text-align:right;">
--0.1548662
+-0.1650633
 </td>
 <td style="text-align:right;">
--0.5430236
+-0.5797485
 </td>
 <td style="text-align:right;">
-0.5970558
+0.5728084
 </td>
 <td style="text-align:right;">
 12
 </td>
 <td style="text-align:right;">
--0.6334000
+-0.6396250
 </td>
 <td style="text-align:right;">
-0.4093490
+0.4006005
 </td>
 <td style="text-align:left;">
 Pearson’s product-moment correlation
@@ -2303,10 +2250,10 @@ two.sided
 
 <span class="co"># And correlations for dichotomous categorical factors (point-biserial)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM and identity of initial case (is staff) correlation = "</span>, <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">unclass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">cor_data</span><span class="op">$</span><span class="st">"Identity of initial COVID-19 case"</span><span class="op">[</span><span class="va">cor_data</span><span class="op">$</span><span class="st">"Identity of initial COVID-19 case"</span><span class="op">!=</span><span class="st">"Unknown"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="va">BHM</span><span class="op">[</span><span class="va">cor_data</span><span class="op">$</span><span class="st">"Identity of initial COVID-19 case"</span><span class="op">!=</span><span class="st">"Unknown"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "BHM and identity of initial case (is staff) correlation = 0.156020666513376"</span>
+<span class="co">#&gt; [1] "BHM and identity of initial case (is staff) correlation = 0.152020983211341"</span>
 <span class="co"># Make this one negative since 'not accredited' is associated with a higher number: </span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"BHM and (positive) accreditation status correlation = "</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">unclass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">cor_data</span><span class="op">$</span><span class="st">"Accreditation status"</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">cor_data</span><span class="op">$</span><span class="st">"Accreditation status"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="va">BHM</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">cor_data</span><span class="op">$</span><span class="st">"Accreditation status"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "BHM and (positive) accreditation status correlation = 0.272797929981313"</span>
+<span class="co">#&gt; [1] "BHM and (positive) accreditation status correlation = 0.272308889310071"</span>
 
 
 

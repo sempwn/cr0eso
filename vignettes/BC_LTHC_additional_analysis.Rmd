@@ -11,15 +11,32 @@ vignette: >
 knitr::opts_chunk$set(dev="png", collapse = T, comment = "#>")
 options(tibble.print_min = 4L, tibble.print_max = 4L)
 
+  
+if (!requireNamespace("ggstance", quietly = TRUE)) {
+  stop("Package \"pkg\" needed for this vignette to build. Please install it.",
+    call. = FALSE)
+}
+if (!requireNamespace("directlabels", quietly = TRUE)) {
+  stop("Package \"pkg\" needed for this vignette to build. Please install it.",
+    call. = FALSE)
+}
+if (!requireNamespace("R0", quietly = TRUE)) {
+  stop("Package \"pkg\" needed for this vignette to build. Please install it.",
+    call. = FALSE)
+}
+if (!requireNamespace("gridExtra", quietly = TRUE)) {
+  stop("Package \"pkg\" needed for this vignette to build. Please install it.",
+    call. = FALSE)
+}
+
+
 # load libraries
 library(tidyverse)
 library(kableExtra)
 library(here)
 library(R0)
-library(ggsidekick)
 library(ggstance)
 library(scales)
-library(lubridate)
 library(gridExtra)
 library(directlabels)
 
@@ -51,31 +68,13 @@ str(BC_LTHC_outbreaks_100Imputs[[100]])
 ### Capacity by outbreak size plot
 
 ```{r}
-
-outbreak_data <- as_tibble(BC_LTHC_outbreaks_100Imputs[[1]]$case_matrix)
-names(outbreak_data) <- as.character(BC_LTHC_outbreaks_100Imputs[[1]]$Location)
-outbreak_data$date <- 1:nrow(outbreak_data)
-outbreak_data <- outbreak_data %>% 
-  pivot_longer(-date,names_to="location",values_to="cases") %>%
-  left_join(tibble(location=as.character(BC_LTHC_outbreaks_100Imputs[[1]]$Location),
-                   capacity=BC_LTHC_outbreaks_100Imputs[[1]]$capacity,
-                   reported_date=BC_LTHC_outbreaks_100Imputs[[1]]$reported_date,
-                   num_cases=BC_LTHC_outbreaks_100Imputs[[1]]$num_cases,
-                   ),by="location")
-# plot non-zero outbreaks
-plot_data <- outbreak_data %>%
-  group_by(location,capacity) %>%
-  summarize(outbreak_size=sum(cases),
-            reported_date = min(reported_date)) %>%
-  filter(outbreak_size>1)
+plot_data <- tibble(location=BC_LTHC_outbreaks_100Imputs[[100]]$Location,  capacity=BC_LTHC_outbreaks_100Imputs[[100]]$capacity, outbreak_size=BC_LTHC_outbreaks_100Imputs[[100]]$num_cases, reported_date = BC_LTHC_outbreaks_100Imputs[[100]]$reported_date)
   
 lab_dates <- pretty(plot_data$reported_date)
 
 p <- plot_data %>%
   ggplot(aes(x=capacity,y=outbreak_size,color=as.numeric(reported_date))) +
   geom_point(size=1.8) +
-  xlim(0,300) +
-  stat_smooth(method='lm', formula=y~0 + x, fullrange=TRUE) +
   geom_abline(slope=1,intercept=0,linetype="dashed",alpha=0.5) +
   coord_cartesian(expand=FALSE,xlim = c(0,305), ylim=c(0,95)) +
   scale_color_continuous(breaks = as.numeric(lab_dates), 
@@ -88,51 +87,26 @@ show(p)
 ```
 
 
-### Cumulative cases plot
+## Cumulative cases plot
 
 ```{r}
-r0_uc_slope <- (3-1)/5.
-r0_lc_slope <- (1.1-1)/5.
+# Relabel locations according to manuscript labelling
+fac_names <- c("Q", "I", "J", "L", "O", "A", "D", "N", "B", "K", "R", "H", "M", "C", "G", "F", "P", "E")
 
+df <- data.frame(BC_LTHC_outbreaks_100Imputs[[100]]$case_matrix)
+colnames(df) <- fac_names
+df <- cbind(Day=1:nrow(df),df)
 
-plot_data <- outbreak_data %>% 
-  mutate(location = as_factor(location)) %>%
-  group_by(location) %>%
-  mutate(
-    start_date = min(reported_date),
-    days_first_case = date
-    ) %>%
-  group_by(location) %>% 
-  arrange(days_first_case) %>% 
-  mutate(cumulative_cases = cumsum(cases)) %>%
-  # filter to day of last case
-  mutate(is_max = cumulative_cases == max(cumulative_cases)) %>%
-  group_by(location,is_max) %>%
-  mutate(max_date = min(days_first_case)) %>%
-  group_by(location) %>%
-  mutate(max_date = max(max_date)) %>%
-  filter(date <= max_date)
+r0_uc_slope <- (3-1)/5
+r0_lc_slope <- (1.1-1)/5
 
-
-
-
-# Define the number of colors you want 
-gg_color_hue <- function(n) {
-  hues = seq(15, 375, length = n + 1)
-  hcl(h = hues, l = 65, c = 100)[1:n]
-}
-cols = gg_color_hue(32)
-
-
-p <- plot_data %>%
-  ggplot(aes(x=days_first_case,y=cumulative_cases,color = location)) +
-  geom_line() +
-  scale_y_log10() +
-  coord_equal(ratio = 10) +
-  geom_dl(aes(label = location), method = list(dl.combine("first.points", "last.points"), cex = 0.8)) +
-  scale_colour_manual(values = cols) +
+p2 <- df %>% 
+  pivot_longer(-1) %>% filter(value > 0) %>% group_by(name) %>% mutate(csum = cumsum(value), name=factor(name, levels=fac_names)) %>%
+  ggplot(aes(x = Day, y = csum, group = name, colour = name)) + 
+  geom_line(show.legend = FALSE) + theme_classic() + xlab("Days since first symptom onset") +  ylab("Cumulative cases") + scale_y_log10() +
   geom_abline(slope=r0_lc_slope,intercept=0,linetype="dashed", col="black") + 
-  geom_abline(slope=r0_uc_slope,intercept=0,linetype="dashed", col="black") + 
+  geom_abline(slope=r0_uc_slope,intercept=0,linetype="dashed", col="black") +
+  geom_dl(aes(label = name), method = list(dl.combine("last.points"), cex = 0.8)) + 
   annotate(
     "text",
     x = 5,
@@ -147,12 +121,9 @@ p <- plot_data %>%
     angle = atan(r0_lc_slope * 10) * 180/pi,
     label = "R0 = 1.1"
   ) +
-  coord_cartesian(ylim=c(1,100), xlim=c(0, 60), expand=FALSE) +
-  theme_classic() +
-  theme(legend.position="none") +
-  labs(y= "Cumulative cases",x="Days since first reported case")
+  coord_cartesian(ylim=c(1,100), xlim=c(0, 70), expand=FALSE)
 
-show(p)
+show(p2)
 ```
 
 ## Estimate R0 in each outbreak, using EG and ML methods
@@ -231,9 +202,6 @@ res[[its]]<-estr0
 We collect summaries of the R0 estimates from a single imputation (the final one), and also calculate confidence intervals across all 100 imputations as a sensitivity analysis. 
 
 ```{r gather output, warning = FALSE}
-# Relabel locations according to manuscript labelling
-fac_names <- c("Q", "I", "J", "K", "O", "A", "D", "N", "B", "L", "R", "H", "M", "C", "G", "F", "P", "E")
-
 # First, save the complete nIts=100 sets of estimates to file (the sensitivity analysis) 
 # We want the mean of the 100 means, and the CI of those 100 means, per outbreak
 er_df <- data.frame(Location=fac_names,
@@ -340,14 +308,14 @@ AR_table %>%
 Next, compare EG and ML estimates with results from the Bayesian hierarchical model, against the attack rate.  
 
 ```{r, fig.width = 7}
-# The Bayesian hierarchical model results (from the manuscript) are manually set here, so remember to update these if you are adapting this script for another analysis. 
-BHM <- c(0.47, 0.68, 0.74, 0.8, 1.06, 1.32, 1.37, 1.38, 1.92, 2.67, 2.83, 2.94, 3.07, 4.27, 5.33, 5.71, 8.32, 8.96)
+# The Bayesian hierarchical model results are manually set here, so remember to update these if you are adapting this script for another analysis. 
+BHM <- c(0.56, 0.79, 0.86, 0.93, 1.2, 1.47, 1.52, 1.57, 2.1, 2.9, 3.2, 3.27, 3.32, 4.55, 5.73, 6.09, 8.17, 9.17)
 # The following aren't used until the next chunk:
-BHM_multi <- c(2.37, 2.69, 2.44, 2.99, 3.37, 3.44, 3.38, 5.09, 2.62, 2.41, 2.25, 3.42, 4.44, 6.35, 6.24, 6.55, 9.71, 9.04) # multi-level zeta point estimates
-BHM_upCI <- c(1.01, 1.59, 1.37, 1.68, 2.05, 2.25, 2.09, 2.47, 2.94, 3.68, 3.91, 4.03, 4.26, 6.76, 7.2, 7.56, 11.38, 11.64) # BHM upper credible interval
-BHM_multi_upCI <- c(4.68, 5.76, 4.86, 6.59, 7.11, 6.87, 6.38, 9.41, 4.88, 3.63, 3.45, 5.03, 6.91, 9.85, 8.52, 8.69, 13.07, 12.51) # multi-level zeta upper credible interval
-BHM_lowCI <- c(0.14, 0.18, 0.3, 0.26, 0.37, 0.59, 0.79, 0.56, 1.16, 1.96, 2.02, 2.19, 2.21, 2.83, 3.99, 4.36, 5.27, 6.9) # BHM lower credible interval
-BHM_multi_lowCI <- c(1.04, 1.21, 1.17, 1.33, 1.53, 1.57, 1.69, 2.29, 1.42, 1.57, 1.5, 2.3, 2.76, 3.86, 4.58, 4.94, 7.25, 6.86) # multi-level zeta lower credible interval
+BHM_multi <- c(2.6, 2.97, 2.62, 3.28, 3.73, 3.68, 3.62, 5.39, 2.87, 2.71, 3.82, 2.37, 4.73, 6.65, 6.7, 6.91, 9.95, 9.13) # multi-level zeta point estimates
+BHM_upCI <- c(1.17, 1.79, 1.54, 1.89, 2.21, 2.5, 2.33, 2.69, 3.23, 3.98, 4.35, 4.51, 4.58, 6.98, 7.76, 8.04, 11.38, 11.97) # BHM upper credible interval
+BHM_multi_upCI <- c(4.96, 5.99, 4.87, 6.81, 7.46, 6.9, 6.54, 9.52, 5.14, 4.03, 5.55, 3.43, 7.23, 10.32, 8.9, 9.01, 13.21, 12.35) # multi-level zeta upper credible interval
+BHM_lowCI <- c(0.16, 0.22, 0.35, 0.3, 0.46, 0.7, 0.91, 0.7, 1.29, 2.13, 2.41, 2.42, 2.43, 3.05, 4.37, 4.7, 5.29, 7.16) # BHM lower credible interval
+BHM_multi_lowCI <- c(1.26, 1.38, 1.35, 1.59, 1.7, 1.8, 1.85, 2.45, 1.61, 1.83, 2.67, 1.6, 3.08, 4.1, 5.06, 5.31, 7.44, 7.06) # multi-level zeta lower credible interval
 
 scatterdata <- data.frame(c(AR_table$Facility,AR_table$Facility,AR_table$Facility), c(AR_table$A_r,AR_table$A_r,AR_table$A_r), c(er_df$EG,er_df$ML,BHM), c(rep("Exponential growth",length(AR_table$A_r)), rep("Maximum likelihood",length(AR_table$A_r)), rep("Bayesian hierarchical",length(AR_table$A_r))) )
 names(scatterdata) <- c("Facility", "ar", "r0", "Method")
@@ -355,7 +323,8 @@ names(scatterdata) <- c("Facility", "ar", "r0", "Method")
 p <- ggplot(scatterdata, aes(x=ar, y=r0, color=Method)) +
   geom_point(size=3, alpha=0.8) +
   geom_smooth(method=lm, se=FALSE, fullrange=TRUE)+
-  theme_sleek() + xlab("Attack Rate (%)") + ylab(expression(R['0,k'])) +  theme(legend.position="right", legend.title = element_text(size=10,                                           face="bold"), legend.text=element_text(size=10)) +
+  #theme_sleek() + 
+  xlab("Attack Rate (%)") + ylab(expression(R['0,k'])) +  theme(legend.position="right", legend.title = element_text(size=10,                                           face="bold"), legend.text=element_text(size=10)) +
   #scale_colour_ggthemr_d() +
   annotate(geom="label", x=75, y=9.7, label=round(cor(AR_table$A_r, BHM),2), colour=palette()[2]) +
   annotate(geom="label", x=75, y=1.7, label=round(cor(AR_table$A_r, er_df$EG),2), colour=palette()[3])+
