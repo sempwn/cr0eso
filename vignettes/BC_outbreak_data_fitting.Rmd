@@ -133,7 +133,8 @@ result$table %>%
 ```{r, fig.height=12,fig.width=8}
 
 result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
-                                         outbreak_cases = outbreak_cases,
+                                         outbreak_cases = outbreak_cases, 
+                                         end_time = tmax+5,
                                          location_labels = location_labels)
 # plot results
 result$plot
@@ -152,7 +153,6 @@ result <- hom_plot_counterfactual_by_location(bc_fit,
 
 # plot results
 show(result$plot)
-
 
 
 # show table of results
@@ -252,6 +252,7 @@ result$table %>%
 ```{r, fig.height=12,fig.width=8}
 result <- hom_plot_incidence_by_location(extracted_posts=extracted_posts,
                                          outbreak_cases = outbreak_cases,
+                                         end_time = tmax+5, 
                                          location_labels = location_labels,
                                          sort=FALSE)
 # plot results
