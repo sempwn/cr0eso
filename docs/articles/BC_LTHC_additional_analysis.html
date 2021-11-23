@@ -68,7 +68,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/sempwn/cr0eso/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -78,14 +85,14 @@
 
       
 
-      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.8/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="BC_LTHC_additional_analysis_files/header-attrs-2.10/header-attrs.js"></script><script src="BC_LTHC_additional_analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="BC_LTHC_additional_analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Additional analysis of BC LTHC outbreak data</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/sempwn/cr0eso/blob/master/vignettes/BC_LTHC_additional_analysis.Rmd"><code>vignettes/BC_LTHC_additional_analysis.Rmd</code></a></small>
       <div class="hidden name"><code>BC_LTHC_additional_analysis.Rmd</code></div>
 
     </div>
@@ -123,7 +130,7 @@
 <span class="co">#&gt;   ..$ : num [1:19] 3 0 0 0 0 2 0 0 0 1 ...</span>
 <span class="co">#&gt;  $ capacity     : num [1:18] 139 91 189 120 142 300 87 40 66 236 ...</span>
 <span class="co">#&gt;  $ reported_date: Date[1:18], format: "2020-04-28" "2020-04-25" ...</span>
-<span class="co">#&gt;  $ case_matrix  : num [1:50, 1:18] 1 0 0 1 0 0 1 1 0 1 ...</span></code></pre></div>
+<span class="co">#&gt;  $ case_matrix  : num [1:64, 1:18] 1 0 0 1 0 0 1 1 0 1 ...</span></code></pre></div>
 <div id="capacity-by-outbreak-size-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#capacity-by-outbreak-size-plot" class="anchor"></a>Capacity by outbreak size plot</h3>
@@ -131,6 +138,7 @@
 <code class="sourceCode R"><span class="va">plot_data</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>location<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Location</span>,  capacity<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">capacity</span>, outbreak_size<span class="op">=</span><span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">num_cases</span>, reported_date <span class="op">=</span> <span class="va">BC_LTHC_outbreaks_100Imputs</span><span class="op">[[</span><span class="fl">100</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">reported_date</span><span class="op">)</span>
   
 <span class="va">lab_dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/pretty.html">pretty</a></span><span class="op">(</span><span class="va">plot_data</span><span class="op">$</span><span class="va">reported_date</span><span class="op">)</span>
+<span class="co">#&gt; Warning in as.POSIXlt.POSIXct(x): unknown timezone 'GMT'</span>
 
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="va">plot_data</span> <span class="op">%&gt;%</span>
   <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">capacity</span>,y<span class="op">=</span><span class="va">outbreak_size</span>,color<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">reported_date</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>

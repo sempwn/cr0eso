@@ -1,5 +1,13 @@
 # Covid r0 estimation of outbreaks (cr0eso)
 
+<!-- badges: start -->
+
+[![DOI](https://zenodo.org/badge/325662500.svg)](https://zenodo.org/badge/latestdoi/325662500)
+
+<!-- badges: end -->
+
+
+
 R0 estimation of multiple outbreaks using an SEIR model
 
 *The package name comes from the Welsh word for "welcome"*
