@@ -1,5 +1,10 @@
 ---
 title: "Additional analysis of BC LTHC outbreak data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Additional analysis of BC LTHC outbreak data}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

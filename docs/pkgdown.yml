@@ -1,9 +1,9 @@
-pandoc: 2.14.2
+pandoc: '2.18'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   BC_LTHC_additional_analysis: BC_LTHC_additional_analysis.html
   BC_outbreak_data_fitting: BC_outbreak_data_fitting.html
   introduction_to_fitting: introduction_to_fitting.html
-last_built: 2021-11-23T21:01Z
+last_built: 2022-08-17T21:34Z
 
