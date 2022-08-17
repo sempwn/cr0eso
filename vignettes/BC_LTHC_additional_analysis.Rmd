@@ -34,7 +34,6 @@ if (!requireNamespace("gridExtra", quietly = TRUE)) {
 library(tidyverse)
 library(kableExtra)
 library(here)
-library(R0)
 library(ggstance)
 library(scales)
 library(gridExtra)
