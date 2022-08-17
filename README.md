@@ -8,7 +8,7 @@
 
 
 
-**C**ovid **r0** **es**timation of **o**utbreaks (Cr0eso). R0 estimation of multiple outbreaks using an SEIR model
+**C**ovid **r0** **es**timation of **o**utbreaks (**Cr0eso**). R0 estimation of multiple outbreaks using an SEIR model
 
 *The package name comes from the Welsh word for "welcome"*
 
