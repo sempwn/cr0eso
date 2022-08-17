@@ -1,4 +1,4 @@
-# Covid r0 estimation of outbreaks (cr0eso) <img src='man/figures/logo.png' align="right" height="39" />
+# cr0eso <img src='man/figures/logo.png' align="right" height="39" />
 
 <!-- badges: start -->
 
@@ -8,7 +8,7 @@
 
 
 
-R0 estimation of multiple outbreaks using an SEIR model
+**C**ovid **r0** **es**timation of **o**utbreaks (Cr0eso). R0 estimation of multiple outbreaks using an SEIR model
 
 *The package name comes from the Welsh word for "welcome"*
 
