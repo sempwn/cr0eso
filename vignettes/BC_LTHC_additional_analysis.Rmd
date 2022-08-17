@@ -1,6 +1,5 @@
 ---
 title: "Additional analysis of BC LTHC outbreak data"
-output: rmarkdown::html_vignette
 ---
 
 ```{r setup, include=FALSE}
