@@ -1,4 +1,4 @@
-# Covid r0 estimation of outbreaks (cr0eso)
+# Covid r0 estimation of outbreaks (cr0eso) <img src='man/figures/logo.png' align="right" height="39" />
 
 <!-- badges: start -->
 

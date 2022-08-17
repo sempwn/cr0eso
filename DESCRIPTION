@@ -5,7 +5,7 @@ Authors@R:
     c(person(given = "Mike",
            family = "Irvine",
            role = c("aut", "cre"),
-           email = "mike.irvine@bcchr.ca",
+           email = "mike.irvine@bccdc.ca",
            comment = c(ORCID = "0000-0003-4785-8998")),
     person(given = c("Sean", "C."),
                  family = "Anderson",
